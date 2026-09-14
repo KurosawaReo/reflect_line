@@ -11,12 +11,6 @@ enum class StageType
 	Tutorial,
 };
 
-//操作方法の種類.
-enum class OperateType
-{
-
-};
-
 //ゲームデータ[継承不可]
 class GameData final : public ManagerBase
 {

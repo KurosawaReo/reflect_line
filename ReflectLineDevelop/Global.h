@@ -24,7 +24,7 @@
 //#define DEBUG_CONTR_INPUT		//コントローラ操作表示.
 
 /* ゲーム設定 */
-#define INPUT_CHANGE_ARCADE   //定義するとアーケード操作にする, しないとコントローラ操作に.
+//#define INPUT_CHANGE_ARCADE   //定義するとアーケード操作にする, しないとコントローラ操作に.
 //#define BGM_NONE              //定義するとBGMをoffに.
 
 /* 撮影用 */

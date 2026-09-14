@@ -478,18 +478,58 @@ void TutorialStage::DrawStep1() {
         case 0:
         {
             DrawTopText(1, drawAlpha, _T("移動する"));
-            DrawTopText(2, drawAlpha, _T("キーボード　　 : WASD / ↑↓←→"));
-            DrawTopText(3, drawAlpha, _T("コントローラー : 左スティック　 "));
-			DrawTopText(4, drawAlpha, _T("アーケード　　 : レバー　　　　 "));
+
+			//2行目のテキスト.
+			MY_STRING textLine2 = _T("null");
+
+			//[操作表示] 操作によって表示するテキストを変える.
+#if defined INPUT_CHANGE_ARCADE
+			textLine2 = _T("アーケード操作 : レバー");
+#else
+			//最後の操作端末を取得.
+			switch (gameMng->GetLastInputDevice()) 
+			{
+				case InputDevice::Key:
+					textLine2 = _T("キーボード操作 : WASD / ↑↓←→");
+					break;
+				case InputDevice::PadXbox:
+					textLine2 = _T("コントローラー操作 : 左スティック");
+					break;
+
+				//キーボードとコントローラ以外の操作になるのはおかしい.
+				default: assert(false); break;
+			}
+#endif
+		    DrawTopText(2, drawAlpha, textLine2);
         }
         break;
 
 		case 1:
 		{
 			DrawTopText(1, drawAlpha, _T("ダッシュする"));
-			DrawTopText(2, drawAlpha, _T("キーボード　　 : SHIFTキー "));
-			DrawTopText(3, drawAlpha, _T("コントローラー : Bボタン　 "));
-			DrawTopText(4, drawAlpha, _T("アーケード　　 : 右上ボタン"));
+
+			//2行目のテキスト.
+			MY_STRING textLine2 = _T("null");
+
+			//[操作表示] 操作によって表示するテキストを変える.
+#if defined INPUT_CHANGE_ARCADE
+			textLine2 = _T("アーケード操作 : 右上ボタン");
+#else
+			//最後の操作端末を取得.
+			switch (gameMng->GetLastInputDevice())
+			{
+				case InputDevice::Key:
+					textLine2 = _T("キーボード操作 : SHIFTキー");
+					break;
+				case InputDevice::PadXbox:
+					textLine2 = _T("コントローラー操作 : Bボタン");
+					break;
+
+					//キーボードとコントローラ以外の操作になるのはおかしい.
+				default: assert(false); break;
+			}
+#endif
+			DrawTopText(2, drawAlpha, textLine2);
 		}
 		break;
 

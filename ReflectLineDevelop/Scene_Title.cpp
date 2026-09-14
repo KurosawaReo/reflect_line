@@ -4,10 +4,12 @@
 #include "Scene_Title.h"
 
 //依存関係.
+#include "GameManager.h"
 #include "GameData.h"
 #include "BGManager.h"
 #include "Obst_MeteorManager.h"
 //参照.
+static GameManager*   gameMng;
 static GameData*      gameData;
 static BGManager*     bgMng;
 static MeteorManager* meteorMng;
@@ -18,6 +20,7 @@ static SceneMng*      sceneMng;
 //初期化.
 void TitleScene::Init() {
 	//参照取得.
+	gameMng   = ManagerInsts::Get<GameManager>();
 	gameData  = ManagerInsts::Get<GameData>();
 	bgMng     = ManagerInsts::Get<BGManager>();
 	meteorMng = ManagerInsts::Get<MeteorManager>();
@@ -45,9 +48,15 @@ void TitleScene::Exit() {
 
 //更新.
 void TitleScene::Update() {
+
+	InputData inputData; //何で操作したか取得する用.
+
 	//特定の操作でゲーム開始.
-	if (inputMng->IsPushActionTime(_T("GameNext")) == 1) {
-		sceneMng->SetScene(_T("Menu")); //メニューシーンへ.
+	if (inputMng->IsPushActionTime(_T("GameNext"), &inputData) == 1) {
+		//操作端末を記録.
+		gameMng->SetLastInputDevice(inputData.device);
+		//メニューシーンへ.
+		sceneMng->SetScene(_T("Menu"));
 	}
 }
 
@@ -60,9 +69,9 @@ void TitleScene::Draw() {
 		const int font = gameData->fonts["jp-size1"].GetFont();
 
 #if defined INPUT_CHANGE_ARCADE
-		howPlay.text = _T("アーケード操作");
+		howPlay.text = _T("アーケード操作版");
 #else
-		howPlay.text = _T("コントローラ操作");
+		howPlay.text = _T("PC操作版");
 #endif
 		howPlay.Draw(Anchor::LD, font);
 

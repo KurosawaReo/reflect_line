@@ -1,6 +1,6 @@
 /*
    - KR_Input.h - (DxLib)
-   ver.2026/09/03
+   ver.2026/09/14
 
    入力操作機能。
    (オブジェクト指向ver → KR_Object)
@@ -132,9 +132,11 @@ namespace KR
 		Unknown3,  //不明.
 		BtnStart,
 	};
-	//何の操作か(Action登録用)
-	enum class InputType
+	
+	//何の操作か.
+	enum class InputDevice
 	{
+		None,		//操作なし.
 		Key,
 		Mouse,
 		PadXbox,
@@ -145,14 +147,15 @@ namespace KR
 	//入力データ(単体)
 	struct InputData
 	{
-		InputType type; //何の操作か.
-		int       id;   //操作ID.
+		InputDevice device; //何の端末か.
+		int         id;		//操作ID.
 	};
 	//アクションデータ.
 	struct ActionData
 	{
-		vector<InputData> inputs; //登録する入力データ.
-		int time;                 //入力時間.
+		vector<InputData> inputs;			//登録する入力データ.
+		InputData		  lastInputData;	//最後の入力操作.
+		int               time;				//入力時間.
 	};
 
 	//キーやボタンの種類の最大数(変更禁止)
@@ -197,8 +200,8 @@ namespace KR
 		int    IsPushPadBtnTime(PadXboxID   id);
 		int    IsPushPadBtnTime(PadSwitchID id);
 		int    IsPushPadBtnTime(PadArcadeID id);
-		bool   IsPushAction    (MY_STRING name);
-		int    IsPushActionTime(MY_STRING name);
+		bool   IsPushAction    (MY_STRING name, InputData* inputData = nullptr);
+		int    IsPushActionTime(MY_STRING name, InputData* inputData = nullptr);
 
 		//アクション.
 		void   AddAction       (MY_STRING name, KeyID       id);

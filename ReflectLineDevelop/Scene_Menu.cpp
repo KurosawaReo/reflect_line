@@ -358,19 +358,41 @@ void MenuScene::Draw() {
 		int infoX = _int_r(mLayout.menuPos.x - _dbl(infoWidth)/2);
 		int infoY = textBoxY;
 
+		//枠線.
 		Box box = { DBL_XY(infoX, infoY), DBL_XY(infoWidth, infoHeight), mColor.select1, 1.0f };
+		DrawBoxKR(box, Anchor::LU, false);
 
 		DrawStr str2(_T("操作"), { infoX + 10, infoY - 10 }, 0x00FFFF);
 		str2.Draw(Anchor::LD, gameData->fonts["jp-size2"].GetFont());
 
-		DrawBoxKR(box, Anchor::LU, false);
-
+		//テキスト.
 		DrawStr str = { _T(""), INT_XY(infoX, infoY) + mLayout.loreInner, mColor.normal };
 
-		MY_STRING texts[] = {
-			_T("選択: ↑/↓/W/S"),
-			_T("決定: SPACE/ENTER/Aボタン"),
-		};
+		MY_STRING texts[2] = { _T("null"), _T("null") };
+
+		//[操作表示] 操作によって表示するテキストを変える.
+#if defined INPUT_CHANGE_ARCADE
+		texts[0] = _T("選択: レバー");
+		texts[1] = _T("決定: 左上ボタン");
+#else
+		//最後の操作端末を取得.
+		switch (gameMng->GetLastInputDevice())
+		{
+			case InputDevice::Key:
+				texts[0] = _T("選択: ↑/↓/W/S");
+				texts[1] = _T("決定: SPACE");
+				break;
+
+			case InputDevice::PadXbox:
+				texts[0] = _T("選択: 左スティック");
+				texts[1] = _T("決定: Aボタン");
+				break;
+
+			//キーボードとコントローラ以外の操作になるのはおかしい.
+			default: assert(false); break;
+		}
+#endif
+
 		//1行ずつ表示.
 		for (auto& i : texts) {
 			str.text = i;
