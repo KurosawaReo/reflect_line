@@ -153,7 +153,7 @@ namespace KR
 				//ï`âÊ.
 				for (auto& i : tmp) {
 					i.color = 0x00ffff;
-					DrawLineKR(i, isAnti, isCameraDisp);
+					i.Draw(isAnti, isCameraDisp);
 				}
 			}
 			//êßå‰ì_ÇÃâ~.

@@ -148,7 +148,7 @@ void MenuScene::Draw() {
 		DrawModeID::None, DrawBlendModeID::Alpha, 128,
 		[&]() {
 			Box box = { {0, 0}, {WINDOW_WID, WINDOW_HEI}, 0x000000, 1.0f };
-			DrawBoxKR(box, Anchor::LU, true);
+			box.Draw(Anchor::LU, true);
 		}
 	);
 	//▼メニュータイトル.
@@ -170,7 +170,7 @@ void MenuScene::Draw() {
 				};
 				//線描画.
 				for (auto& i : lines) {
-					DrawLineKR(i, true);
+					i.Draw(true);
 				}
 			}
 		);
@@ -188,7 +188,7 @@ void MenuScene::Draw() {
 				};
 				//線描画.
 				for (auto& i : lines) {
-					DrawLineKR(i, true);
+					i.Draw(true);
 				}
 			}
 		);
@@ -229,7 +229,7 @@ void MenuScene::Draw() {
 			str.color = colors[i];
 			savePos   = str.pos;  //前の座標を保存.
 			//枠.
-			DrawBoxKR(box, Anchor::Mid, false);
+			box.Draw(Anchor::Mid, false);
 			
 			int alpha = 255; //透明度.
 			//ブレる処理.
@@ -261,10 +261,15 @@ void MenuScene::Draw() {
 			-mLayout.menuSize.x/2 - 20,		//横にずらす.
 			+mLayout.menuSpace * cursorIdx	//縦にずらす.
 		);
-
-		Triangle tri = { base, base + DBL_XY(-20, 10 * anim1), base + DBL_XY(-20, -10 * anim1), {}, {} };
+		//カーソル.
+		Triangle tri = { 
+			base, 
+			base + DBL_XY(-20, 10 * anim1), 
+			base + DBL_XY(-20, -10 * anim1), 
+			{}, {} 
+		};
 		tri.color = (anim1 >= 0) ? mColor.select1 : mColor.select2; //表か裏かで色を変える.
-		DrawTriangleKR(tri, true, true);
+		tri.Draw();
 	}
 
 	//画像サイズ保存用.
@@ -289,7 +294,7 @@ void MenuScene::Draw() {
 			imgSize = i->GetSize().ToDbl() * extend + margin;
 			//枠線描画(画像にぴったり合うように)
 			Box box = { mLayout.imgPos, imgSize, mColor.frame, 1.0f };
-			DrawBoxKR(box, Anchor::Mid, false);
+			box.Draw(Anchor::Mid, false);
 		}
 	}
 
@@ -329,7 +334,7 @@ void MenuScene::Draw() {
 					line.stPos.y += mLayout.menuSpace * cursorIdx;
 					line.edPos.y += mLayout.menuSpace * cursorIdx;
 					//線描画.
-					DrawLineKR(line, false);
+					line.Draw(false);
 				}
 
 				//2.画像から説明文エリアへの線（画像下端から説明文上端まで）
@@ -341,11 +346,11 @@ void MenuScene::Draw() {
 						3.0f
 					};
 					//線1.
-					DrawLineKR(line, false);
+					line.Draw(false);
 					//線2.
 					line.stPos.x += 60;
 					line.edPos.x += 60;
-					DrawLineKR(line, false);
+					line.Draw(false);
 				}
 			}
 		);
@@ -360,7 +365,7 @@ void MenuScene::Draw() {
 
 		//枠線.
 		Box box = { DBL_XY(infoX, infoY), DBL_XY(infoWidth, infoHeight), mColor.select1, 1.0f };
-		DrawBoxKR(box, Anchor::LU, false);
+		box.Draw(Anchor::LU, false);
 
 		DrawStr str2(_T("操作"), { infoX + 10, infoY - 10 }, 0x00FFFF);
 		str2.Draw(Anchor::LD, gameData->fonts["jp-size2"].GetFont());
@@ -408,7 +413,7 @@ void MenuScene::Draw() {
 
 		// 説明文枠の枠線（水色）	
 		Box box = { DBL_XY(textBoxX, textBoxY), DBL_XY(textBoxWidth, textBoxHeight), mColor.frame, 1.0f };
-		DrawBoxKR(box, Anchor::LU, false);
+		box.Draw(Anchor::LU, false);
 
 		//説明文用.
 		DrawStr str(_T(""), INT_XY(textBoxX, textBoxY)+mLayout.loreInner, mColor.normal);

@@ -602,7 +602,7 @@ void TutorialStage::DrawStep3() {
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(MOVIE_BACK_ALPHA * drawAlpha),
 				[]() {
 					Box box = { App::GetWindowRect().GetMid().ToDbl(), App::GetWindowSize().ToDbl(), 0x000000, 0 };
-					DrawBoxKR(box);
+					box.Draw();
 				}
 			);
 			
@@ -639,7 +639,7 @@ void TutorialStage::DrawStep3() {
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(MOVIE_BACK_ALPHA * drawAlpha),
 				[]() {
 					Box box = { App::GetWindowRect().GetMid().ToDbl(), App::GetWindowSize().ToDbl(), 0x000000, 0 };
-					DrawBoxKR(box);
+					box.Draw();
 				}
 			);
 
@@ -741,7 +741,7 @@ void TutorialStage::DrawTopText(int line, double alpha, MY_STRING text) {
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(100 * alpha),
 			[&]() {
-				DrawBoxKR(box, Anchor::LU);
+				box.Draw(Anchor::LU);
 			}
 		);
 		//テキスト.

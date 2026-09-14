@@ -103,7 +103,8 @@ void EndScene::Draw() {
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(128 * anim),
 			[&]() {
-				DrawBoxKR(box, Anchor::LU); //画面を暗くする(UI以外)
+				//画面を暗くする(UI以外)
+				box.Draw(Anchor::LU);
 			}
 		);
 	}
@@ -165,9 +166,9 @@ void EndScene::Draw() {
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(128 * anim),
 				[&]() {
 					//枠線.
-					DrawBoxKR(box, Anchor::Mid, true, true);
+					box.Draw(Anchor::Mid, true, true);
 					box.color = 0xFFFFFF;
-					DrawBoxKR(box, Anchor::Mid, false, true);
+					box.Draw(Anchor::Mid, false, true);
 				}
 			);
 			//描画.

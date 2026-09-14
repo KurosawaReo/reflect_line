@@ -63,11 +63,12 @@ void TitleScene::Update() {
 //描画.
 void TitleScene::Draw() {
 
-	//操作方法明記.
+	//画面左下の操作方法表記.
 	DrawStr howPlay(_T(""), { 30, WINDOW_HEI - 30 }, 0x00FFFF);
 	{
 		const int font = gameData->fonts["jp-size1"].GetFont();
 
+		//テキスト切り替え.
 #if defined INPUT_CHANGE_ARCADE
 		howPlay.text = _T("アーケード操作版");
 #else

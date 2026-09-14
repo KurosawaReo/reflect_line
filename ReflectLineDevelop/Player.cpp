@@ -269,7 +269,7 @@ void Player::DrawAfterNor(int idx) {
 	}
 	//‰~•`‰æ.
 	Circle cir = { after[idx].pos, PLAYER_SIZE, color, 1.0f };
-	DrawCircleKR(cir, Anchor::Mid, false, true);
+	cir.Draw(Anchor::Mid, false, true);
 }
 
 //Žc‘œ•`‰æ(ƒ_ƒbƒVƒ…Žž)

@@ -271,7 +271,7 @@ namespace KR
 		tmpCir.pos += offset;
 		//•`‰æ.
 		try {
-			DrawCircleKR(tmpCir, Anchor::Mid, isFill, isAnti, isCameraDisp);
+			tmpCir.Draw(Anchor::Mid, isFill, isAnti, isCameraDisp);
 		}
 		catch (const ErrorMsg& err) {
 			throw ErrorMsg(_T("ObjectCir::DrawShape"), err.GetMsg());
@@ -301,7 +301,7 @@ namespace KR
 		tmpBox.pos += offset;
 		//•`‰æ.
 		try {
-			DrawBoxKR(tmpBox, Anchor::Mid, isFill, isAnti, isCameraDisp);
+			tmpBox.Draw(Anchor::Mid, isFill, isAnti, isCameraDisp);
 		}
 		catch (const ErrorMsg& err) {
 			throw ErrorMsg(_T("ObjectBox::DrawShape"), err.GetMsg());
@@ -325,7 +325,7 @@ namespace KR
 
 		//•`‰æ.
 		try {
-			DrawCircleKR(tmpCir, Anchor::Mid, isFill, isAnti, isCameraDisp);
+			tmpCir.Draw(Anchor::Mid, isFill, isAnti, isCameraDisp);
 		}
 		catch (const ErrorMsg& err) {
 			throw ErrorMsg(_T("ObjectPoint::DrawShape"), err.GetMsg());
