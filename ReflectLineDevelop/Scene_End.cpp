@@ -218,13 +218,38 @@ void EndScene::Draw() {
 				}
 			}
 		}
+
 		//一定時間が経ったら.
 		if (timer.GetPassTime() > delay2) {
 
 			//アニメーション値.
 			double anim = Calc::AnimWave(WaveType::CosLoop, timer.GetPassTime() - delay2);
 			//テキスト.
-			DrawStr str(_T("Push [SPACE] [A Button]"), { WINDOW_WID / 2, WINDOW_HEI / 2 + 145 }, 0xFFFFFF);
+			DrawStr str(_T(""), { WINDOW_WID / 2, WINDOW_HEI / 2 + 145 }, 0xFFFFFF);
+
+			//[操作表示] 操作によって表示するテキストを変える.
+#if defined INPUT_CHANGE_ARCADE
+			str.text = _T("Push Upper Left Button");
+#else
+			//最後の操作端末を取得.
+			switch (gameMng->GetLastInputDevice())
+			{
+				case InputDevice::None:
+					str.text = _T("Push [A Button] or [SPACE]");
+					break;
+
+				case InputDevice::Key:
+					str.text = _T("Push [SPACE]");
+					break;
+
+				case InputDevice::PadXbox:
+					str.text = _T("Push [A Button]");
+					break;
+
+				//キーボードとコントローラ以外の操作になるのはおかしい.
+				default: assert(false); break;
+			}
+#endif
 
 			//描画.
 			DrawMode::Exe(
