@@ -93,9 +93,9 @@ void NormalLaserPoint::DrawPrediction(float count) {
 			[&]() {
 
 				cir.r = dotSize;
-				DrawCircleKR(cir, Anchor::Mid, false, true);
+				cir.Draw(Anchor::Mid, false, true);
 				cir.r = dotSize2;
-				DrawCircleKR(cir, Anchor::Mid, false, true);
+				cir.Draw(Anchor::Mid, false, true);
 			}
 		);
 	}
@@ -297,8 +297,8 @@ void NormalLaser::DrawObstFlash() {
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, alphaValue,
 			[&]() {
-				DrawLineKR(line1, true);
-				DrawLineKR(line2, true);
+				line1.Draw(true);
+				line2.Draw(true);
 			}
 		);
 

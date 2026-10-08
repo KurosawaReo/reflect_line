@@ -90,7 +90,7 @@ void BGManager::Draw() {
 				GraphMng::Get(_T("reflect_mode_frame"))->Draw({ WINDOW_WID / 2, WINDOW_HEI / 2 });
 				//ògê¸.
 				Box box = { {WINDOW_WID / 2, WINDOW_HEI / 2}, { WINDOW_WID * modeAlpha, WINDOW_HEI * modeAlpha }, COLOR_PLY_REFLECT, 1.0f };
-				DrawBoxKR(box, Anchor::Mid, false, true);
+				box.Draw(Anchor::Mid, false, true);
 			}
 		);
 	}

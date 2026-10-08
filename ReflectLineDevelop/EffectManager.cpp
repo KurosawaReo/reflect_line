@@ -199,7 +199,7 @@ void EffectManager::Draw() {
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 					[&]() {
-						DrawCircleKR(cir, Anchor::Mid, false, true);
+						cir.Draw(Anchor::Mid, false, true);
 					}
 				);
 			}
@@ -224,7 +224,7 @@ void EffectManager::Draw() {
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 					[&]() {
-						DrawLineKR(line, true);
+						line.Draw(true);
 					}
 				);
 			}
@@ -257,7 +257,7 @@ void EffectManager::Draw() {
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 					[&]() {
-						DrawCircleKR(cir, Anchor::Mid, false, true);
+						cir.Draw(Anchor::Mid, false, true);
 					}
 				);
 			}
@@ -279,7 +279,7 @@ void EffectManager::Draw() {
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 					[&]() {
-						DrawLineKR(line, true);
+						line.Draw(true);
 					}
 				);
 			}
@@ -368,7 +368,7 @@ void EffectManager::Draw() {
 					[&]() {
 
 						//円.
-						DrawCircleKR(mainCir, Anchor::Mid, false, true);
+						mainCir.Draw(Anchor::Mid, false, true);
 						//テキスト.					
 						str.Draw(Anchor::Mid, gameData->fonts["en-size3"].GetFont());
 
@@ -377,7 +377,7 @@ void EffectManager::Draw() {
 							//均等になるように配置する.
 							const int interval = 30; //間隔.
 							lampCir[j].pos.x = i.pos.x + interval * (j - _flt(lampUseCnt - 1) / 2);
-							DrawCircleKR(lampCir[j], Anchor::Mid, (lampFillCnt >= j + 1), true);
+							lampCir[j].Draw(Anchor::Mid, (lampFillCnt >= j + 1), true);
 						}
 					}
 				);

@@ -95,7 +95,7 @@ namespace KR
 		pos(_pos), r(_r), color(_color), thick(_thick) //èâä˙íl.
 	{}
 	//ï`âÊ.
-	void Circle::Draw(Anchor anc, bool isFill, bool isAnti, bool isCameraDisp) {
+	void Circle::Draw(Anchor anc, bool isFill, bool isAnti, bool isCameraDisp) const {
 		DrawCircleKR(*this, anc, isFill, isAnti, isCameraDisp);
 	}
 
@@ -109,7 +109,7 @@ namespace KR
 		pos(_pos), size(_size), color(_color), thick(_thick) //èâä˙íl.
 	{}
 	//ï`âÊ.
-	void Box::Draw(Anchor anc, bool isFill, bool isAnti, bool isCameraDisp) {
+	void Box::Draw(Anchor anc, bool isFill, bool isAnti, bool isCameraDisp) const {
 		DrawBoxKR(*this, anc, isFill, isAnti, isCameraDisp);
 	}
 
@@ -123,7 +123,7 @@ namespace KR
 		pos{ _pos1, _pos2, _pos3 }, color(ColorID::White), thick(1) //èâä˙íl.
 	{}
 	//ï`âÊ.
-	void Triangle::Draw(bool isFill, bool isAnti, bool isCameraDisp) {
+	void Triangle::Draw(bool isFill, bool isAnti, bool isCameraDisp) const {
 		DrawTriangleKR(*this, isFill, isAnti, isCameraDisp);
 	}
 
@@ -137,7 +137,7 @@ namespace KR
 		stPos(_stPos), edPos(_edPos), color(_color), thick(_thick) //èâä˙íl.
 	{}
 	//ï`âÊ.
-	void Line::Draw(bool isAnti, bool isCameraDisp) {
+	void Line::Draw(bool isAnti, bool isCameraDisp) const {
 		DrawLineKR(*this, isAnti, isCameraDisp);
 	}
 
@@ -151,7 +151,7 @@ namespace KR
 		pos(_pos), r(_r), stAng(_stAng), arcAng(_arcAng), color(_color), thick(_thick) //èâä˙íl.
 	{}
 	//ï`âÊ.
-	void Pie::Draw(bool isAnti, bool isCameraDisp) {
+	void Pie::Draw(bool isAnti, bool isCameraDisp) const {
 		DrawPieKR(*this, isAnti, isCameraDisp);
 	}
 
@@ -165,7 +165,7 @@ namespace KR
 		stPos(_stPos), edPos(_edPos), stContrPos(_stContrPos), edContrPos(_edContrPos), color(_color), thick(_thick)
 	{}
 	//ï`âÊ.
-	void BezierLine::Draw(bool isDot, bool isAnti, bool isCameraDisp) {
+	void BezierLine::Draw(bool isDot, bool isAnti, bool isCameraDisp) const {
 		DrawBezierLineKR(*this, isDot, isAnti, isCameraDisp);
 	}
 
@@ -179,7 +179,7 @@ namespace KR
 		points(_points), color(_color), thick(_thick)
 	{}
 	//ï`âÊ.
-	void Spline::Draw(bool isDot, bool isAnti, bool isCameraDisp) {
+	void Spline::Draw(bool isDot, bool isAnti, bool isCameraDisp) const {
 		DrawSplineKR(*this, isDot, isAnti, isCameraDisp);
 	}
 
@@ -193,7 +193,7 @@ namespace KR
 		pos(_pos), points(_points), color(_color), thick(_thick)
 	{}
 	//ï`âÊ.
-	void Polygon::Draw(bool isSurround, bool isAnti, bool isCameraDisp) {
+	void Polygon::Draw(bool isSurround, bool isAnti, bool isCameraDisp) const {
 		DrawPolygonKR(*this, isSurround, isAnti, isCameraDisp);
 	}
 }

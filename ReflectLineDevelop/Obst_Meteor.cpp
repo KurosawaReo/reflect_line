@@ -72,7 +72,7 @@ void Meteor::Draw() {
 			//全ての描画線.
 			for (auto& i : shape.line) {
 				i.color = COLOR_METEOR(pos);
-				DrawLineKR(i, true);
+				i.Draw(true);
 			}
 
 			//チュートリアル限定.

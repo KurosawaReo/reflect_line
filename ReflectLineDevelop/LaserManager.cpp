@@ -91,7 +91,7 @@ void LaserManager::Draw() {
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Add, color,
 			[&]() {
-				DrawLineKR(tmpLine, true);
+				tmpLine.Draw(true);
 			}
 		);
 	}

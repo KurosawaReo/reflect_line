@@ -191,7 +191,7 @@ void BG3::DrawPoints(double modeAlpha, MY_COLOR color)
         DrawMode::Exe(
             DrawModeID::None, DrawBlendModeID::Alpha, _int(alpha),
             [&]() {
-                DrawLineKR(line, true);
+                line.Draw(true);
             }
         );
     }

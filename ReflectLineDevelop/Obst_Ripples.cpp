@@ -251,9 +251,9 @@ void Ripples::DrawWarningEffect(list<RipplesData>::iterator it)
 		[&]() {
 			Circle cir;
 			cir = { {it->x, it->y}, (float)warningSize,   GetColor(150, 150, 150), 1.0f };
-			DrawCircleKR(cir, Anchor::Mid, false, true);
+			cir.Draw(Anchor::Mid, false, true);
 			cir = { {it->x, it->y}, (float)warningSize/2, GetColor(200, 200, 200), 1.0f };
-			DrawCircleKR(cir, Anchor::Mid, false, true);
+			cir.Draw(Anchor::Mid, false, true);
 			cir = { {it->x, it->y}, (float)warningSize+5, GetColor(120, 120, 120), 1.0f }; // ŠOŽüƒŠƒ“ƒO
 		}
 	);
@@ -283,9 +283,9 @@ void Ripples::DrawActiveEffect(list<RipplesData>::iterator it)
 		[&]() {
 			Circle cir;
 			cir = {{it->x, it->y}, (float)effectSize, GetColor(0, 255, 255), 1.0f};
-			DrawCircleKR(cir, Anchor::Mid, false, true);
+			cir.Draw(Anchor::Mid, false, true);
 			cir = {{it->x, it->y}, (float)innerSize,  GetColor(0, 255, 200), 1.0f};
-			DrawCircleKR(cir, Anchor::Mid, false, true);
+			cir.Draw(Anchor::Mid, false, true);
 		}
 	);
 }
