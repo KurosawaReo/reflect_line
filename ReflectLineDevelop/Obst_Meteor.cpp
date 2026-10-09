@@ -1,7 +1,5 @@
 /*
    - Obst_Meteor.cpp -
-
-   障害物: 隕石.
 */
 #include "Obst_Meteor.h"
 
@@ -11,8 +9,12 @@
 static GameData* gameData;
 
 void Meteor::Init() {
-	//取得.
+	
+	//参照取得.
 	gameData = ManagerInsts::Get<GameData>();
+	//画像取得.
+	grTarget = GraphMng::Get(_T("target"));
+
 	//隕石出現処理.
 	Spawn();
 }
@@ -33,23 +35,30 @@ void Meteor::Update() {
 	switch (state)
 	{
 		case MeteorState::Normal:
+		{
+			//サイズの設定.
+			const INT_XY   size = { _int(METEOR_LINE_DIS_MAX) * 2, _int(METEOR_LINE_DIS_MAX) * 2 };
+			const DBL_RECT rect = { 0, 0, WINDOW_WID, WINDOW_HEI };
 			//画面外で消去.
-			if (Calc::IsOutInArea(pos, { METEOR_LINE_DIS_MAX*2, METEOR_LINE_DIS_MAX*2 }, {0, 0, WINDOW_WID, WINDOW_HEI}, true)){
+			if (Calc::IsOutInArea(pos, size, rect, true)) {
 				isErase = true; //消去する.
 			}
-			break;
+		}
+		break;
 
 		case MeteorState::Destroy:
+		{
 			//破壊量の度合.
 			destroyCntr += gameData->speedRate;
 			//時間が終了したら.
 			if (destroyCntr >= METEOR_DEST_TIME) {
-				state   = MeteorState::Normal; //元に戻す.
-				isErase = true;          //消去する.
+				state   = MeteorState::Normal;	//元に戻す.
+				isErase = true;					//消去する.
 			}
-			break;
+		}
+		break;
 
-		default: assert(FALSE); break;
+		default: assert(false); break;
 	}
 	//隕石構成線の更新.
 	UpdateMeteoLine();
@@ -69,9 +78,11 @@ void Meteor::Draw() {
 		DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 		[&](){
 
+			MY_COLOR color = ColorMeteor(pos);
+
 			//全ての描画線.
 			for (auto& i : shape.line) {
-				i.color = COLOR_METEOR(pos);
+				i.color = color;
 				i.Draw(true);
 			}
 
@@ -79,8 +90,8 @@ void Meteor::Draw() {
 			if (gameData->stage == StageType::Tutorial) {
 				//ターゲットされてなければ.
 				if (!isTargeting) {
-					DrawStr str(_T("隕石"), pos.ToInt(), COLOR_METEOR(pos));
-					str.Draw(Anchor::Mid, gameData->fonts["jp-size1"].GetFont());
+					DrawStr str(_T("隕石"), pos.ToInt(), color);
+					str.Draw(Anchor::Mid, gameData->fonts.at("jp-size1").GetFont());
 				}
 			}
 		}
@@ -89,7 +100,7 @@ void Meteor::Draw() {
 	//ターゲットマーク.
 	if (isTargeting) {
 		const double size = 0.34;
-		GraphMng::Get(_T("target"))->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
+		grTarget->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
 	}
 }
 
@@ -117,9 +128,9 @@ void Meteor::Spawn() {
 		goalPos.x = Calc::RandNum(WINDOW_WID/2 - METEOR_GOAL_RAND_RANGE, WINDOW_WID/2 + METEOR_GOAL_RAND_RANGE);
 		goalPos.y = Calc::RandNum(WINDOW_HEI/2 - METEOR_GOAL_RAND_RANGE, WINDOW_HEI/2 + METEOR_GOAL_RAND_RANGE);
 		//目標地点までの角度を求める.
-		double ang = (goalPos.ToDbl() - pos).Angle();
+		const double goalAng = (goalPos.ToDbl() - pos).Angle();
 		//xとyのvectorに分解.
-		vel = Calc::AngToVector(ang);
+		vel = Calc::AngToVector(goalAng);
 	}
 
 	//隕石の設定.
@@ -132,9 +143,7 @@ void Meteor::Spawn() {
 		//②頂点の位置を抽選.
 		for (auto& i : shape.lineDist) {
 			//小数第1位まで抽選.
-			i = _flt(
-				Calc::RandNum(METEOR_LINE_DIS_MIN*10, METEOR_LINE_DIS_MAX*10)/10
-			);
+			i = _flt(Calc::RandNum(METEOR_LINE_DIS_MIN, METEOR_LINE_DIS_MAX));
 		}
 		
 		//線の設定.

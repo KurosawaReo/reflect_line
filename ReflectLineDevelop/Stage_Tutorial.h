@@ -23,10 +23,14 @@ private:
 	Timer  startTimer{};      //項目開始時に計測開始.
 	Timer  endTimer{};        //項目終了時に計測開始.
 
+	//画像・動画.
+	Graph* grReflectModeDeath{};
+	Graph* grDashReflect{};
+
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	TutorialStage(int order) : ManagerBase(order) {}
+	TutorialStage(){}
 
 	//set.
 	void SetPlayerDash   (bool _flag) { isPlayerDash    = _flag; }
@@ -55,7 +59,7 @@ public:
 	void DrawStep4();
 
 	void DrawTopText(int line, double alpha, MY_STRING text);
-	bool IsEnd(int stepNo, int stepInnerNo);
+	bool IsEnd();
 
 	void ResetSignFlag();
 	void StepInnerEnd();

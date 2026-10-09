@@ -38,13 +38,6 @@ struct MenuColor
 //メニューシーン.
 class MenuScene final : public IScene
 {
-//▼ ===== 実体 ===== ▼.
-public:
-	static MenuScene& GetInst() {
-		static MenuScene inst; //自身のインスタンス.
-		return inst;
-	}
-
 //▼ ===== 変数 ===== ▼.
 private:
 	int       cursorIdx = 0;  //カーソルの選択位置.
@@ -59,9 +52,12 @@ private:
 	const MenuLayout mLayout;
 	const MenuColor  mColor;
 
+	//動画.
+	Graph* grMenuMovie[MENU_OPTION_COUNT]{};
+
 //▼ ===== 関数 ===== ▼.
 private:
-	MY_STRING GetPlayMovieName(); //再生する動画名.
+	Graph* GetPlayMovie(); //再生する動画を取得.
 
 public:
 	void Init()   override;

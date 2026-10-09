@@ -29,7 +29,6 @@ struct LaserData
 	Meteor*   target;     //目標隕石.
 	bool      isGoTarget; //目標地点に向かって進むか.
 
-	int       logNum;     //記録した軌跡の数.
 	float     counter;    //経過時間.
 };
 
@@ -47,16 +46,16 @@ class LaserManager final : public ManagerBase
 {
 //▼ ===== 変数 ===== ▼.
 private:
-	//listで適宜サイズを増減する.
-	list<LaserData>     laser; //レーザー.
-	list<LaserLineData> line;  //レーザー描画線.
+	//適宜サイズを増減する.
+	vector<LaserData>     laser; //レーザー.
+	vector<LaserLineData> line;  //レーザー描画線.
 
 	DBL_XY plyPos{}; //プレイヤー座標保管用.
 
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	LaserManager(int order) : ManagerBase(order) {}
+	LaserManager(){}
 
 	void Init()   override;
 	void Reset()  override;
@@ -67,18 +66,13 @@ public:
 	void UpdateLaserLine();												//各レーザー描画線の更新.
 	
 	void SpawnLaser       (DBL_XY pos, DBL_XY vel, LaserType type);		//召喚.
-	void NextLaser        (list<LaserData>::iterator&, bool isErase);	//次のレーザーへ.
-	void HitLaser		  (list<LaserData>::iterator&);					//当たり判定.
-	void ReflectLaser     (list<LaserData>::iterator&);					//反射.
-	void MoveLaser		  (list<LaserData>::iterator&, double speed);	//レーザー移動.
+	void NextLaser        (vector<LaserData>::iterator&, bool isErase);	//次のレーザーへ.
+	void HitLaser		  (vector<LaserData>::iterator&);				//当たり判定.
+	void ReflectLaser     (vector<LaserData>::iterator&);				//反射.
+	void MoveLaser		  (vector<LaserData>::iterator&, double speed);	//レーザー移動.
 
-	void GenerateLaserLine(list<LaserData>::iterator&);					//レーザー描画線を生成.
-	void LaserRefTracking (list<LaserData>::iterator&);					//反射レーザーの隕石追尾.
-
-	bool IsExistEnemyLaser(DBL_XY pos, float len);						//敵のレーザーが1つでも存在するかどうか.
-
-	//未使用.
-	void LaserReflectRange(Circle cir);									//レーザーを一括反射.
+	void GenerateLaserLine(vector<LaserData>::iterator&);				//レーザー描画線を生成.
+	void LaserRefTracking (vector<LaserData>::iterator&);				//反射レーザーの隕石追尾.
 
 	//使用禁止.
 	LaserManager(const LaserManager&) = delete;

@@ -1,6 +1,6 @@
 /*
    - KR_Object.h - (DxLib)
-   ver.2026/09/03
+   ver.2026/10/09
 
    オブジェクト機能。
    描画や当たり判定などの機能をオブジェクト指向で使える。
@@ -22,9 +22,9 @@ namespace KR
 	{
 	//▼ ===== 変数 ===== ▼.
 	private:
-		vector<MY_STRING> useImg{};    //使う画像データ.
-		int               useImgNo{};  //使う画像データのindex.
-		Timer             tmImgAnim{}; //画像切り替え用タイマー.
+		vector<Graph*> useImg{};    //使う画像データ.
+		int            useImgNo{};  //使う画像データのindex.
+		Timer          tmImgAnim{}; //画像切り替え用タイマー.
 
 	public:
 		DBL_XY offset{};   //画像をずらす量.
@@ -54,8 +54,8 @@ namespace KR
 		virtual DBL_XY* GetPosPtr()             = 0;
 		virtual DBL_XY  GetSize  ()       const = 0;
 		//画像.
-		void         SetImage		(MY_STRING name);
-		void         SetImages      (vector<MY_STRING> names, float changeTime);
+		void         SetGraph		(Graph* graph);
+		void         SetGraphs      (vector<Graph*> graphs, float changeTime);
 		void         StopImageAnim  (bool isStop);
 		//Calcの機能.
 		void         FixPosInArea   (DBL_RECT rect);

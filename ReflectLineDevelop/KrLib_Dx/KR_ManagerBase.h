@@ -1,6 +1,6 @@
 /*
    - KR_ManagerBase.h - (DxLib)
-   ver.2026/04/27
+   ver.2026/10/09
 
    Managerの基底クラス。
 */
@@ -41,12 +41,13 @@ namespace KR
 	//▼ ===== 関数 ===== ▼.
 	public:
 		//コンストラクタ.
-		ManagerBase(int _order, MngAutoExe _mode = MngAutoExe::Active);
-		//デストラクタ(これがあると安全?)
+		ManagerBase(MngAutoExe _mode = MngAutoExe::Active);
+		//デストラクタ.
 		virtual ~ManagerBase() = default;
-		
+		//set.
+ 		void SetOrder(int _order) { order = _order; }
 		//get.
-		int GetOrder() const { return order; }
+		int  GetOrder() const { return order; }
 
 		//自動実行モード.
 		void       SetAutoExeMode(MngAutoExe _mode) { 

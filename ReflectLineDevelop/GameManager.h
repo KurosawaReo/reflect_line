@@ -33,7 +33,7 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	GameManager(int order) : ManagerBase(order) {}
+	GameManager(){}
 	//set.
 	void		SetLastInputDevice(InputDevice type) { lastInputDevice = type; }
 	//get.
@@ -64,6 +64,6 @@ public:
 	void WritePlayLog(bool isTutorial);
 
 	//使用禁止.
-	GameManager(const GameManager*) = delete;
-	GameManager* operator=(const GameManager*) = delete;
+	GameManager(const GameManager&) = delete;
+	GameManager& operator=(const GameManager&) = delete;
 };

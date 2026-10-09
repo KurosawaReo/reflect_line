@@ -6,10 +6,6 @@
 */
 #pragma once
 
-//再定義防止用(TODO:なぜかこれを外すと再定義エラーになる)
-#if !defined GLOBAL
-#define GLOBAL
-
 //====================================================================//
 //【設定】
 
@@ -18,8 +14,6 @@
 //Lキー: レベルタイマー加速.
 
 /* デバッグ用 */
-//#define DEBUG_OBJ_ACTIVE		//オブジェクト出現数表示.
-//#define DEBUG_SPAWN_RATE		//召喚間隔表示.
 //#define DEBUG_SHOW_FPS		//FPS表示.　
 //#define DEBUG_CONTR_INPUT		//コントローラ操作表示.
 
@@ -66,6 +60,9 @@
 #define BGM_VOLUME_TUTORIAL				(65)			//チュートリアルモードBGMの音量.
 
 #define MIDDLE_ANIM_TIME				(120)			//レベルアップアニメーション時間.
+
+//メニュー.
+#define MENU_OPTION_COUNT				(3)				//選択肢の数.
 
 //プレイヤー.
 #define PLAYER_SIZE						(18)			//プレイヤーサイズ(半径)
@@ -135,8 +132,8 @@
 
 #define METEOR_LINE_CNT_MIN				(5)				//最低n角形.
 #define METEOR_LINE_CNT_MAX				(16)			//最大n角形.
-#define METEOR_LINE_DIS_MIN				(30)			//頂点の最短距離.
-#define METEOR_LINE_DIS_MAX				(50)			//頂点の最大距離.
+#define METEOR_LINE_DIS_MIN				(30.0)			//頂点の最短距離.
+#define METEOR_LINE_DIS_MAX				(50.0)			//頂点の最大距離.
 
 //障害物: 波紋.
 #define RIPPLES_FLASH_MAX				(30)            //最大フラッシュエフェクト数.
@@ -172,19 +169,26 @@
 #define SCORE_ANIM_TIME					(50)			//スコアのアニメーション時間.
 
 //カラー.
-#define COLOR_MODE_NOR					(GetColor(50, 255, 255))		//通常モードのメインカラー.
-#define COLOR_MODE_REF					(GetColor(255, 0, 255))			//反射モードのメインカラー.
-#define COLOR_LASER_NORMAL(color)		(GetColor(50, color, 255))		//レーザー(通常)
-#define COLOR_LASER_REFLECT(color)		(GetColor(color/2+128, 0, 255)) //レーザー(反射)
+#define COLOR_MODE_NOR					(GetColor( 50, 255, 255))	//通常モードのメインカラー.
+#define COLOR_MODE_REF					(GetColor(255,   0, 255))	//反射モードのメインカラー.
 #define COLOR_PLY_REFLECT				(GetColor(255, 155, 255))
 #define COLOR_PLY_DEBUG					(GetColor(255, 150, 150))
-#define COLOR_PLY_AFT_NOR				(GetColor(105, 105, 105))		//プレイヤーの残像色(通常)
-#define COLOR_PLY_AFT_REF				(GetColor(255,   0, 255))		//プレイヤーの残像色(反射)
+#define COLOR_PLY_AFT_NOR				(GetColor(105, 105, 105))	//プレイヤーの残像色(通常)
+#define COLOR_PLY_AFT_REF				(GetColor(255,   0, 255))	//プレイヤーの残像色(反射)
 #define COLOR_ITEM						(GetColor(255, 155, 255))
-#define COLOR_PRE_EFFECT				(GetColor(128, 128, 128))		//予測演出.
-#define COLOR_METEOR(pos)				(GetColor(0, _int_r(100 + 155 * Calc::AnimWave(WaveType::CosLoop, pos.x/250)), 255)) //隕石.
+#define COLOR_PRE_EFFECT				(GetColor(128, 128, 128))	//予測演出.
 #define COLOR_BEST_SCORE				(0x20F7DE)
 #define COLOR_SCORE						(0x00FFA0)
 #define COLOR_TIME						(0x80FF9C)
 
-#endif
+//カラー計算.
+inline UINT ColorLaserNormal(int color) {
+	return GetColor(50, color, 255);
+}
+inline UINT ColorLaserReflect(int color) {
+	return GetColor(color / 2 + 128, 0, 255);
+}
+inline UINT ColorMeteor(const DBL_XY& pos) {
+	const double wave = Calc::AnimWave(WaveType::CosLoop, pos.x / 250);
+	return GetColor(0, _int_r(100 + 155 * wave), 255);
+}

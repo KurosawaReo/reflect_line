@@ -4,7 +4,14 @@
 #pragma once
 #include "BG1.h"
 #include "BG2.h"
-#include "BG3.h"
+//#include "BG3.h"
+
+//”wŒi‚Ìí—Ş.
+enum class BGType
+{
+	Tile,
+	Space3D,
+};
 
 //”wŒiƒNƒ‰ƒX.
 class BGManager final : public ManagerBase 
@@ -13,15 +20,17 @@ class BGManager final : public ManagerBase
 private:
 	vector<unique_ptr<BGBase>> bg; //”wŒiƒNƒ‰ƒX”z—ñ.
 
-	int useBgNo{}; //‰½”Ô–Ú‚Ì”wŒi‚ğg‚¤‚©.
+	BGType bgType{}; //‚Ç‚Ì”wŒi‚ğg‚¤‚©.
+
+	//‰æ‘œ.
+	Graph* grReflectModeFrame{};
 
 //¥ ===== ŠÖ” ===== ¥.
 public:
 	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^.
-	BGManager(int order) : ManagerBase(order) {}
-
+	BGManager(){}
 	//set.
-	void  SetBgNo(int _no) { useBgNo = _no; }
+	void  SetBgType(BGType type);
 
 	void  Init()   override;
 	void  Reset()  override;
@@ -33,6 +42,6 @@ public:
 	void  PauseEnd();
 
 	//g—p‹Ö~.
-	BGManager(const BGManager*) = delete;
-	BGManager* operator=(const BGManager*) = delete;
+	BGManager(const BGManager&) = delete;
+	BGManager& operator=(const BGManager&) = delete;
 };

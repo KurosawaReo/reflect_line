@@ -11,16 +11,19 @@ static GameData* gameData;
 
 const DBL_XY SIZE_RATE = { 0.4, 0.4 }; //タイルのサイズ倍率.
 
-// ▼*---=[ BG_Tile ]=---*▼ //
+// ▼*---=[ BG1_Tile ]=---*▼ //
 
 //初期化.
-void BG_Tile::Init() {
+void BG1_Tile::Init() {
 	//参照取得.
 	gameData = ManagerInsts::Get<GameData>();
+	//画像取得.
+	grBgTileNor = GraphMng::Get(_T("BG_Tile_nor"));
+	grBgTileRef = GraphMng::Get(_T("BG_Tile_ref"));
 }
 
 //リセット.
-void BG_Tile::Reset() {
+void BG1_Tile::Reset() {
 	counter = 0;
 	shine   = 0;
 	sinNum  = 0;
@@ -28,7 +31,7 @@ void BG_Tile::Reset() {
 }
 
 //更新.
-void BG_Tile::Update() {
+void BG1_Tile::Update() {
 
 	counter += gameData->speedRate; //タイマー加算.
 
@@ -43,31 +46,31 @@ void BG_Tile::Update() {
 }
 
 //描画(通常時)
-void BG_Tile::DrawNor(double modeAlpha) {
+void BG1_Tile::DrawNor(double modeAlpha) {
 
 	//タイル画像描画.
 	DrawMode::Exe(
 		DrawModeID::None, DrawBlendModeID::Alpha, _int(shine * sinNum * modeAlpha),
 		[&]() {
-			GraphMng::Get(_T("bg_tile_nor"))->DrawExtend(pos.ToDbl(), SIZE_RATE, Anchor::Mid);
+			grBgTileNor->DrawExtend(pos.ToDbl(), SIZE_RATE, Anchor::Mid);
 		}
 	);
 }
 
 //描画(反射モード)
-void BG_Tile::DrawRef(double modeAlpha) {
+void BG1_Tile::DrawRef(double modeAlpha) {
 
 	//タイル画像描画.
 	DrawMode::Exe(
 		DrawModeID::None, DrawBlendModeID::Alpha, _int(shine * sinNum * modeAlpha),
 		[&]() {
-			GraphMng::Get(_T("bg_tile_ref"))->DrawExtend(pos.ToDbl(), SIZE_RATE, Anchor::Mid);
+			grBgTileRef->DrawExtend(pos.ToDbl(), SIZE_RATE, Anchor::Mid);
 		}
 	);
 }
 
 //発光.
-void BG_Tile::Shine() {
+void BG1_Tile::Shine() {
 	//発光してないなら.
 	if (shineTimer.GetState() != TimerState::Active){
 		shineTimer.Start(); //開始.
@@ -79,14 +82,14 @@ void BG_Tile::Shine() {
 //初期化.
 void BG1::Init() {
 
-	INT_XY imgSize = GraphMng::Get(_T("bg_tile_nor"))->GetSize();  //画像サイズ取得.
+	INT_XY imgSize = GraphMng::Get(_T("BG_Tile_nor"))->GetSize();  //画像サイズ取得.
 	INT_XY size = { _int_r(imgSize.x * SIZE_RATE.x), _int_r(imgSize.y * SIZE_RATE.y) };
 
 	//タイルのように貼り付ける.
 	for (int x = 0; x < WINDOW_WID + size.x; x += size.x) {
 		for (int y = -size.y; y < WINDOW_HEI; y += size.y) {
 
-			BG_Tile tile; //タイルを作成.
+			BG1_Tile tile; //タイルを作成.
 
 			tile.pos.x = x;
 			tile.pos.y = y;

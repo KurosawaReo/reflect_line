@@ -53,6 +53,9 @@ void TutorialStage::Init() {
 	soundMng	 = ManagerInsts::Get<SoundMng>();
 	sceneMng	 = ManagerInsts::Get<SceneMng>();
 	timerMng	 = ManagerInsts::Get<TimerMng>();
+	//画像・動画取得.
+	grReflectModeDeath = GraphMng::Get(_T("reflect_mode_death"));
+	grDashReflect      = GraphMng::Get(_T("dash_reflect"));
 
 	//タイマー
 	startTimer = Timer(TimerMode::CountUp, 0);
@@ -90,7 +93,7 @@ void TutorialStage::Update() {
 		endTimer.GetState() != TimerState::Active
 	){
 		//終了条件を満たしていれば.
-		if (IsEnd(stepNo, stepInnerNo)) {
+		if (IsEnd()) {
 
 			endTimer.Start();
 
@@ -351,9 +354,10 @@ void TutorialStage::UpdateStep3() {
 
 				//動画用.
 				timerMng->ReservExe(
-					1.0f, []() {
+					1.0f, 
+					[&]() {
 						//動画.
-						GraphMng::Get(_T("reflect_mode_death"))->PlayMovie(PlayTypeID::Loop);
+						grReflectModeDeath->PlayMovie(PlayTypeID::Loop);
 						//ゲーム速度.
 						gameData->speedRate = 0.1f;
 						//無敵にする.
@@ -375,11 +379,12 @@ void TutorialStage::UpdateStep3() {
 			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
 
 				//動画.
-				GraphMng::Get(_T("reflect_mode_death"))->StopMovie();
+				grReflectModeDeath->StopMovie();
 
 				timerMng->ReservExe(
-					1.0f, []() {
-						GraphMng::Get(_T("dash_reflect"))->PlayMovie(PlayTypeID::Loop);
+					1.0f, 
+					[&]() {
+						grDashReflect->PlayMovie(PlayTypeID::Loop);
 					}
 				);
 
@@ -411,7 +416,7 @@ void TutorialStage::UpdateStep3() {
 				uiMng->SetIsShowScore(true);
 
 				//動画用.
-				GraphMng::Get(_T("dash_reflect"))->StopMovie();
+				grDashReflect->StopMovie();
 				gameData->speedRate = 1.0f;  //ゲーム速度.
 				player->SetIsNoDeath(false); //無敵解除.
 
@@ -616,10 +621,10 @@ void TutorialStage::DrawStep3() {
 				[&]() {
 					//座標 & サイズ.
 					const DBL_XY pos  = App::GetWindowRect().GetMid().ToDbl() + DBL_XY(0, 100);
-					const DBL_XY size = GraphMng::Get(_T("reflect_mode_death"))->GetSize().ToDbl();
+					const DBL_XY size = grReflectModeDeath->GetSize().ToDbl();
 
 					//動画.
-					GraphMng::Get(_T("reflect_mode_death"))->Draw(pos);
+					grReflectModeDeath->Draw(pos);
 					//枠線.
 					GradLine gradLine;
 					gradLine.AddPoint(pos + DBL_XY(-size.x/2, -size.y/2), {0, 255, 255, _int_r(255 * drawAlpha)});
@@ -653,10 +658,10 @@ void TutorialStage::DrawStep3() {
 				[&]() {
 					//座標 & サイズ.
 					const DBL_XY pos = App::GetWindowRect().GetMid().ToDbl() + DBL_XY(0, 100);
-					const DBL_XY size = GraphMng::Get(_T("dash_reflect"))->GetSize().ToDbl();
+					const DBL_XY size = grDashReflect->GetSize().ToDbl();
 
 					//動画.
-					GraphMng::Get(_T("dash_reflect"))->Draw(pos);
+					grDashReflect->Draw(pos);
 					//枠線.
 					GradLine gradLine;
 					gradLine.AddPoint(pos + DBL_XY(-size.x / 2, -size.y / 2), { 0, 255, 255, _int_r(255 * drawAlpha) });
@@ -726,7 +731,9 @@ void TutorialStage::DrawTopText(int line, double alpha, MY_STRING text) {
 	}
 
 	//フォント.
-	const int useFont = (line == 1) ? gameData->fonts["jp-size3"].GetFont() : gameData->fonts["jp-size2"].GetFont();
+	const int useFont = (line == 1) ? 
+		gameData->fonts.at("jp-size3").GetFont() : 
+		gameData->fonts.at("jp-size2").GetFont();
 
 	{
 		const int margin = 24;
@@ -770,7 +777,7 @@ void TutorialStage::DrawTopText(int line, double alpha, MY_STRING text) {
 }
 
 //このステップを終了するか判定.
-bool TutorialStage::IsEnd(int stepNo, int stepInnerNo) {
+bool TutorialStage::IsEnd() {
 
 	bool ret = false; //終了条件を満たしたか.
 

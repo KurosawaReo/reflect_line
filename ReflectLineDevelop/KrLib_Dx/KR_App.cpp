@@ -8,6 +8,7 @@
 #include "KR_Debug.h"
 #include "KR_ManagerBase.h"
 #include "KR_ManagerInsts.h"
+#include "KR_TimerMng.h"
 
 //KrLib名前空間.
 namespace KR 
@@ -128,6 +129,8 @@ namespace KR
 		for (const auto& i : ManagerInsts::GetAll()) {
 			i->Reset();
 		}
+		//予約実行を全て中断.
+		ManagerInsts::Get<TimerMng>()->ReservCancelAll();
 	}
 	//ゲームを終了する.
 	void App::Quit() {

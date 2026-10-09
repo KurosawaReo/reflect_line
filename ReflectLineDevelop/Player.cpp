@@ -49,6 +49,12 @@ void Player::Init()
 	tutorialStg = ManagerInsts::Get<TutorialStage>();
 	soundMng    = ManagerInsts::Get<SoundMng>();
 	inputMng    = ManagerInsts::Get<InputMng>();
+	//画像取得.
+	grPlayerRefBarrier = GraphMng::Get(_T("player_ref_barrier"));
+	grPlayerRefLight   = GraphMng::Get(_T("player_ref_light"));
+	grPlayerRef        = GraphMng::Get(_T("player_ref"));
+	grPlayerNorLight   = GraphMng::Get(_T("player_nor_light"));
+	grPlayerNor        = GraphMng::Get(_T("player_nor"));
 
 	isDebug = false;
 }
@@ -114,7 +120,7 @@ void Player::Draw()
 	//無敵モード表示.
 	if (isDebug) {
 		DrawStr str(_T("[Debug] 無敵モード"), {WINDOW_WID/2, WINDOW_HEI/2+300}, COLOR_PLY_DEBUG);
-		str.Draw(Anchor::Mid, gameData->fonts["jp-size3"].GetFont());
+		str.Draw(Anchor::Mid, gameData->fonts.at("jp-size3").GetFont());
 	}
 #endif
 
@@ -335,27 +341,27 @@ void Player::DrawPlayer() {
 	const double alpha2 = Calc::AnimWave(WaveType::CosLoop, gameMng->GetGameScene()->GetReflectModeTime() * 2);
 
 	//使用する画像名.
-	MY_STRING imgDash   = _T("null");
-	MY_STRING imgPlayer = _T("null");
+	Graph* grDash   = nullptr;
+	Graph* grPlayer = nullptr;
 
 	if (mode == PlayerMode::ItemReflect ||
 		mode == PlayerMode::ItemReflectSuper
 	){
 		//ダッシュ演出.
 		if (isDashing) {
-			imgDash = _T("light_ref_player");
+			grDash = grPlayerRefLight;
 		}
 		//プレイヤー本体.
-		imgPlayer = _T("player_ref");
+		grPlayer = grPlayerRef;
 	}
 	else 
 	{
 		//ダッシュ演出.
 		if (isDashing) {
-			imgDash = _T("light_nor_player");
+			grDash = grPlayerNorLight;
 		}
 		//プレイヤー本体.
-		imgPlayer = _T("player_nor");
+		grPlayer = grPlayerNor;
 	}
 
 	//ダッシュ時.
@@ -364,7 +370,7 @@ void Player::DrawPlayer() {
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha),
 			[&]() {
-				GraphMng::Get(imgDash)->DrawExtend(
+				grDash->DrawExtend(
 					hit.pos, { PLAYER_LIGHT_DRAW_SIZE, PLAYER_LIGHT_DRAW_SIZE }, Anchor::Mid, true, true
 				);
 			}
@@ -372,37 +378,29 @@ void Player::DrawPlayer() {
 	}
 
 	//反射モード時.
-	if (mode == PlayerMode::ItemReflect ||
+	if (mode == PlayerMode::ItemReflect      ||
 		mode == PlayerMode::ItemReflectSuper
 	){
 		//反射バリア.
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(80 + 128 * alpha2),
 			[&]() {
-				GraphMng::Get(_T("player_ref_barrier"))->DrawExtend(
+				grPlayerRefBarrier->DrawExtend(
 					hit.pos, { PLAYER_DRAW_SIZE, PLAYER_DRAW_SIZE }, Anchor::Mid, true, true
 				);
 			}
 		);
 	}
-	else {
-		//TODO: ダッシュ反射の継続時間が分かる演出をどうするか?
-		/*
-		//ダッシュ反射円.
-		Circle cir = { hit.pos, _flt(40 * alpha), COLOR_MODE_REF, 1 };
-		DrawCircleKR(cir, Anchor::Mid, false, true);
-		*/
-	}
 
 	//プレイヤー本体.
-	GraphMng::Get(imgPlayer)->DrawRota(
+	grPlayer->DrawRota(
 		hit.pos, PLAYER_DRAW_SIZE, imgRot, { 0, 0 }, true, true
 	);
 
 	//チュートリアル用.
 	if (gameData->stage == StageType::Tutorial) {
 		DrawStr str(_T("プレイヤー"), hit.pos.ToInt() + INT_XY(0, -40), 0xFFFFFF);
-		str.Draw(Anchor::Mid, gameData->fonts["jp-size1"].GetFont());
+		str.Draw(Anchor::Mid, gameData->fonts.at("jp-size1").GetFont());
 	}
 }
 
@@ -498,7 +496,7 @@ void Player::SpawnEffectSpark()
 	//何個出すか.
 	const int sparkNum = 4;
 
-	const double baseAng = Calc::FacingAng({ 0,0 }, lastInputVec);
+	const double baseAng = Calc::FacingAng({0, 0}, lastInputVec);
 
 	for (int s = 0; s < sparkNum; s++)
 	{
@@ -507,10 +505,6 @@ void Player::SpawnEffectSpark()
 		//速度抽選.
 		const double speed = Calc::RandNum(4.0, 15.0);
 
-		//サウンド.
-		if (auto i = soundMng->Get(_T("PlayerParry"))) {
-			i->Play(false, 50);
-		}
 		//エフェクト.
 		EffectData data{};
 		data.type  = EffectType::PlayerDashReflect;
@@ -519,5 +513,10 @@ void Player::SpawnEffectSpark()
 		data.speed = _flt(speed);
 		data.ang   = _flt(ang);
 		effectMng->SpawnEffect(&data);
+	}
+
+	//サウンド.
+	if (auto i = soundMng->Get(_T("PlayerParry"))) {
+		i->Play(false, 75);
 	}
 }

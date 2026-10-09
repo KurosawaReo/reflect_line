@@ -1,6 +1,6 @@
 /*
    - KR_Input.h - (DxLib)
-   ver.2026/09/14
+   ver.2026/10/09
 
    入力操作機能。
    (オブジェクト指向ver → KR_Object)
@@ -187,7 +187,7 @@ namespace KR
 
 	public:
 		//コンストラクタ.
-		InputMng(int order) : ManagerBase(order) {}
+		InputMng(){}
 
 		//操作判定.
 		bool   IsPushKey       (KeyID id);

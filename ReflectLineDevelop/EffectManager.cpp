@@ -14,7 +14,12 @@ using namespace Calc; //計算機能を使用.
 // ▼*---=[ EffectManager ]=---*▼ //
 
 void EffectManager::Init() {
+	//参照取得.
 	gameData = ManagerInsts::Get<GameData>();
+	//画像取得.
+	grScore100      = GraphMng::Get(_T("score100"));
+	grScore500      = GraphMng::Get(_T("score500"));
+	grReflectEffect = GraphMng::Get(_T("reflect_effect"));
 }
 
 void EffectManager::Reset() {
@@ -78,8 +83,8 @@ void EffectManager::Update() {
 				//減速.
 				float newSpeed = i->speed / (1 + (i->counter / 5));
 				//移動.
-				i->pos.x += i->vec.x * newSpeed * gameData->spawnRate;
-				i->pos.y += i->vec.y * newSpeed * gameData->spawnRate;
+				i->pos.x += i->vec.x * newSpeed * gameData->speedRate;
+				i->pos.y += i->vec.y * newSpeed * gameData->speedRate;
 
 				//時間経過で消滅.
 				if (i->counter >= PLAYER_DASH_SPARK_ANIM_TIME) {
@@ -152,11 +157,6 @@ void EffectManager::Update() {
 
 void EffectManager::Draw() {
 
-#if defined DEBUG_OBJ_ACTIVE
-	//デバッグ表示.
-	DrawFormatString(0, 80, 0xFF00FF, _T("エフェクト　　 : %d"), effect.size());
-#endif
-
 	//全てのエフェクト.
 	for (const auto& i : effect) {
 
@@ -179,10 +179,10 @@ void EffectManager::Draw() {
 					[&]() {
 						//画像切り替え.
 						if (i.type == EffectType::Score100) {
-							GraphMng::Get(_T("score100"))->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
+							grScore100->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
 						}
 						else {
-							GraphMng::Get(_T("score500"))->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
+							grScore500->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
 						}
 					}
 				);
@@ -241,7 +241,7 @@ void EffectManager::Draw() {
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 					[&]() {
-						GraphMng::Get(_T("reflect_effect"))->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
+						grReflectEffect->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
 					}
 				);
 			}
@@ -252,7 +252,7 @@ void EffectManager::Draw() {
 				//透明度.
 				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/METEOR_BREAK_ANIM_TIME));
 
-				Circle cir = { i.pos, i.counter, COLOR_METEOR(i.pos), 1.0f };
+				Circle cir = { i.pos, i.counter, ColorMeteor(i.pos), 1.0f };
 				//描画.
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
@@ -272,7 +272,7 @@ void EffectManager::Draw() {
 				Line line{};
 				line.stPos = ArcPos(i.pos, i.ang,     i.len);
 				line.edPos = ArcPos(i.pos, i.ang+180, i.len);
-			    line.color = COLOR_METEOR(i.pos);
+			    line.color = ColorMeteor(i.pos);
 				line.thick = 1;
 
 				//描画.
@@ -370,7 +370,7 @@ void EffectManager::Draw() {
 						//円.
 						mainCir.Draw(Anchor::Mid, false, true);
 						//テキスト.					
-						str.Draw(Anchor::Mid, gameData->fonts["en-size3"].GetFont());
+						str.Draw(Anchor::Mid, gameData->fonts.at("en-size3").GetFont());
 
 						//ランプ(必要な数だけ)
 						for (int j = 0; j < lampUseCnt; j++) {
@@ -391,5 +391,5 @@ void EffectManager::Draw() {
 
 //エフェクト出現.
 void EffectManager::SpawnEffect(const EffectData* data) {
-	effect.push_back(*data); //listに追加.
+	effect.push_back(*data); //配列に追加.
 }

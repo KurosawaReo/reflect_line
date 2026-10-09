@@ -96,9 +96,9 @@ namespace KR
 			//最近傍点の計算.
 			if (nearestPos) {
 				//線の始点から最近傍点までの距離を求める.
-				double dist = Calc::DotProduct(v3, v1.Normalize());
+				double distNear = Calc::DotProduct(v3, v1.Normalize());
 				//最近傍点の座標を求める.
-				*nearestPos = line.stPos + v1.Normalize() * dist;
+				*nearestPos = line.stPos + v1.Normalize() * distNear;
 			}
 
 			//当たり判定.

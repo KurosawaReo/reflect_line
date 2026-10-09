@@ -62,9 +62,9 @@ void GameManager::Init() {
 		GraphMng::LoadImg(_T("player_reflect_barrier.png"),	_T("player_ref_barrier"));
 		GraphMng::LoadImg(_T("item.png"),					_T("item"));
 		GraphMng::LoadImg(_T("item_super.png"),				_T("item_super"));
-		GraphMng::LoadImg(_T("light_color_ref.png"),		_T("light_super_item"));
-		GraphMng::LoadImg(_T("light_color_nor.png"),		_T("light_nor_player"));
-		GraphMng::LoadImg(_T("light_color_ref.png"),		_T("light_ref_player"));
+		GraphMng::LoadImg(_T("light_color_ref.png"),		_T("item_super_light"));
+		GraphMng::LoadImg(_T("light_color_nor.png"),		_T("player_nor_light"));
+		GraphMng::LoadImg(_T("light_color_ref.png"),		_T("player_ref_light"));
 		GraphMng::LoadImg(_T("reflect_mode_frame.png"),		_T("reflect_mode_frame"));
 		GraphMng::LoadImg(_T("ui_back_level.png"),			_T("ui_back_level"));
 		GraphMng::LoadImg(_T("ui_back_best_score.png"),		_T("ui_back_best_score"));
@@ -73,8 +73,8 @@ void GameManager::Init() {
 		GraphMng::LoadImg(_T("score100.png"),				_T("score100"));
 		GraphMng::LoadImg(_T("score500.png"),				_T("score500"));
 		GraphMng::LoadImg(_T("target.png"),					_T("target"));
-		GraphMng::LoadImg(_T("bg_tile_nor.png"),			_T("bg_tile_nor"));
-		GraphMng::LoadImg(_T("bg_tile_ref.png"),			_T("bg_tile_ref"));
+		GraphMng::LoadImg(_T("BG_Tile_nor.png"),			_T("BG_Tile_nor"));
+		GraphMng::LoadImg(_T("BG_Tile_ref.png"),			_T("BG_Tile_ref"));
 		GraphMng::LoadImg(_T("bg_star_nor.png"),			_T("bg_star_nor"));
 		GraphMng::LoadImg(_T("bg_star_ref.png"),			_T("bg_star_ref"));
 		GraphMng::LoadImg(_T("reflect_effect.png"),			_T("reflect_effect"));
@@ -243,6 +243,7 @@ void GameManager::Update() {
 			}
 		}
 	}
+
 	//特定の操作でゲーム終了
 	if (inputMng->IsPushActionTime(_T("GameQuit")) >= FPS * 1) {
 		App::Quit(); //ボタン長押しで終了.
@@ -278,8 +279,8 @@ void GameManager::GamePause() {
 	bg->Pause();       //背景のポーズ.
 	gameScene.Pause(); //ゲームシーンのポーズ.
 
-	sceneMng->SetAutoExeMode(MngAutoExe::DrawOnly); //シーン      : 描画のみ.
-	DrawOnlyObjects();                              //オブジェクト: 描画のみ.
+	sceneMng->SetAutoExeMode(MngAutoExe::DrawOnly); //シーン　　　 : 描画のみ.
+	DrawOnlyObjects();                              //オブジェクト : 描画のみ.
 }
 
 //ポーズ解除.
@@ -290,14 +291,14 @@ void GameManager::GamePauseEnd() {
 	bg->PauseEnd();       //背景のポーズ解除.
 	gameScene.PauseEnd(); //ゲームシーンのポーズ解除.
 
-	sceneMng->SetAutoExeMode(MngAutoExe::Active);   //シーン      : 稼働.
-	RestartObjects();                               //オブジェクト: 稼働.
+	sceneMng->SetAutoExeMode(MngAutoExe::Active);   //シーン　　　 : 稼働.
+	RestartObjects();                               //オブジェクト : 稼働.
 }
 //ポーズ画面.
 void GameManager::DrawPause() {
 
 	DrawStr str(_T("PAUSE"), App::GetWindowRect().GetMid(), 0xffffff);
-	str.Draw(Anchor::Mid, gameData->fonts["en-size5"].GetFont());
+	str.Draw(Anchor::Mid, gameData->fonts.at("en-size5").GetFont());
 }
 
 //ゲーム終了(死亡)

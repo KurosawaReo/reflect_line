@@ -12,12 +12,18 @@
 //終了シーン.
 class EndScene final : public IScene
 {
+//▼ ===== 変数 ===== ▼.
 private:
 	Timer timer;              //シーンの経過時間.
 
 	bool  isBestScore{};      //ベストスコア更新したか.
 	bool  isBestScoreSound{}; //音を鳴らしたか.
 
+	//画像.
+	Graph* grGameover{};
+	Graph* grNewRecord{};
+
+//▼ ===== 関数 ===== ▼.
 public:
 	//sign
 	void SignBestScore() { isBestScore = true; }

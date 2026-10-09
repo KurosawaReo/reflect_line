@@ -1,6 +1,6 @@
 /*
    - KR_Format.h - (C++)
-   ver.2026/04/27
+   ver.2026/10/09
 
    文字列のフォーマット機能。
 */
@@ -17,6 +17,6 @@ namespace KR
 	namespace Format
 	{
 		//フォーマット(文字列に変数を挿入する)
-		MY_STRING StrFormat(MY_STRING text, ...);
+		MY_STRING StrFormat(const TCHAR* text, ...);
 	}
 }

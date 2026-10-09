@@ -8,11 +8,12 @@ class EndlessStage final : public ManagerBase
 {
 //▼ ===== 変数 ===== ▼.
 private:
+	bool isStarted{}; //最初の1フレーム処理用.
 	
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	EndlessStage(int order) : ManagerBase(order) {}
+	EndlessStage(){}
 
 	void Init()   override;
 	void Reset()  override;

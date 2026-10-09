@@ -29,28 +29,30 @@ int WINAPI WinMain(
 ){
 #endif
 
-	//Managerクラス実体生成.
-	//引数で実行順(order値)を入力する.
-	ManagerInsts::NewManager<InputMng>(0);
-	ManagerInsts::NewManager<SoundMng>(1);
-	ManagerInsts::NewManager<TimerMng>(2);
+	/*
+	   [管理クラス生成]
+	   生成した順にInitやUpdateなどが自動で実行される.
+	*/
+	ManagerInsts::NewManager<InputMng>();
+	ManagerInsts::NewManager<SoundMng>();
+	ManagerInsts::NewManager<TimerMng>();
 
 	ManagerInsts::NewManager<GameData>();
-	ManagerInsts::NewManager<GameManager>(3);	//リソース読み込みをしてるため最初に.
-	ManagerInsts::NewManager<BGManager>(4);		//背景.
-	ManagerInsts::NewManager<EffectManager>(5);
-	ManagerInsts::NewManager<ItemManager>(6);
-	ManagerInsts::NewManager<LaserManager>(7);
-	ManagerInsts::NewManager<Fireworks>(8);
-	ManagerInsts::NewManager<MeteorManager>(9);
-	ManagerInsts::NewManager<NormalLaser>(10);
-	ManagerInsts::NewManager<Ripples>(11);
-	ManagerInsts::NewManager<StraightLaser>(12);
-	ManagerInsts::NewManager<Player>(13);
-	ManagerInsts::NewManager<EndlessStage>(14);
-	ManagerInsts::NewManager<TutorialStage>(15);
-	ManagerInsts::NewManager<SceneMng>(16);		//シーンクラス.
-	ManagerInsts::NewManager<UIManager>(17);
+	ManagerInsts::NewManager<GameManager>();	//リソース読み込みをしてるため最初に.
+	ManagerInsts::NewManager<BGManager>();		//背景.
+	ManagerInsts::NewManager<EffectManager>();
+	ManagerInsts::NewManager<ItemManager>();
+	ManagerInsts::NewManager<LaserManager>();
+	ManagerInsts::NewManager<Fireworks>();
+	ManagerInsts::NewManager<MeteorManager>();
+	ManagerInsts::NewManager<NormalLaser>();
+	ManagerInsts::NewManager<Ripples>();
+	ManagerInsts::NewManager<StraightLaser>();
+	ManagerInsts::NewManager<Player>();
+	ManagerInsts::NewManager<EndlessStage>();
+	ManagerInsts::NewManager<TutorialStage>();
+	ManagerInsts::NewManager<SceneMng>();		//シーンクラス.
+	ManagerInsts::NewManager<UIManager>();
 
 	//初期化処理.
 	App::InitDx(WINDOW_WID, WINDOW_HEI, IS_WINDOW_MODE, FPS, false);

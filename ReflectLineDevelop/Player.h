@@ -37,6 +37,8 @@ private:
 	DBL_XY			lastInputVec{};			//最後の入力方向.
 	bool			active{};				//有効か.
 
+	double			imgRot{};				//プレイヤーの画像角度.
+
 	float			dashEndEffectTimer{};	//エフェクト残り時間.
 
 	bool			isDashing{};			//ダッシュ中かどうか.
@@ -54,13 +56,16 @@ private:
 	float			dashCooldown{};			//ダッシュのクールダウン.
 
 	//画像.
-	double			imgRot{};				//プレイヤーの画像角度.
-
+	Graph* grPlayerRefBarrier{};
+	Graph* grPlayerRefLight{};
+	Graph* grPlayerRef{};
+	Graph* grPlayerNorLight{};
+	Graph* grPlayerNor{};
 
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	Player(int order) : ManagerBase(order) {}
+	Player(){}
 
 	//set.
 	void       SetPos            (DBL_XY     _pos ) { hit.pos         = _pos;  }
@@ -99,6 +104,6 @@ public:
 	void SpawnEffectSpark(); //ダッシュ反射エフェクト生成.
 
 	//使用禁止.
-	Player(const Player*) = delete;
-	Player* operator=(const Player*) = delete;
+	Player(const Player&) = delete;
+	Player& operator=(const Player&) = delete;
 };

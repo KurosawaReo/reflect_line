@@ -16,6 +16,11 @@ static SoundMng*    soundMng;
 static InputMng*    inputMng;
 static SceneMng*    sceneMng;
 
+//再生する動画を取得.
+Graph* MenuScene::GetPlayMovie() {
+	return grMenuMovie[cursorIdx];
+}
+
 //初期化.
 void MenuScene::Init() {
 
@@ -26,6 +31,11 @@ void MenuScene::Init() {
 	soundMng = ManagerInsts::Get<SoundMng>();
 	inputMng = ManagerInsts::Get<InputMng>();
 	sceneMng = ManagerInsts::Get<SceneMng>();
+	
+	//動画取得.
+	for (int i = 0; i < MENU_OPTION_COUNT; i++) {
+		grMenuMovie[i] = GraphMng::Get(_T("menu_movie") + NumToString(i+1));
+	}
 
 	Reset();
 }
@@ -39,7 +49,9 @@ void MenuScene::Reset() {
 //入った瞬間.
 void MenuScene::Enter() {
 	//動画再生.
-	GraphMng::Get(GetPlayMovieName())->PlayMovie(PlayTypeID::Loop, true);
+	if (auto i = GetPlayMovie()) {
+		i->PlayMovie(PlayTypeID::Loop, true);
+	}
 }
 
 //抜けた瞬間.
@@ -52,11 +64,11 @@ void MenuScene::Update() {
 
 	//カーソル移動操作.
 	if (inputMng->IsPushActionTime(_T("MenuUp")) % 20 == 1) {
-		cursorIdx = (cursorIdx + 3 - 1) % 3; //-1して、3の余り(0～2)をループ.
+		cursorIdx = (cursorIdx + MENU_OPTION_COUNT - 1) % MENU_OPTION_COUNT; //-1して、MENU_OPTION_COUNTの余りをループ.
 		OnCursorMove();
 	}
 	if (inputMng->IsPushActionTime(_T("MenuDown")) % 20 == 1) { //長押しにも対応.
-		cursorIdx = (cursorIdx + 1) % 3;     //+1して、3の余り(0～2)をループ.
+		cursorIdx = (cursorIdx + 1) % MENU_OPTION_COUNT;                     //+1して、MENU_OPTION_COUNTの余りをループ.
 		OnCursorMove();
 	}
 	//点滅終了.
@@ -69,13 +81,13 @@ void MenuScene::Update() {
 
 		switch (cursorIdx)
 		{
+			//エンドレスモードへ.
 			case 0:
 			{
-				//耐久モードへ.
 				sceneMng->SetScene(_T("Game"));
 				gameData->stage = StageType::Endless;
 				//背景変更.
-				bgMng->SetBgNo(3);
+				bgMng->SetBgType(BGType::Space3D);
 
 #if !defined BGM_NONE
 
@@ -91,13 +103,13 @@ void MenuScene::Update() {
 			}
 			break;
 
+			//チュートリアルへ.
 			case 1:
 			{
-				//チュートリアルへ.
 				sceneMng->SetScene(_T("Game"));
 				gameData->stage = StageType::Tutorial;
 				//背景変更.
-				bgMng->SetBgNo(1);
+				bgMng->SetBgType(BGType::Tile);
 				//プレイログに記録.
 				gameMng->WritePlayLog(true);
 
@@ -118,7 +130,7 @@ void MenuScene::Update() {
 			}
 			break;
 
-			default: assert(FALSE); break;
+			default: assert(false); break;
 		}
 
 		//サウンド.
@@ -197,7 +209,7 @@ void MenuScene::Draw() {
 
 		//テキスト描画.
 		DrawStr str(_T("モード選択"), basePos.ToInt() + offset, 0x00FFFF);
-		str.Draw(Anchor::Mid, gameData->fonts["jp-size4"].GetFont());
+		str.Draw(Anchor::Mid, gameData->fonts.at("jp-size4").GetFont());
 	}
 
 	//▼各選択肢.
@@ -242,7 +254,7 @@ void MenuScene::Draw() {
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 				[&]() {
-					str.Draw(Anchor::Mid, gameData->fonts["jp-size4"].GetFont());
+					str.Draw(Anchor::Mid, gameData->fonts.at("jp-size4").GetFont());
 				}
 			);
 
@@ -281,7 +293,7 @@ void MenuScene::Draw() {
 		const int    margin = 10;  //枠を画像よりどれだけ大きくするか.
 	
 		//画像を取得できたら.
-		if (auto i = GraphMng::Get(GetPlayMovieName())) {
+		if (auto i = GetPlayMovie()) {
 
 			//画像描画.
 			DrawMode::Exe(
@@ -306,13 +318,7 @@ void MenuScene::Draw() {
 
 	//▼選択項目から画像、説明文エリアまでの線を描画
 	{
-		int imgLeftX   = (int)(mLayout.imgPos.x - imgSize.x/2); //画像の左端座標.
-		int imgCenterY = (int) mLayout.imgPos.y;
 		int imgBottomY = (int)(mLayout.imgPos.y + imgSize.y/2); //画像の下端座標.
-
-		// 説明文エリアの上端中央座標
-		int textBoxCenterX = textBoxX + textBoxWidth / 2;
-		int textBoxTopY = textBoxY;
 
 		//線の透明度(155～255)
 		const int alpha = _int_r(155 + 100 * (anim2 + 1.0) / 2.0);
@@ -340,9 +346,9 @@ void MenuScene::Draw() {
 				//2.画像から説明文エリアへの線（画像下端から説明文上端まで）
 				{
 					Line line = {
-						DBL_XY(mLayout.imgPos.x-30, imgBottomY),  //始点.
-						DBL_XY(mLayout.imgPos.x-30, textBoxTopY), //終点.
-						mColor.line,							  //色.
+						DBL_XY(mLayout.imgPos.x-30, imgBottomY),	//始点.
+						DBL_XY(mLayout.imgPos.x-30, textBoxY),		//終点.
+						mColor.line,								//色.
 						3.0f
 					};
 					//線1.
@@ -368,7 +374,7 @@ void MenuScene::Draw() {
 		box.Draw(Anchor::LU, false);
 
 		DrawStr str2(_T("操作"), { infoX + 10, infoY - 10 }, 0x00FFFF);
-		str2.Draw(Anchor::LD, gameData->fonts["jp-size2"].GetFont());
+		str2.Draw(Anchor::LD, gameData->fonts.at("jp-size2").GetFont());
 
 		//テキスト.
 		DrawStr str = { _T(""), INT_XY(infoX, infoY) + mLayout.loreInner, mColor.normal };
@@ -401,7 +407,7 @@ void MenuScene::Draw() {
 		//1行ずつ表示.
 		for (auto& i : texts) {
 			str.text = i;
-			str.Draw(Anchor::LU, gameData->fonts["jp-size2"].GetFont());
+			str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
 			str.pos.y += mLayout.loreLineSpace; //次の行へ.
 		}
 	}
@@ -409,7 +415,7 @@ void MenuScene::Draw() {
 	//▼モード説明タイトル（説明文枠の上に表示）
 	{
 		DrawStr str2(_T("モード説明"), { textBoxX+10, textBoxY-10 }, 0x00FFFF);
-		str2.Draw(Anchor::LD, gameData->fonts["jp-size2"].GetFont());
+		str2.Draw(Anchor::LD, gameData->fonts.at("jp-size2").GetFont());
 
 		// 説明文枠の枠線（水色）	
 		Box box = { DBL_XY(textBoxX, textBoxY), DBL_XY(textBoxWidth, textBoxHeight), mColor.frame, 1.0f };
@@ -434,7 +440,7 @@ void MenuScene::Draw() {
 				//1行ずつ表示.
 				for (auto& i : texts) {
 					str.text = i;
-					str.Draw(Anchor::LU, gameData->fonts["jp-size2"].GetFont());
+					str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
 					str.pos.y += mLayout.loreLineSpace; //次の行へ.
 				}
 			}
@@ -454,7 +460,7 @@ void MenuScene::Draw() {
 				//1行ずつ表示.
 				for (auto& i : texts) {
 					str.text = i;
-					str.Draw(Anchor::LU, gameData->fonts["jp-size2"].GetFont());
+					str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
 					str.pos.y += mLayout.loreLineSpace; //次の行へ.
 				}
 			}
@@ -462,15 +468,10 @@ void MenuScene::Draw() {
 
 		case 2:
 			str.text = _T("タイトル画面に戻ります。");
-			str.Draw(Anchor::LU, gameData->fonts["jp-size2"].GetFont());
+			str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
 			break;
 		}
 	}
-}
-
-//再生する動画名.
-MY_STRING MenuScene::GetPlayMovieName() {
-	return _T("menu_movie") + NumToString(cursorIdx + 1);
 }
 
 //カーソル移動時の処理.
@@ -482,7 +483,7 @@ void MenuScene::OnCursorMove() {
 	//全動画停止.
 	StopAllMovie();
 	//動画再生.
-	GraphMng::Get(GetPlayMovieName())->PlayMovie(PlayTypeID::Loop, true);
+	GetPlayMovie()->PlayMovie(PlayTypeID::Loop, true);
 
 	//サウンド.
 	if (auto i = soundMng->Get(_T("MenuCursor"))) {
@@ -492,8 +493,10 @@ void MenuScene::OnCursorMove() {
 
 //全ての動画を停止.
 void MenuScene::StopAllMovie() {
-
-	GraphMng::Get(_T("menu_movie1"))->StopMovie();
-	GraphMng::Get(_T("menu_movie2"))->StopMovie();
-	GraphMng::Get(_T("menu_movie3"))->StopMovie();
+	//登録された動画をループ.
+	for (auto& i : grMenuMovie) {
+		if (i) {
+			i->StopMovie();
+		}
+	}
 }

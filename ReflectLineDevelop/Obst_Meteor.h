@@ -1,13 +1,13 @@
 /*
    - Obst_Meteor.h -
    
-   障害物: 隕石.
+   障害物「隕石」
 */
 #pragma once
 #include "Player.h"
 
 //隕石の状態.
-enum MeteorState
+enum class MeteorState
 {
 	Normal,
 	Destroy, //破壊演出.
@@ -34,6 +34,9 @@ private:
 	bool        isTargeting{};	//レーザーに標的にされているか.
 
 	float       destroyCntr{};	//破壊の度合.
+
+	//画像.
+	Graph* grTarget{};
 
 public:
 	//get.

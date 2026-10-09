@@ -120,7 +120,7 @@ namespace KR
 		pos{ {0, 0}, {0, 0}, {0, 0} }, color(ColorID::White), thick(1) //‰Šú’l.
 	{}
 	Triangle::Triangle(DBL_XY _pos1, DBL_XY _pos2, DBL_XY _pos3, MY_COLOR _color, float _thick) :
-		pos{ _pos1, _pos2, _pos3 }, color(ColorID::White), thick(1) //‰Šú’l.
+		pos{ _pos1, _pos2, _pos3 }, color(_color), thick(_thick) //‰Šú’l.
 	{}
 	//•`‰æ.
 	void Triangle::Draw(bool isFill, bool isAnti, bool isCameraDisp) const {
