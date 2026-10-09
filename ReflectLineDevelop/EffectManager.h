@@ -49,16 +49,16 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	EffectManager(int order) : ManagerBase(order) {}
+	EffectManager(){}
 
 	void Init()	  override;
 	void Reset()  override;
 	void Update() override;
 	void Draw()	  override;
 
-	void SpawnEffect (const EffectData* data); //エフェクト出現.
+	void SpawnEffect(const EffectData* data); //エフェクト出現.
 
 	//使用禁止.
-	EffectManager(const EffectManager*) = delete;
-	EffectManager* operator=(const EffectManager*) = delete;
+	EffectManager(const EffectManager&) = delete;
+	EffectManager& operator=(const EffectManager&) = delete;
 };

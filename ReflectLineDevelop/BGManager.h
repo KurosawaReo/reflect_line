@@ -18,8 +18,7 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	BGManager(int order) : ManagerBase(order) {}
-
+	BGManager(){}
 	//set.
 	void  SetBgNo(int _no) { useBgNo = _no; }
 
@@ -33,6 +32,6 @@ public:
 	void  PauseEnd();
 
 	//使用禁止.
-	BGManager(const BGManager*) = delete;
-	BGManager* operator=(const BGManager*) = delete;
+	BGManager(const BGManager&) = delete;
+	BGManager& operator=(const BGManager&) = delete;
 };

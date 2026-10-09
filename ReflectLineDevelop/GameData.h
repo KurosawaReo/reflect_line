@@ -37,7 +37,7 @@ public:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	GameData() : ManagerBase(0) {}
+	GameData() : ManagerBase() {}
 
 	//add.
 	void AddScore(int score);

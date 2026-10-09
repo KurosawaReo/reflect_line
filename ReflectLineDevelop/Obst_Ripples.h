@@ -27,7 +27,7 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	Ripples(int order) : ManagerBase(order) {}
+	Ripples(){}
 
 	void Init()   override;
 	void Reset()  override;

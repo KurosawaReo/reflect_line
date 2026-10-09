@@ -36,7 +36,7 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	StraightLaser(int order) : ManagerBase(order) {}
+	StraightLaser(){}
 
 	void Init()   override;
 	void Reset()  override;

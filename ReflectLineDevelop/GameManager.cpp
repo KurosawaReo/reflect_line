@@ -35,6 +35,8 @@ using namespace Calc; //計算機能を使用.
 //初期化(一回のみ行う)
 void GameManager::Init() {
 
+	Debug::Log(_T("GameManager order:"), GetOrder());
+
 	//参照取得.
 	gameData	= ManagerInsts::Get<GameData>();
 	bg			= ManagerInsts::Get<BGManager>();

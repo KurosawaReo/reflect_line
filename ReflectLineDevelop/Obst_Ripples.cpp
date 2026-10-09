@@ -35,10 +35,10 @@ void Ripples::Reset()
 void Ripples::GenerateRandomPosition(double& x, double& y)
 {
 	//画面サイズ
-	int screnWidth = WINDOW_WID;
+	int screnWidth  = WINDOW_WID;
 	int screnHeight = WINDOW_HEI;
 	int margin = 100;//画面端からのマージン大き目.
-	x = margin + (rand() % (screnWidth - margin * 2));
+	x = margin + (rand() % (screnWidth  - margin * 2));
 	y = margin + (rand() % (screnHeight - margin * 2));
 }
 bool Ripples::CheckDistance(double x, double y)
@@ -170,17 +170,14 @@ void Ripples::Hitjudgment()
 		//波紋が広がった瞬間のみダメージ判定.
 		if (effectState == RIPPLES_STATE_ACTIVE && !i->alreadyHit) {
 
-			float sizeMultiplier = RIPPLES_FLASH_SIZE_INIT + (activeProgress * RIPPLES_FLASH_SIZE_SPREAD);
-			int effectSize = (int)(i->baseSize * sizeMultiplier);
+			//エフェクトの当たり判定(半径)
+			int effectSize = _int_r(i->baseSize * RIPPLES_FLASH_SIZE_INIT);
+			//距離.
+			DBL_XY dist = player->GetPos() - DBL_XY{i->x, i->y};
 
-			DBL_XY playerPos = player->GetPos();
-			double dx = playerPos.x - i->x;
-			double dy = playerPos.y - i->y;
-			double distance = sqrt(dx * dx + dy * dy);
-			float playerRadius = 10.0f;
-
-			if (distance < (effectSize * 0.8f + playerRadius)) {
-				player->Death();
+			//プレイヤーに当たっていれば.
+			if (dist.Dist() <= effectSize + PLAYER_SIZE) {
+				player->Death(); //死亡.
 			}
 
 			//サウンド.
@@ -227,7 +224,7 @@ void Ripples::DrawWarningEffect(list<RipplesData>::iterator it)
 	if (elapsedTime < 90) {
 		double blinkPhase = fmod(elapsedTime, RIPPLES_FLASH_BLINK_TM);
 		double blinkAlpha = sin(blinkPhase * M_PI/RIPPLES_FLASH_BLINK_TM); //0.0～1.0を往復するっぽい.
-		alphaValue = (int)(255 - 200*blinkAlpha);
+		alphaValue = _int(255 - 200*blinkAlpha);
 	}
 	else {
 		alphaValue = 255; //最大値.
@@ -239,7 +236,7 @@ void Ripples::DrawWarningEffect(list<RipplesData>::iterator it)
 	if (elapsedTime >= 90) {
 		const float pulseRate = 4.0f;
 		double pulseFactor = 1.0f + 0.4f * sin(elapsedTime * pulseRate * M_PI/60.0f);
-		warningSize = (int)(it->baseSize * pulseFactor);
+		warningSize = _int(it->baseSize * pulseFactor);
 	}
 	else {
 		warningSize = it->baseSize; //固定サイズ.
@@ -250,11 +247,12 @@ void Ripples::DrawWarningEffect(list<RipplesData>::iterator it)
 		DrawModeID::None, DrawBlendModeID::Alpha, alphaValue,
 		[&]() {
 			Circle cir;
-			cir = { {it->x, it->y}, (float)warningSize,   GetColor(150, 150, 150), 1.0f };
+			cir = { {it->x, it->y}, _flt(warningSize),   GetColor(150, 150, 150), 1.0f };
 			cir.Draw(Anchor::Mid, false, true);
-			cir = { {it->x, it->y}, (float)warningSize/2, GetColor(200, 200, 200), 1.0f };
+			cir = { {it->x, it->y}, _flt(warningSize/2), GetColor(200, 200, 200), 1.0f };
 			cir.Draw(Anchor::Mid, false, true);
-			cir = { {it->x, it->y}, (float)warningSize+5, GetColor(120, 120, 120), 1.0f }; // 外周リング
+			cir = { {it->x, it->y}, _flt(warningSize+5), GetColor(120, 120, 120), 1.0f };
+			cir.Draw(Anchor::Mid, false, true);
 		}
 	);
 }
@@ -270,11 +268,11 @@ void Ripples::DrawActiveEffect(list<RipplesData>::iterator it)
 
 	// 透明度を時間に応じて計算
 	float alpha = 1.0f - (activeProgress * RIPPLES_FLASH_ALPHA_TM);
-	int alphaValue = (int)(255 * max(alpha, 0.0f));
+	int alphaValue = _int(255 * max(alpha, 0.0f));
 
 	// エフェクトのサイズを時間に応じて拡大
 	float sizeMultiplier = RIPPLES_FLASH_SIZE_INIT + (activeProgress * RIPPLES_FLASH_SIZE_SPREAD);
-	int effectSize = (int)(it->baseSize * sizeMultiplier);
+	int effectSize = _int(it->baseSize * sizeMultiplier);
 	int innerSize = effectSize / 2;
 
 	//アクティブエフェクト.
@@ -282,9 +280,9 @@ void Ripples::DrawActiveEffect(list<RipplesData>::iterator it)
 		DrawModeID::None, DrawBlendModeID::Alpha, alphaValue,
 		[&]() {
 			Circle cir;
-			cir = {{it->x, it->y}, (float)effectSize, GetColor(0, 255, 255), 1.0f};
+			cir = {{it->x, it->y}, _flt(effectSize), GetColor(0, 255, 255), 1.0f};
 			cir.Draw(Anchor::Mid, false, true);
-			cir = {{it->x, it->y}, (float)innerSize,  GetColor(0, 255, 200), 1.0f};
+			cir = {{it->x, it->y}, _flt(innerSize),  GetColor(0, 255, 200), 1.0f};
 			cir.Draw(Anchor::Mid, false, true);
 		}
 	);

@@ -26,7 +26,7 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	TutorialStage(int order) : ManagerBase(order) {}
+	TutorialStage(){}
 
 	//set.
 	void SetPlayerDash   (bool _flag) { isPlayerDash    = _flag; }

@@ -117,8 +117,8 @@ void Fireworks::UpdateIndividualFireworks() {
 		}
 		//爆発.
 		else {
-			//花火のレーザーを生成.
-			CreateFireworksSparks(i->x, i->y);
+			//花火レーザーを生成.
+			SpawnFireworksLaser(i->x, i->y, i->sparkCount);
 
 			//爆発音.
 			if (!isPlaySound) {
@@ -133,14 +133,12 @@ void Fireworks::UpdateIndividualFireworks() {
 	}
 }
 
-// 花火の火花作成（LaserManagerを使用）- 落下効果付き
-void Fireworks::CreateFireworksSparks(float x, float y) {
+//花火レーザー生成.
+void Fireworks::SpawnFireworksLaser(float x, float y, int count) {
 
-	//仮で0番の火花数を使用(←追記:これがなにかは不明)
-	const int sparkCount = fireworks.begin()->sparkCount;
-
-	for (int i = 0; i < sparkCount; i++) {
-		float angle = _flt((2.0f * M_PI * i) / sparkCount);
+	//スパーク数分ループ.
+	for (int i = 0; i < count; i++) {
+		float angle = _flt((2.0f * M_PI * i) / count);
 
 		// 初期速度をランダムに調整
 		float baseSpeed = 2.5f + (float)(rand() % 3); // 2.5~4.5の範囲

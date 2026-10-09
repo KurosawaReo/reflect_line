@@ -17,7 +17,7 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	MeteorManager(int order) : ManagerBase(order) {}
+	MeteorManager(){}
 
 	//get.
 	Meteor* GetHitMeteor   (Line   hit, bool isDestroy);	//範囲内の隕石を取得(1つ)
@@ -33,6 +33,6 @@ public:
 	void BreakMeteor(DBL_XY pos, bool isScore, double scale = 1); //隕石破壊演出.
 
 	//使用禁止.
-	MeteorManager(const MeteorManager*) = delete;
-	MeteorManager* operator=(const MeteorManager*) = delete;
+	MeteorManager(const MeteorManager&) = delete;
+	MeteorManager& operator=(const MeteorManager&) = delete;
 };

@@ -56,7 +56,7 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	LaserManager(int order) : ManagerBase(order) {}
+	LaserManager(){}
 
 	void Init()   override;
 	void Reset()  override;

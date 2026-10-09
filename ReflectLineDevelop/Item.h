@@ -28,7 +28,7 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	ItemManager(int order) : ManagerBase(order) {}
+	ItemManager(){}
 
 	void Init()   override;
 	void Reset()  override;

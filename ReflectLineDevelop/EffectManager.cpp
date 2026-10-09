@@ -78,8 +78,8 @@ void EffectManager::Update() {
 				//Œ¸‘¬.
 				float newSpeed = i->speed / (1 + (i->counter / 5));
 				//ˆÚ“®.
-				i->pos.x += i->vec.x * newSpeed * gameData->spawnRate;
-				i->pos.y += i->vec.y * newSpeed * gameData->spawnRate;
+				i->pos.x += i->vec.x * newSpeed * gameData->speedRate;
+				i->pos.y += i->vec.y * newSpeed * gameData->speedRate;
 
 				//ŽžŠÔŒo‰ß‚ÅÁ–Å.
 				if (i->counter >= PLAYER_DASH_SPARK_ANIM_TIME) {

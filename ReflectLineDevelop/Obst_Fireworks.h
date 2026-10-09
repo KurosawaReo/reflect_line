@@ -33,14 +33,14 @@ private:
 	void SpawnFireworks           (float x, float y);
 	void UpdateFireworksGeneration();
 	void UpdateIndividualFireworks();
-	void CreateFireworksSparks    (float x, float y);
+	void SpawnFireworksLaser    (float x, float y, int count);
 
 	//描画用.
 	void DrawWarningEffect(list<FwData>::iterator it);
 
 public:
 	//コンストラクタ
-	Fireworks(int order) : ManagerBase(order) {}
+	Fireworks(){}
 
 	void Init()   override;
 	void Reset()  override;
@@ -48,6 +48,6 @@ public:
 	void Draw()   override;
 
 	//使用禁止.
-	Fireworks(const Fireworks*) = delete;
-	Fireworks* operator=(const Fireworks*) = delete;
+	Fireworks(const Fireworks&) = delete;
+	Fireworks& operator=(const Fireworks&) = delete;
 };

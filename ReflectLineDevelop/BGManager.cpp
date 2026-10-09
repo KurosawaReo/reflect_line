@@ -15,6 +15,8 @@ static GameData*    gameData;
 //‰Šú‰».
 void BGManager::Init() {
 
+	Debug::Log(_T("BGManager order:"), GetOrder());
+
 	//QÆæ“¾.
 	gameMng  = ManagerInsts::Get<GameManager>();
 	gameData = ManagerInsts::Get<GameData>();

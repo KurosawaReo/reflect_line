@@ -73,7 +73,7 @@ private:
 //▼ ===== 変数 ===== ▼.
 public:
 	//コンストラクタ.
-	NormalLaser(int order) : ManagerBase(order) {}
+	NormalLaser(){}
 
 	//基本処理.
 	void Init  () override;

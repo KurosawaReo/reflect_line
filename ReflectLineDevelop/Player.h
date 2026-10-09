@@ -60,7 +60,7 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	Player(int order) : ManagerBase(order) {}
+	Player(){}
 
 	//set.
 	void       SetPos            (DBL_XY     _pos ) { hit.pos         = _pos;  }
@@ -99,6 +99,6 @@ public:
 	void SpawnEffectSpark(); //ダッシュ反射エフェクト生成.
 
 	//使用禁止.
-	Player(const Player*) = delete;
-	Player* operator=(const Player*) = delete;
+	Player(const Player&) = delete;
+	Player& operator=(const Player&) = delete;
 };

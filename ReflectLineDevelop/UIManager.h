@@ -16,7 +16,7 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	UIManager(int order) : ManagerBase(order) {}
+	UIManager(){}
 
 	//set.
 	void SetIsShowScore(bool _flag)  { isShowScore   = _flag;  }
@@ -28,6 +28,6 @@ public:
 	void Draw()   override;
 
 	//使用禁止.
-	UIManager(const UIManager*) = delete;
-	UIManager* operator=(const UIManager*) = delete;
+	UIManager(const UIManager&) = delete;
+	UIManager& operator=(const UIManager&) = delete;
 };

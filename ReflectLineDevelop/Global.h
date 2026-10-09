@@ -135,8 +135,8 @@
 
 #define METEOR_LINE_CNT_MIN				(5)				//最低n角形.
 #define METEOR_LINE_CNT_MAX				(16)			//最大n角形.
-#define METEOR_LINE_DIS_MIN				(30)			//頂点の最短距離.
-#define METEOR_LINE_DIS_MAX				(50)			//頂点の最大距離.
+#define METEOR_LINE_DIS_MIN				(30.0)			//頂点の最短距離.
+#define METEOR_LINE_DIS_MAX				(50.0)			//頂点の最大距離.
 
 //障害物: 波紋.
 #define RIPPLES_FLASH_MAX				(30)            //最大フラッシュエフェクト数.

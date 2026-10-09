@@ -498,7 +498,7 @@ void Player::SpawnEffectSpark()
 	//何個出すか.
 	const int sparkNum = 4;
 
-	const double baseAng = Calc::FacingAng({ 0,0 }, lastInputVec);
+	const double baseAng = Calc::FacingAng({0, 0}, lastInputVec);
 
 	for (int s = 0; s < sparkNum; s++)
 	{
@@ -507,10 +507,6 @@ void Player::SpawnEffectSpark()
 		//速度抽選.
 		const double speed = Calc::RandNum(4.0, 15.0);
 
-		//サウンド.
-		if (auto i = soundMng->Get(_T("PlayerParry"))) {
-			i->Play(false, 50);
-		}
 		//エフェクト.
 		EffectData data{};
 		data.type  = EffectType::PlayerDashReflect;
@@ -519,5 +515,10 @@ void Player::SpawnEffectSpark()
 		data.speed = _flt(speed);
 		data.ang   = _flt(ang);
 		effectMng->SpawnEffect(&data);
+	}
+
+	//サウンド.
+	if (auto i = soundMng->Get(_T("PlayerParry"))) {
+		i->Play(false, 75);
 	}
 }

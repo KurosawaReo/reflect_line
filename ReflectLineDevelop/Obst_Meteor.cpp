@@ -33,23 +33,30 @@ void Meteor::Update() {
 	switch (state)
 	{
 		case MeteorState::Normal:
+		{
+			//サイズの設定.
+			const INT_XY   size = { _int(METEOR_LINE_DIS_MAX) * 2, _int(METEOR_LINE_DIS_MAX) * 2 };
+			const DBL_RECT rect = { 0, 0, WINDOW_WID, WINDOW_HEI };
 			//画面外で消去.
-			if (Calc::IsOutInArea(pos, { METEOR_LINE_DIS_MAX*2, METEOR_LINE_DIS_MAX*2 }, {0, 0, WINDOW_WID, WINDOW_HEI}, true)){
+			if (Calc::IsOutInArea(pos, size, rect, true)) {
 				isErase = true; //消去する.
 			}
-			break;
+		}
+		break;
 
 		case MeteorState::Destroy:
+		{
 			//破壊量の度合.
 			destroyCntr += gameData->speedRate;
 			//時間が終了したら.
 			if (destroyCntr >= METEOR_DEST_TIME) {
-				state   = MeteorState::Normal; //元に戻す.
-				isErase = true;          //消去する.
+				state   = MeteorState::Normal;	//元に戻す.
+				isErase = true;					//消去する.
 			}
-			break;
+		}
+		break;
 
-		default: assert(FALSE); break;
+		default: assert(false); break;
 	}
 	//隕石構成線の更新.
 	UpdateMeteoLine();
@@ -132,9 +139,7 @@ void Meteor::Spawn() {
 		//②頂点の位置を抽選.
 		for (auto& i : shape.lineDist) {
 			//小数第1位まで抽選.
-			i = _flt(
-				Calc::RandNum(METEOR_LINE_DIS_MIN*10, METEOR_LINE_DIS_MAX*10)/10
-			);
+			i = _flt(Calc::RandNum(METEOR_LINE_DIS_MIN, METEOR_LINE_DIS_MAX));
 		}
 		
 		//線の設定.

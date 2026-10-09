@@ -12,7 +12,7 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	EndlessStage(int order) : ManagerBase(order) {}
+	EndlessStage(){}
 
 	void Init()   override;
 	void Reset()  override;
