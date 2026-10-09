@@ -59,7 +59,7 @@ public:
 	void DrawStep4();
 
 	void DrawTopText(int line, double alpha, MY_STRING text);
-	bool IsEnd(int stepNo, int stepInnerNo);
+	bool IsEnd();
 
 	void ResetSignFlag();
 	void StepInnerEnd();

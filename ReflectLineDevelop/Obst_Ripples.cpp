@@ -147,6 +147,7 @@ void Ripples::HitJudgment()
 	
 	//全波紋.
 	for (auto i = ripples.begin(); i != ripples.end(); i++) {
+
 		if (i->counter <= 0) {
 			continue;
 		}
@@ -155,11 +156,6 @@ void Ripples::HitJudgment()
 		if (effectState == RIPPLES_STATE_WARNING) {
 			continue;
 		}
-
-		// 経過時間の計算
-		float elapsedTime = i->duration - i->counter;
-		float activeElapsedTime = elapsedTime - RIPPLES_WARNING_DURATION;
-		float activeProgress = activeElapsedTime / RIPPLES_ACTIVE_DURATION;
 
 		//波紋が広がった瞬間のみダメージ判定.
 		if (effectState == RIPPLES_STATE_ACTIVE && !i->alreadyHit) {
@@ -176,8 +172,8 @@ void Ripples::HitJudgment()
 
 			//サウンド.
 			if (!isPlaySound) {
-				if (auto i = soundMng->Get(_T("Ripples"))) {
-					i->Play(false, 73); //再生.
+				if (auto j = soundMng->Get(_T("Ripples"))) {
+					j->Play(false, 73); //再生.
 				}
 				isPlaySound = true; //もう再生しない.
 			}

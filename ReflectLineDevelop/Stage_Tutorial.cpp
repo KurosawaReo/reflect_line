@@ -93,7 +93,7 @@ void TutorialStage::Update() {
 		endTimer.GetState() != TimerState::Active
 	){
 		//終了条件を満たしていれば.
-		if (IsEnd(stepNo, stepInnerNo)) {
+		if (IsEnd()) {
 
 			endTimer.Start();
 
@@ -777,7 +777,7 @@ void TutorialStage::DrawTopText(int line, double alpha, MY_STRING text) {
 }
 
 //このステップを終了するか判定.
-bool TutorialStage::IsEnd(int stepNo, int stepInnerNo) {
+bool TutorialStage::IsEnd() {
 
 	bool ret = false; //終了条件を満たしたか.
 

@@ -128,9 +128,9 @@ void Meteor::Spawn() {
 		goalPos.x = Calc::RandNum(WINDOW_WID/2 - METEOR_GOAL_RAND_RANGE, WINDOW_WID/2 + METEOR_GOAL_RAND_RANGE);
 		goalPos.y = Calc::RandNum(WINDOW_HEI/2 - METEOR_GOAL_RAND_RANGE, WINDOW_HEI/2 + METEOR_GOAL_RAND_RANGE);
 		//目標地点までの角度を求める.
-		double ang = (goalPos.ToDbl() - pos).Angle();
+		const double goalAng = (goalPos.ToDbl() - pos).Angle();
 		//xとyのvectorに分解.
-		vel = Calc::AngToVector(ang);
+		vel = Calc::AngToVector(goalAng);
 	}
 
 	//隕石の設定.

@@ -318,13 +318,7 @@ void MenuScene::Draw() {
 
 	//▼選択項目から画像、説明文エリアまでの線を描画
 	{
-		int imgLeftX   = (int)(mLayout.imgPos.x - imgSize.x/2); //画像の左端座標.
-		int imgCenterY = (int) mLayout.imgPos.y;
 		int imgBottomY = (int)(mLayout.imgPos.y + imgSize.y/2); //画像の下端座標.
-
-		// 説明文エリアの上端中央座標
-		int textBoxCenterX = textBoxX + textBoxWidth / 2;
-		int textBoxTopY = textBoxY;
 
 		//線の透明度(155～255)
 		const int alpha = _int_r(155 + 100 * (anim2 + 1.0) / 2.0);
@@ -352,9 +346,9 @@ void MenuScene::Draw() {
 				//2.画像から説明文エリアへの線（画像下端から説明文上端まで）
 				{
 					Line line = {
-						DBL_XY(mLayout.imgPos.x-30, imgBottomY),  //始点.
-						DBL_XY(mLayout.imgPos.x-30, textBoxTopY), //終点.
-						mColor.line,							  //色.
+						DBL_XY(mLayout.imgPos.x-30, imgBottomY),	//始点.
+						DBL_XY(mLayout.imgPos.x-30, textBoxY),		//終点.
+						mColor.line,								//色.
 						3.0f
 					};
 					//線1.

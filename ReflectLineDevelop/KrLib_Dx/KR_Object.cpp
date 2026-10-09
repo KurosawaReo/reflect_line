@@ -248,16 +248,16 @@ namespace KR
 // ¥*--=<[ ObjectCir ]>=--*¥ //
 
 	//‰~‚Æ‚Ì”»’è.
-	bool ObjectCir::HitCheckCir(const Circle& cir) const {
-		return Calc::HitCirCir(cir, this->cir);
+	bool ObjectCir::HitCheckCir(const Circle& other) const {
+		return Calc::HitCirCir(other, this->cir);
 	}
 	//lŠpŒ`‚Æ‚Ì”»’è.
-	bool ObjectCir::HitCheckBox(const Box& box) const {
-		return Calc::HitBoxCir(box, this->cir);
+	bool ObjectCir::HitCheckBox(const Box& other) const {
+		return Calc::HitBoxCir(other, this->cir);
 	}
 	//ü‚Æ‚Ì“–‚½‚è”»’è.
-	bool ObjectCir::HitCheckLine(const Line& line, DBL_XY* nearestPos) const {
-		return Calc::HitLineCir(line, this->cir, nearestPos);
+	bool ObjectCir::HitCheckLine(const Line& other, DBL_XY* nearestPos) const {
+		return Calc::HitLineCir(other, this->cir, nearestPos);
 	}
 
 	//}Œ`(‰~)‚ğ•`‰æ.
@@ -282,12 +282,12 @@ namespace KR
 // ¥*--=<[ ObjectBox ]>=--*¥ //
 
 	//‰~‚Æ‚Ì”»’è.
-	bool ObjectBox::HitCheckCir(const Circle& cir) const {
-		return Calc::HitBoxCir(this->box, cir);
+	bool ObjectBox::HitCheckCir(const Circle& other) const {
+		return Calc::HitBoxCir(this->box, other);
 	}
 	//lŠpŒ`‚Æ‚Ì”»’è.
-	bool ObjectBox::HitCheckBox(const Box& box) const {
-		return Calc::HitBoxBox(this->box, box);
+	bool ObjectBox::HitCheckBox(const Box& other) const {
+		return Calc::HitBoxBox(this->box, other);
 	}
 
 	//}Œ`(lŠpŒ`)‚ğ•`‰æ.

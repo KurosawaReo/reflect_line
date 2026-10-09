@@ -233,8 +233,6 @@ namespace KR
 	//get.
 	vector<DBL_XY> FreeContr::GetPointPos() const {
 
-		const int size = _int(points.size());
-
 		vector<DBL_XY> posList; //À•WƒŠƒXƒg.
 
 		for (const auto& i : points) {
