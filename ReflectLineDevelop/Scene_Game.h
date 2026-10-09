@@ -22,6 +22,9 @@ private:
 	Timer tmGameTime{};		//ゲーム計測時間.
 	Timer tmReflectMode{};	//スロー継続時間.
 
+	//画像.
+	Graph* grReflectText{};
+
 //▼ ===== 関数 ===== ▼.
 public:
 	//get.

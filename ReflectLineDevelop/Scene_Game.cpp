@@ -23,6 +23,7 @@ static SoundMng*      soundMng;
 
 //‰Šú‰».
 void GameScene::Init() {
+
 	//QÆæ“¾.
 	gameData    = ManagerInsts::Get<GameData>();
 	gameMng     = ManagerInsts::Get<GameManager>();
@@ -31,6 +32,8 @@ void GameScene::Init() {
 	uiMng       = ManagerInsts::Get<UIManager>();
 	tutorialStg = ManagerInsts::Get<TutorialStage>();
 	soundMng    = ManagerInsts::Get<SoundMng>();
+	//‰æ‘œæ“¾.
+	grReflectText = GraphMng::Get(_T("reflect_text"));
 
 	timer         = Timer(TimerMode::CountUp, 0);
 	tmGameTime    = Timer(TimerMode::CountUp, 0);
@@ -207,7 +210,7 @@ void GameScene::DrawReflectMode() {
 				[&]() {
 					//Å‰‚Ì1•b.
 					if (tmReflectMode.GetPassTime() > REFLECT_MODE_TIME - 1) {
-						GraphMng::Get(_T("reflect_text"))->DrawExtend(
+						grReflectText->DrawExtend(
 							{ WINDOW_WID / 2, WINDOW_HEI / 2 }, { 0.3 + 0.2 * anim, 0.3 + 0.2 * anim }, Anchor::Mid, true, true
 						);
 					}

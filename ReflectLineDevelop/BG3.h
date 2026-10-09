@@ -41,6 +41,9 @@ private:
 
 	double angle; //Šp“x.
 
+	//‰æ‘œ.
+	Graph* grBgStarRef{};
+	Graph* grBgStarNor{};
 
 //¥ ===== ŠÖ” ===== ¥.
 public:

@@ -153,20 +153,25 @@ namespace KR
 
 	//サウンド取得.
 	Sound* SoundMng::Get(MY_STRING saveName) {
-		//存在すれば.
-		if (sounds.count(saveName) > 0) {
-			return &sounds[saveName]; //返す.
+
+		const auto it = sounds.find(saveName);
+		//存在しなければ.
+		if (it == sounds.end()) {
+			throw ErrorMsg(_T("SoundMng::Get"), _T("取得失敗(") + saveName + _T(")"));
+			return nullptr;
 		}
-		return nullptr;
+		return &it->second;
 	}
-	//サウンド取得(チェックあり)
+	//サウンド取得(bool型返り値版)
 	bool SoundMng::TryGet(MY_STRING saveName, Sound* ptr) {
-		//存在すれば.
-		if (sounds.count(saveName) > 0) {
-			ptr = &sounds[saveName]; //返す.
-			return true;             //取得成功.
+
+		const auto it = sounds.find(saveName);
+		//存在しなければ.
+		if (it == sounds.end()) {
+			return false;  //取得失敗.
 		}
-		return false; //取得失敗.
+		ptr = &it->second; //返す.
+		return true;       //取得成功.
 	}
 
 	//サウンド読み込み.

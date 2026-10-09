@@ -321,7 +321,7 @@ namespace KR
 
 	//デストラクタ.
 	GraphMng::~GraphMng() {
-		//画像データを全て取り出す.
+		//全て取り出す.
 		for (auto& i : graphs) {
 			i.second.Release(); //各画像の解放.
 		}
@@ -333,27 +333,31 @@ namespace KR
 		inst.path = _path;
 	}
 
-	//取得.
+	/*
+	   画像取得.
+	   unorder_mapからfindで捜索する処理があるため
+	   この関数の実行回数は極力減らした方がいい.
+	*/
 	Graph* GraphMng::Get(MY_STRING saveName) {
 		
-		const auto imgIt = inst.graphs.find(saveName);
+		const auto it = inst.graphs.find(saveName);
 		//存在しなければ.
-		if (imgIt == inst.graphs.end()) {
+		if (it == inst.graphs.end()) {
 			throw ErrorMsg(_T("GraphMng::Get"), _T("取得失敗(") + saveName + _T(")"));
 			return nullptr;
 		}
-		return &imgIt->second;
+		return &it->second;
 	}
-	//取得(チェックあり)
+	//画像取得(bool型返り値版)
 	bool GraphMng::TryGet(MY_STRING saveName, Graph* ptr) {
 
-		const auto imgIt = inst.graphs.find(saveName);
+		const auto it = inst.graphs.find(saveName);
 		//存在しなければ.
-		if (imgIt == inst.graphs.end()) {
-			return false; //取得失敗.
+		if (it == inst.graphs.end()) {
+			return false;  //取得失敗.
 		}
-		ptr = &inst.graphs[saveName]; //返す.
-		return true; //取得成功.
+		ptr = &it->second; //返す.
+		return true;       //取得成功.
 	}
 
 	/*

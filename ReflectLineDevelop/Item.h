@@ -25,6 +25,11 @@ private:
 
 	float counter{}; //経過時間.
 
+	//画像.
+	Graph* grItem{};
+	Graph* grItemSuper{};
+	Graph* grItemSuperLight{};
+
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.

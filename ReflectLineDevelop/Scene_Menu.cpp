@@ -16,6 +16,11 @@ static SoundMng*    soundMng;
 static InputMng*    inputMng;
 static SceneMng*    sceneMng;
 
+//再生する動画を取得.
+Graph* MenuScene::GetPlayMovie() {
+	return grMenuMovie[cursorIdx];
+}
+
 //初期化.
 void MenuScene::Init() {
 
@@ -26,6 +31,11 @@ void MenuScene::Init() {
 	soundMng = ManagerInsts::Get<SoundMng>();
 	inputMng = ManagerInsts::Get<InputMng>();
 	sceneMng = ManagerInsts::Get<SceneMng>();
+	
+	//動画取得.
+	for (int i = 0; i < MENU_OPTION_COUNT; i++) {
+		grMenuMovie[i] = GraphMng::Get(_T("menu_movie") + NumToString(i+1));
+	}
 
 	Reset();
 }
@@ -39,7 +49,9 @@ void MenuScene::Reset() {
 //入った瞬間.
 void MenuScene::Enter() {
 	//動画再生.
-	GraphMng::Get(GetPlayMovieName())->PlayMovie(PlayTypeID::Loop, true);
+	if (auto i = GetPlayMovie()) {
+		i->PlayMovie(PlayTypeID::Loop, true);
+	}
 }
 
 //抜けた瞬間.
@@ -52,11 +64,11 @@ void MenuScene::Update() {
 
 	//カーソル移動操作.
 	if (inputMng->IsPushActionTime(_T("MenuUp")) % 20 == 1) {
-		cursorIdx = (cursorIdx + 3 - 1) % 3; //-1して、3の余り(0～2)をループ.
+		cursorIdx = (cursorIdx + MENU_OPTION_COUNT - 1) % MENU_OPTION_COUNT; //-1して、MENU_OPTION_COUNTの余りをループ.
 		OnCursorMove();
 	}
 	if (inputMng->IsPushActionTime(_T("MenuDown")) % 20 == 1) { //長押しにも対応.
-		cursorIdx = (cursorIdx + 1) % 3;     //+1して、3の余り(0～2)をループ.
+		cursorIdx = (cursorIdx + 1) % MENU_OPTION_COUNT;                     //+1して、MENU_OPTION_COUNTの余りをループ.
 		OnCursorMove();
 	}
 	//点滅終了.
@@ -118,7 +130,7 @@ void MenuScene::Update() {
 			}
 			break;
 
-			default: assert(FALSE); break;
+			default: assert(false); break;
 		}
 
 		//サウンド.
@@ -281,7 +293,7 @@ void MenuScene::Draw() {
 		const int    margin = 10;  //枠を画像よりどれだけ大きくするか.
 	
 		//画像を取得できたら.
-		if (auto i = GraphMng::Get(GetPlayMovieName())) {
+		if (auto i = GetPlayMovie()) {
 
 			//画像描画.
 			DrawMode::Exe(
@@ -468,11 +480,6 @@ void MenuScene::Draw() {
 	}
 }
 
-//再生する動画名.
-MY_STRING MenuScene::GetPlayMovieName() {
-	return _T("menu_movie") + NumToString(cursorIdx + 1);
-}
-
 //カーソル移動時の処理.
 void MenuScene::OnCursorMove() {
 
@@ -482,7 +489,7 @@ void MenuScene::OnCursorMove() {
 	//全動画停止.
 	StopAllMovie();
 	//動画再生.
-	GraphMng::Get(GetPlayMovieName())->PlayMovie(PlayTypeID::Loop, true);
+	GetPlayMovie()->PlayMovie(PlayTypeID::Loop, true);
 
 	//サウンド.
 	if (auto i = soundMng->Get(_T("MenuCursor"))) {
@@ -492,8 +499,10 @@ void MenuScene::OnCursorMove() {
 
 //全ての動画を停止.
 void MenuScene::StopAllMovie() {
-
-	GraphMng::Get(_T("menu_movie1"))->StopMovie();
-	GraphMng::Get(_T("menu_movie2"))->StopMovie();
-	GraphMng::Get(_T("menu_movie3"))->StopMovie();
+	//登録された動画をループ.
+	for (auto& i : grMenuMovie) {
+		if (i) {
+			i->StopMovie();
+		}
+	}
 }

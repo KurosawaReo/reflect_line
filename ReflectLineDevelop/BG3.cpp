@@ -27,6 +27,9 @@ void BG3::Init()
 {
     //参照取得.
     gameData = ManagerInsts::Get<GameData>();
+	//画像取得.
+	grBgStarRef = GraphMng::Get(_T("bg_star_ref"));
+	grBgStarNor = GraphMng::Get(_T("bg_star_nor"));
 }
 
 //リセット.
@@ -265,10 +268,10 @@ void BG3::DrawStars(double modeAlpha, bool isReflect)
             {
                 //反射モードになったら変色.
                 if (isReflect) {
-                    GraphMng::Get(_T("bg_star_ref"))->DrawExtend(pos, {size, size}, Anchor::Mid, true, true);
+                    grBgStarRef->DrawExtend(pos, {size, size}, Anchor::Mid, true, true);
                 }
                 else {
-                    GraphMng::Get(_T("bg_star_nor"))->DrawExtend(pos, {size, size}, Anchor::Mid, true, true);
+                    grBgStarNor->DrawExtend(pos, {size, size}, Anchor::Mid, true, true);
                 }
             }
         );

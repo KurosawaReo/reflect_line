@@ -35,8 +35,6 @@ using namespace Calc; //計算機能を使用.
 //初期化(一回のみ行う)
 void GameManager::Init() {
 
-	Debug::Log(_T("GameManager order:"), GetOrder());
-
 	//参照取得.
 	gameData	= ManagerInsts::Get<GameData>();
 	bg			= ManagerInsts::Get<BGManager>();
@@ -64,9 +62,9 @@ void GameManager::Init() {
 		GraphMng::LoadImg(_T("player_reflect_barrier.png"),	_T("player_ref_barrier"));
 		GraphMng::LoadImg(_T("item.png"),					_T("item"));
 		GraphMng::LoadImg(_T("item_super.png"),				_T("item_super"));
-		GraphMng::LoadImg(_T("light_color_ref.png"),		_T("light_super_item"));
-		GraphMng::LoadImg(_T("light_color_nor.png"),		_T("light_nor_player"));
-		GraphMng::LoadImg(_T("light_color_ref.png"),		_T("light_ref_player"));
+		GraphMng::LoadImg(_T("light_color_ref.png"),		_T("item_super_light"));
+		GraphMng::LoadImg(_T("light_color_nor.png"),		_T("player_nor_light"));
+		GraphMng::LoadImg(_T("light_color_ref.png"),		_T("player_ref_light"));
 		GraphMng::LoadImg(_T("reflect_mode_frame.png"),		_T("reflect_mode_frame"));
 		GraphMng::LoadImg(_T("ui_back_level.png"),			_T("ui_back_level"));
 		GraphMng::LoadImg(_T("ui_back_best_score.png"),		_T("ui_back_best_score"));

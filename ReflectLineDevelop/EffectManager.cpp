@@ -14,7 +14,12 @@ using namespace Calc; //計算機能を使用.
 // ▼*---=[ EffectManager ]=---*▼ //
 
 void EffectManager::Init() {
+	//参照取得.
 	gameData = ManagerInsts::Get<GameData>();
+	//画像取得.
+	grScore100      = GraphMng::Get(_T("score100"));
+	grScore500      = GraphMng::Get(_T("score500"));
+	grReflectEffect = GraphMng::Get(_T("reflect_effect"));
 }
 
 void EffectManager::Reset() {
@@ -174,10 +179,10 @@ void EffectManager::Draw() {
 					[&]() {
 						//画像切り替え.
 						if (i.type == EffectType::Score100) {
-							GraphMng::Get(_T("score100"))->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
+							grScore100->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
 						}
 						else {
-							GraphMng::Get(_T("score500"))->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
+							grScore500->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
 						}
 					}
 				);
@@ -236,7 +241,7 @@ void EffectManager::Draw() {
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 					[&]() {
-						GraphMng::Get(_T("reflect_effect"))->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
+						grReflectEffect->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
 					}
 				);
 			}

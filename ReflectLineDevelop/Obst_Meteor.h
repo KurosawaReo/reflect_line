@@ -35,6 +35,9 @@ private:
 
 	float       destroyCntr{};	//”j‰ó‚Ì“x‡.
 
+	//‰æ‘œ.
+	Graph* grTarget{};
+
 public:
 	//get.
 	DBL_XY      GetPos()		 const { return pos; }

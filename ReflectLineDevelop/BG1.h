@@ -17,6 +17,10 @@ private:
 
 	Timer shineTimer = Timer(TimerMode::CountDown, 3); //”­Œõ‚·‚éŠÔ.
 
+	//‰æ‘œ.
+	Graph* grBgTileNor{};
+	Graph* grBgTileRef{};
+
 public:
 	void Init   ();                 //‰Šú‰».
 	void Reset  ();                 //ƒŠƒZƒbƒg.

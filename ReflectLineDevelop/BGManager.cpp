@@ -16,7 +16,7 @@ static GameData*    gameData;
 void BGManager::SetBgNo(int _no) {
 
 	//背景番号の範囲を確認.
-	const bool isValid = IsNumInRange<int>(_no, 0, _int(bg.size()));
+	const bool isValid = IsNumInRange(_no, 0, _int(bg.size()));
 
 	//不正な値は設定しない.
 	assert(isValid);
@@ -28,11 +28,11 @@ void BGManager::SetBgNo(int _no) {
 //初期化.
 void BGManager::Init() {
 
-	Debug::Log(_T("BGManager order:"), GetOrder());
-
 	//参照取得.
 	gameMng  = ManagerInsts::Get<GameManager>();
 	gameData = ManagerInsts::Get<GameData>();
+	//画像取得.
+	grReflectModeFrame = GraphMng::Get(_T("reflect_mode_frame"));
 
 	//背景クラス生成.
 	bg.push_back(make_unique<BG1>());
@@ -102,7 +102,7 @@ void BGManager::Draw() {
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * modeAlpha * alpha3count),
 			[&]() {
 				//グラデーション
-				GraphMng::Get(_T("reflect_mode_frame"))->Draw({ WINDOW_WID / 2, WINDOW_HEI / 2 });
+				grReflectModeFrame->Draw({ WINDOW_WID / 2, WINDOW_HEI / 2 });
 				//枠線.
 				Box box = { {WINDOW_WID / 2, WINDOW_HEI / 2}, { WINDOW_WID * modeAlpha, WINDOW_HEI * modeAlpha }, COLOR_PLY_REFLECT, 1.0f };
 				box.Draw(Anchor::Mid, false, true);

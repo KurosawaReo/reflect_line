@@ -17,16 +17,16 @@ namespace KR
 // ¥*--=<[ ObjectShape ]>=--*¥ //
 
 	//‰æ‘œ.
-	void ObjectShape::SetImage(MY_STRING name) {
-		useImg.clear();         //ƒŠƒZƒbƒg.
-		useImg.push_back(name); //‰æ‘œ–¼‚ğ“o˜^.
-		useImgNo = 0;           //1–‡‚µ‚©‚È‚¢ê‡‚Í0‚ÅŒÅ’è.
+	void ObjectShape::SetGraph(Graph* graph) {
+		useImg.clear();          //ƒŠƒZƒbƒg.
+		useImg.push_back(graph); //‰æ‘œ‚ğ“o˜^.
+		useImgNo = 0;            //1–‡‚µ‚©‚È‚¢ê‡‚Í0‚ÅŒÅ’è.
 	}
-	void ObjectShape::SetImages(vector<MY_STRING> names, float changeTime) {
+	void ObjectShape::SetGraphs(vector<Graph*> graphs, float changeTime) {
 		//“¯‚¶‚à‚Ì‚Å‚È‚¯‚ê‚Î.
-		if (useImg != names) {
-			useImg = names; //‰æ‘œ–¼”z—ñ‚ğ“o˜^.
-			useImgNo = 0;   //Å‰‚Í0”Ô–Ú‚©‚ç.
+		if (useImg != graphs) {
+			useImg = graphs; //‰æ‘œ”z—ñ‚ğ“o˜^.
+			useImgNo = 0;    //Å‰‚Í0”Ô–Ú‚©‚ç.
 			//Ø‚è‘Ö‚¦ŠÔ‚Ìİ’è.
 			tmImgAnim = Timer(TimerMode::CountDown, changeTime);
 		}
@@ -112,7 +112,7 @@ namespace KR
 		//‰æ‘œ–¼‚ğ“o˜^‚µ‚Ä‚¢‚é‚È‚ç.
 		if (useImg.size() > 0) {
 			//‰æ‘œƒf[ƒ^‚ª‚ ‚éê‡.
-			if (auto pImg = GraphMng::Get(useImg[useImgNo])) {
+			if (Graph* pImg = useImg[useImgNo]) {
 				//À•W‚Éoffset‚ğ‘«‚·.
 				DBL_XY pos = GetPos() + offset;
 				//•`‰æ.
@@ -148,7 +148,7 @@ namespace KR
 		//‰æ‘œ–¼‚ğ“o˜^‚µ‚Ä‚¢‚é‚È‚ç.
 		if (useImg.size() > 0) {
 			//‰æ‘œƒf[ƒ^‚ª‚ ‚éê‡.
-			if (auto pImg = GraphMng::Get(useImg[useImgNo])) {
+			if (Graph* pImg = useImg[useImgNo]) {
 				//À•W‚Éoffset‚ğ‘«‚·.
 				DBL_XY pos = GetPos() + offset;
 				//•`‰æ.
@@ -184,7 +184,7 @@ namespace KR
 		//‰æ‘œ–¼‚ğ“o˜^‚µ‚Ä‚¢‚é‚È‚ç.
 		if (useImg.size() > 0) {
 			//‰æ‘œƒf[ƒ^‚ª‚ ‚éê‡.
-			if (auto pImg = GraphMng::Get(useImg[useImgNo])) {
+			if (Graph* pImg = useImg[useImgNo]) {
 				//À•W‚Éoffset‚ğ‘«‚·.
 				DBL_XY pos = GetPos() + offset;
 				//•`‰æ.
@@ -220,7 +220,7 @@ namespace KR
 		//‰æ‘œ–¼‚ğ“o˜^‚µ‚Ä‚¢‚é‚È‚ç.
 		if (useImg.size() > 0) {
 			//‰æ‘œƒf[ƒ^‚ª‚ ‚éê‡.
-			if (auto pImg = GraphMng::Get(useImg[useImgNo])) {
+			if (Graph* pImg = useImg[useImgNo]) {
 				//À•W‚Éoffset‚ğ‘«‚·.
 				DBL_XY pos = GetPos() + offset;
 				//•`‰æ.

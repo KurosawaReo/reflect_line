@@ -18,6 +18,10 @@ private:
 	bool  isBestScore{};      //ベストスコア更新したか.
 	bool  isBestScoreSound{}; //音を鳴らしたか.
 
+	//画像.
+	Graph* grGameover{};
+	Graph* grNewRecord{};
+
 public:
 	//sign
 	void SignBestScore() { isBestScore = true; }

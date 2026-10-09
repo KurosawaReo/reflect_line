@@ -17,10 +17,16 @@ static TutorialStage* tutorialStg;
 
 //初期化.
 void UIManager::Init() {
+
 	//参照取得.
 	gameMng     = ManagerInsts::Get<GameManager>();
 	gameData    = ManagerInsts::Get<GameData>();
 	tutorialStg = ManagerInsts::Get<TutorialStage>();
+	//画像取得.
+	grUiBackLevel     = GraphMng::Get(_T("ui_back_level"));
+	grUiBackBestScore = GraphMng::Get(_T("ui_back_best_score"));
+	grUiBackScore     = GraphMng::Get(_T("ui_back_score"));
+	grUiBackTime      = GraphMng::Get(_T("ui_back_time"));
 }
 
 //リセット.
@@ -66,7 +72,7 @@ void UIManager::Draw() {
 
 			// ===== STEP =====
 			//背景画像.
-			GraphMng::Get(_T("ui_back_level"))->DrawExtend({ WINDOW_WID/2, 70 }, {0.4, 0.35});
+			grUiBackLevel->DrawExtend({ WINDOW_WID/2, 70 }, {0.4, 0.35});
 			//描画.
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha),
@@ -82,7 +88,7 @@ void UIManager::Draw() {
 					DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha2),
 					[&]() {
 						str2.Draw(Anchor::Mid, gameData->fonts["en-size4"].GetFont());
-						GraphMng::Get(_T("ui_back_score"))->DrawExtend({ (double)str2.pos.x, (double)str2.pos.y + 28 }, { 0.35, 0.4 });
+						grUiBackScore->DrawExtend({ (double)str2.pos.x, (double)str2.pos.y + 28 }, { 0.35, 0.4 });
 					}
 				);
 				//テキスト(光沢用)
@@ -140,7 +146,7 @@ void UIManager::Draw() {
 					DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha4),
 					[&]() {
 						//画像.
-						GraphMng::Get(_T("ui_back_level"))->DrawExtend({WINDOW_WID/2, 70}, {0.4, 0.35});
+						grUiBackLevel->DrawExtend({WINDOW_WID/2, 70}, {0.4, 0.35});
 						//テキスト.
 						str[0].Draw(Anchor::Mid, gameData->fonts["en-size5"].GetFont());
 					}
@@ -152,7 +158,7 @@ void UIManager::Draw() {
 					DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha1),
 					[&]() {
 						//画像.
-						GraphMng::Get(_T("ui_back_best_score"))->DrawExtend(str[1].pos.ToDbl() + DBL_XY(0, 28), { 0.35, 0.4 });
+						grUiBackBestScore->DrawExtend(str[1].pos.ToDbl() + DBL_XY(0, 28), { 0.35, 0.4 });
 						//テキスト.
 						str[1].Draw(Anchor::Mid, gameData->fonts["en-size4"].GetFont());
 					}
@@ -164,7 +170,7 @@ void UIManager::Draw() {
 					DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha2),
 					[&]() {
 						//画像.
-						GraphMng::Get(_T("ui_back_score"))->DrawExtend(str[2].pos.ToDbl() + DBL_XY(0, 28), { 0.35, 0.4 });
+						grUiBackScore->DrawExtend(str[2].pos.ToDbl() + DBL_XY(0, 28), { 0.35, 0.4 });
 						//テキスト.
 						str[2].Draw(Anchor::Mid, gameData->fonts["en-size4"].GetFont());
 					}
@@ -176,7 +182,7 @@ void UIManager::Draw() {
 					DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha3),
 					[&]() {
 						//画像.
-						GraphMng::Get(_T("ui_back_time"))->DrawExtend(str[3].pos.ToDbl() + DBL_XY(0, 28), { 0.35, 0.4 });
+						grUiBackTime->DrawExtend(str[3].pos.ToDbl() + DBL_XY(0, 28), { 0.35, 0.4 });
 						//テキスト.
 						str[3].Draw(Anchor::Mid, gameData->fonts["en-size4"].GetFont());
 					}
@@ -211,6 +217,6 @@ void UIManager::Draw() {
 		}
 		break;
 			
-		default: assert(FALSE); break;
+		default: assert(false); break;
 	}
 }

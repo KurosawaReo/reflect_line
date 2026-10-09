@@ -17,6 +17,9 @@ const DBL_XY SIZE_RATE = { 0.4, 0.4 }; //タイルのサイズ倍率.
 void BG_Tile::Init() {
 	//参照取得.
 	gameData = ManagerInsts::Get<GameData>();
+	//画像取得.
+	grBgTileNor = GraphMng::Get(_T("bg_tile_nor"));
+	grBgTileRef = GraphMng::Get(_T("bg_tile_ref"));
 }
 
 //リセット.
@@ -49,7 +52,7 @@ void BG_Tile::DrawNor(double modeAlpha) {
 	DrawMode::Exe(
 		DrawModeID::None, DrawBlendModeID::Alpha, _int(shine * sinNum * modeAlpha),
 		[&]() {
-			GraphMng::Get(_T("bg_tile_nor"))->DrawExtend(pos.ToDbl(), SIZE_RATE, Anchor::Mid);
+			grBgTileNor->DrawExtend(pos.ToDbl(), SIZE_RATE, Anchor::Mid);
 		}
 	);
 }
@@ -61,7 +64,7 @@ void BG_Tile::DrawRef(double modeAlpha) {
 	DrawMode::Exe(
 		DrawModeID::None, DrawBlendModeID::Alpha, _int(shine * sinNum * modeAlpha),
 		[&]() {
-			GraphMng::Get(_T("bg_tile_ref"))->DrawExtend(pos.ToDbl(), SIZE_RATE, Anchor::Mid);
+			grBgTileRef->DrawExtend(pos.ToDbl(), SIZE_RATE, Anchor::Mid);
 		}
 	);
 }

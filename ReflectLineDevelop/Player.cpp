@@ -49,6 +49,12 @@ void Player::Init()
 	tutorialStg = ManagerInsts::Get<TutorialStage>();
 	soundMng    = ManagerInsts::Get<SoundMng>();
 	inputMng    = ManagerInsts::Get<InputMng>();
+	//画像取得.
+	grPlayerRefBarrier = GraphMng::Get(_T("player_ref_barrier"));
+	grPlayerRefLight   = GraphMng::Get(_T("player_ref_light"));
+	grPlayerRef        = GraphMng::Get(_T("player_ref"));
+	grPlayerNorLight   = GraphMng::Get(_T("player_nor_light"));
+	grPlayerNor        = GraphMng::Get(_T("player_nor"));
 
 	isDebug = false;
 }
@@ -335,27 +341,27 @@ void Player::DrawPlayer() {
 	const double alpha2 = Calc::AnimWave(WaveType::CosLoop, gameMng->GetGameScene()->GetReflectModeTime() * 2);
 
 	//使用する画像名.
-	MY_STRING imgDash   = _T("null");
-	MY_STRING imgPlayer = _T("null");
+	Graph* grDash   = nullptr;
+	Graph* grPlayer = nullptr;
 
 	if (mode == PlayerMode::ItemReflect ||
 		mode == PlayerMode::ItemReflectSuper
 	){
 		//ダッシュ演出.
 		if (isDashing) {
-			imgDash = _T("light_ref_player");
+			grDash = grPlayerRefLight;
 		}
 		//プレイヤー本体.
-		imgPlayer = _T("player_ref");
+		grPlayer = grPlayerRef;
 	}
 	else 
 	{
 		//ダッシュ演出.
 		if (isDashing) {
-			imgDash = _T("light_nor_player");
+			grDash = grPlayerNorLight;
 		}
 		//プレイヤー本体.
-		imgPlayer = _T("player_nor");
+		grPlayer = grPlayerNor;
 	}
 
 	//ダッシュ時.
@@ -364,7 +370,7 @@ void Player::DrawPlayer() {
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha),
 			[&]() {
-				GraphMng::Get(imgDash)->DrawExtend(
+				grDash->DrawExtend(
 					hit.pos, { PLAYER_LIGHT_DRAW_SIZE, PLAYER_LIGHT_DRAW_SIZE }, Anchor::Mid, true, true
 				);
 			}
@@ -379,7 +385,7 @@ void Player::DrawPlayer() {
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(80 + 128 * alpha2),
 			[&]() {
-				GraphMng::Get(_T("player_ref_barrier"))->DrawExtend(
+				grPlayerRefBarrier->DrawExtend(
 					hit.pos, { PLAYER_DRAW_SIZE, PLAYER_DRAW_SIZE }, Anchor::Mid, true, true
 				);
 			}
@@ -395,7 +401,7 @@ void Player::DrawPlayer() {
 	}
 
 	//プレイヤー本体.
-	GraphMng::Get(imgPlayer)->DrawRota(
+	grPlayer->DrawRota(
 		hit.pos, PLAYER_DRAW_SIZE, imgRot, { 0, 0 }, true, true
 	);
 

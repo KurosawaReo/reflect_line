@@ -32,6 +32,9 @@ void EndScene::Init() {
 	soundMng = ManagerInsts::Get<SoundMng>();
 	inputMng = ManagerInsts::Get<InputMng>();
 	sceneMng = ManagerInsts::Get<SceneMng>();
+	//画像取得.
+	grGameover  = GraphMng::Get(_T("gameover"));
+	grNewRecord = GraphMng::Get(_T("new_record"));
 
 	//タイマー.
 	timer = Timer(TimerMode::CountUp, 0);
@@ -122,7 +125,7 @@ void EndScene::Draw() {
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim),
 			[&]() {
 				//GAME OVER.
-				GraphMng::Get(_T("gameover"))->DrawExtend({ WINDOW_WID / 2, 370 + 30 * anim }, { 0.5, 0.5 }, Anchor::Mid, true, true);
+				grGameover->DrawExtend({ WINDOW_WID / 2, 370 + 30 * anim }, { 0.5, 0.5 }, Anchor::Mid, true, true);
 				//テキスト.
 				str.Draw(Anchor::Mid, gameData->fonts["jp-size3"].GetFont());
 			}
@@ -177,7 +180,7 @@ void EndScene::Draw() {
 				[&]() {
 
 					//GAME OVER.
-					GraphMng::Get(_T("gameover"))->DrawExtend({ WINDOW_WID / 2, 370 + 30 * anim }, { 0.5, 0.5 }, Anchor::Mid, true, true); //GAME OVER
+					grGameover->DrawExtend({ WINDOW_WID / 2, 370 + 30 * anim }, { 0.5, 0.5 }, Anchor::Mid, true, true); //GAME OVER
 
 					//テキスト(1行ずつ表示)
 					for (auto& i : texts) {
@@ -204,7 +207,7 @@ void EndScene::Draw() {
 					DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim),
 					[&]() {
 						//NEW RECORD
-						GraphMng::Get(_T("new_record"))->DrawExtend(
+						grNewRecord->DrawExtend(
 							{ WINDOW_WID / 2, WINDOW_HEI / 2 - 330 + anim * 20 }, { 0.4, 0.4 }, Anchor::Mid, true, true
 						);
 					}

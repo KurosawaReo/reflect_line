@@ -65,6 +65,9 @@
 
 #define MIDDLE_ANIM_TIME				(120)			//レベルアップアニメーション時間.
 
+//メニュー.
+#define MENU_OPTION_COUNT				(3)				//選択肢の数.
+
 //プレイヤー.
 #define PLAYER_SIZE						(18)			//プレイヤーサイズ(半径)
 #define PLAYER_REF_ADD_SIZE				(12)			//反射モード時に拡大する当たり判定.

@@ -26,12 +26,17 @@ using namespace Calc; //計算機能を使用.
 //初期化.
 void ItemManager::Init() 
 {
+	//参照取得.
 	gameData  = ManagerInsts::Get<GameData>();
 	gameMng   = ManagerInsts::Get<GameManager>();
 	player    = ManagerInsts::Get<Player>();
 	laserMng  = ManagerInsts::Get<LaserManager>();
 	effectMng = ManagerInsts::Get<EffectManager>();
 	soundMng  = ManagerInsts::Get<SoundMng>();
+	//画像取得.
+	grItem           = GraphMng::Get(_T("item"));
+	grItemSuper      = GraphMng::Get(_T("item_super"));
+	grItemSuperLight = GraphMng::Get(_T("item_super_light"));
 }
 
 //リセット.
@@ -103,8 +108,8 @@ void ItemManager::Draw()
 		const int alpha = _int(155 + 100 * AnimWave(WaveType::CosLoop, i.counter / 30));
 
 		const DBL_XY size = {
-			ITEM_SIZE / GraphMng::Get(_T("item"))->GetSize().ToDbl().x,
-			ITEM_SIZE / GraphMng::Get(_T("item"))->GetSize().ToDbl().y
+			ITEM_SIZE / grItem->GetSize().ToDbl().x,
+			ITEM_SIZE / grItem->GetSize().ToDbl().y
 		};
 
 		//点滅描画.
@@ -114,13 +119,13 @@ void ItemManager::Draw()
 				//強化演出.
 				if (i.type == ItemType::Super) {
 					//アイテム発光.
-					GraphMng::Get(_T("light_super_item"))->DrawExtend(i.pos, { 0.4, 0.4 });
+					grItemSuperLight->DrawExtend(i.pos, { 0.4, 0.4 });
 					//アイテム本体.
-					GraphMng::Get(_T("item_super"))->DrawExtend(i.pos, size, Anchor::Mid, true, true);
+					grItemSuper->DrawExtend(i.pos, size, Anchor::Mid, true, true);
 				}
 				else {
 					//アイテム本体.
-					GraphMng::Get(_T("item"))->DrawExtend(i.pos, size, Anchor::Mid, true, true);
+					grItem->DrawExtend(i.pos, size, Anchor::Mid, true, true);
 				}
 			}
 		);

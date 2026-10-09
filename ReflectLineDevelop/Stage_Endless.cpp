@@ -87,6 +87,7 @@ void EndlessStage::Update() {
 	{
 		case 0:
 			break;
+
 		case 1:
 			if (gameData->counter >= 1500) { //1500 = 出現間隔約??%地点.
 				gameData->level = 2; //Lv2へ.
@@ -107,6 +108,7 @@ void EndlessStage::Update() {
 #endif
 			}
 			break;
+
 		case 2:
 			if (gameData->counter >= 3500) { //3500 = 出現間隔約??%地点.
 				gameData->level = 3; //Lv3へ.
@@ -127,6 +129,7 @@ void EndlessStage::Update() {
 #endif
 			}
 			break;
+
 		case 3:
 			if (gameData->counter >= 6000) { //6000 = 出現間隔約??%地点.
 				gameData->level = 4; //Lv4へ.
@@ -147,6 +150,7 @@ void EndlessStage::Update() {
 #endif
 			}
 			break;
+
 		case 4:
 			if (gameData->counter >= 9000) { //9000 = 出現間隔約??%地点.
 				gameData->level = 5; //Lv5へ.
@@ -167,10 +171,11 @@ void EndlessStage::Update() {
 #endif
 			}
 			break;
+
 		case 5:
 			break;
 
-		default: assert(FALSE); break;
+		default: assert(false); break;
 	}
 }
 //描画.

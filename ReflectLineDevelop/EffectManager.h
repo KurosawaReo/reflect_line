@@ -46,6 +46,11 @@ class EffectManager final : public ManagerBase
 private:
 	list<EffectData> effect; //エフェクト配列.
 
+	//画像.
+	Graph* grScore100{};
+	Graph* grScore500{};
+	Graph* grReflectEffect{};
+
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.

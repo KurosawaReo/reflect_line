@@ -59,9 +59,12 @@ private:
 	const MenuLayout mLayout;
 	const MenuColor  mColor;
 
+	//“®‰æ.
+	Graph* grMenuMovie[MENU_OPTION_COUNT]{};
+
 //¥ ===== ŠÖ” ===== ¥.
 private:
-	MY_STRING GetPlayMovieName(); //Ä¶‚·‚é“®‰æ–¼.
+	Graph* GetPlayMovie(); //Ä¶‚·‚é“®‰æ‚ğæ“¾.
 
 public:
 	void Init()   override;

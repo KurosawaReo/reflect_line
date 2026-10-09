@@ -13,6 +13,12 @@ private:
 
 	bool isShowScore{}; //スコアを表示するかどうか.
 
+	//画像.
+	Graph* grUiBackLevel{};
+	Graph* grUiBackBestScore{};
+	Graph* grUiBackScore{};
+	Graph* grUiBackTime{};
+
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.

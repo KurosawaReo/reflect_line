@@ -23,6 +23,10 @@ private:
 	Timer  startTimer{};      //項目開始時に計測開始.
 	Timer  endTimer{};        //項目終了時に計測開始.
 
+	//画像・動画.
+	Graph* grReflectModeDeath{};
+	Graph* grDashReflect{};
+
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.

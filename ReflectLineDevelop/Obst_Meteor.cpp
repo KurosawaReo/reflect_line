@@ -11,8 +11,12 @@
 static GameData* gameData;
 
 void Meteor::Init() {
-	//取得.
+	
+	//参照取得.
 	gameData = ManagerInsts::Get<GameData>();
+	//画像取得.
+	grTarget = GraphMng::Get(_T("target"));
+
 	//隕石出現処理.
 	Spawn();
 }
@@ -96,7 +100,7 @@ void Meteor::Draw() {
 	//ターゲットマーク.
 	if (isTargeting) {
 		const double size = 0.34;
-		GraphMng::Get(_T("target"))->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
+		grTarget->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
 	}
 }
 

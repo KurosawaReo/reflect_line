@@ -15,6 +15,9 @@ private:
 
 	int useBgNo{}; //何番目の背景を使うか.
 
+	//画像.
+	Graph* grReflectModeFrame{};
+
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
