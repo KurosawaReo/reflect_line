@@ -39,7 +39,8 @@ void EndlessStage::Reset() {
 void EndlessStage::Update() {
 
 	//最初のみ.
-	if (gameData->counter == 0) {
+	if (!isStarted) {
+
 		//サウンド.
 		if (auto i = soundMng->Get(_T("LevelUp"))) {
 			i->Play(false, 100);
@@ -65,6 +66,8 @@ void EndlessStage::Update() {
 			ManagerInsts::Get<NormalLaser>  ()->UseLaserPointCnt(2); //レーザーは2つ.
 #endif
 		}
+
+		isStarted = true; //以後は処理しない.
 	}
 	else {
 #if defined _DEBUG //Releaseでは入れない.

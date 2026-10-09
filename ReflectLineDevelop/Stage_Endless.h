@@ -8,6 +8,7 @@ class EndlessStage final : public ManagerBase
 {
 //¥ ===== •Ï” ===== ¥.
 private:
+	bool isStarted{}; //Å‰‚Ì1ƒtƒŒ[ƒ€ˆ——p.
 	
 //¥ ===== ŠÖ” ===== ¥.
 public:

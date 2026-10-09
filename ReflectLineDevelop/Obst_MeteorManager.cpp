@@ -120,11 +120,6 @@ void MeteorManager::Update() {
 
 void MeteorManager::Draw() {
 
-#if defined DEBUG_OBJ_ACTIVE
-	//デバッグ表示.
-	DrawFormatString(0, 140, 0xFF00FF, _T("隕石　　　　　 : %d"), meteor.size());
-#endif
-
 	//全隕石ループ.
 	for (auto& i : meteors) {
 		i.Draw(); //描画.

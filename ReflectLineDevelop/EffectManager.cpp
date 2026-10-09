@@ -152,11 +152,6 @@ void EffectManager::Update() {
 
 void EffectManager::Draw() {
 
-#if defined DEBUG_OBJ_ACTIVE
-	//デバッグ表示.
-	DrawFormatString(0, 80, 0xFF00FF, _T("エフェクト　　 : %d"), effect.size());
-#endif
-
 	//全てのエフェクト.
 	for (const auto& i : effect) {
 

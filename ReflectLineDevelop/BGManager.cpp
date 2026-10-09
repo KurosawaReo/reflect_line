@@ -12,6 +12,19 @@ static GameData*    gameData;
 
 // ▼*---=[ BGManager ]=---*▼ //
 
+//set.
+void BGManager::SetBgNo(int _no) {
+
+	//背景番号の範囲を確認.
+	const bool isValid = IsNumInRange<int>(_no, 0, _int(bg.size()));
+
+	//不正な値は設定しない.
+	assert(isValid);
+	if (!isValid) { return; }
+
+	useBgNo = _no;
+}
+
 //初期化.
 void BGManager::Init() {
 

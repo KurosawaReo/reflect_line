@@ -139,10 +139,6 @@ void Ripples::Update()
 //描画.
 void Ripples::Draw()
 {
-#if defined DEBUG_OBJ_ACTIVE
-	//デバッグ表示.
-	DrawFormatString(0, 160, 0xFF00FF, _T("波紋　　　　　 : %d"), ripples.size());
-#endif
 	DrawObstFlash();
 }
 

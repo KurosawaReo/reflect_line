@@ -169,11 +169,6 @@ void Fireworks::Update() {
 // 描画
 void Fireworks::Draw() {
 
-#if defined DEBUG_OBJ_ACTIVE
-	//デバッグ表示.
-	DrawFormatString(0, 180, 0xFF00FF, _T("花火　　　　　 : %d"), fireworks.size());
-#endif
-
 	//全花火.
 	for (auto i = fireworks.begin(); i != fireworks.end(); i++) {
 		DrawWarningEffect(i);

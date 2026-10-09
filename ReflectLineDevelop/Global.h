@@ -18,8 +18,6 @@
 //Lキー: レベルタイマー加速.
 
 /* デバッグ用 */
-//#define DEBUG_OBJ_ACTIVE		//オブジェクト出現数表示.
-//#define DEBUG_SPAWN_RATE		//召喚間隔表示.
 //#define DEBUG_SHOW_FPS		//FPS表示.　
 //#define DEBUG_CONTR_INPUT		//コントローラ操作表示.
 

@@ -57,12 +57,6 @@ void LaserManager::Update() {
 //描画.
 void LaserManager::Draw() {
 
-#if defined DEBUG_OBJ_ACTIVE
-	//デバッグ表示.
-	DrawFormatString(0, 100, 0xFF00FF, _T("レーザー　　　 : %d"), laser.size());
-	DrawFormatString(0, 120, 0xFF00FF, _T("レーザー描画線 : %d"), line.size());
-#endif
-
 	//レーザー描画線.
 	for (const LaserLineData& i : line) 
 	{

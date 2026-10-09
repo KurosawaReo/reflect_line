@@ -20,7 +20,7 @@ public:
 	//コンストラクタ.
 	BGManager(){}
 	//set.
-	void  SetBgNo(int _no) { useBgNo = _no; }
+	void  SetBgNo(int _no);
 
 	void  Init()   override;
 	void  Reset()  override;

@@ -40,17 +40,6 @@ void UIManager::Update() {
 //描画.
 void UIManager::Draw() {
 
-#if defined DEBUG_SPAWN_RATE
-	//カウンター.
-	DrawFormatStringToHandle(
-		10, WINDOW_HEI-75, 0xFFFFFF, gameData->font2, _T("Counter: %.2f"), gameData->counter
-	);
-	//出現間隔割合.
-	DrawFormatStringToHandle(
-		10, WINDOW_HEI-40, 0xFFFFFF, gameData->font2, _T("Spawn  : %.2f%%"), gameData->spawnRate*100
-	);
-#endif
-
 	//ゲームシーン経過時間.
 	const float time = gameMng->GetGameScene()->GetSceneTime();
 	//白ラベルのテキストの位置修正.
