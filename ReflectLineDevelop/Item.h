@@ -21,7 +21,7 @@ class ItemManager final : public ManagerBase
 {
 //▼ ===== 変数 ===== ▼.
 private:
-	list<ItemData> items;
+	vector<ItemData> items;
 
 	float counter{}; //経過時間.
 
@@ -43,10 +43,10 @@ public:
 	void ItemSpawn(); //アイテム召喚.
 	void ItemReset(); //全てリセット.
 
-	void ItemUse(list<ItemData>::iterator&, bool isSuper);     //アイテム発動.
+	void ItemUse(vector<ItemData>::iterator&, bool isSuper);     //アイテム発動.
 
 	void SpawnNow();                                           //今すぐアイテムを出現させる.
-	bool CheckHitPlayer(list<ItemData>::iterator&, ItemType*); //アイテム取得判定.
+	bool CheckHitPlayer(vector<ItemData>::iterator&, ItemType*); //アイテム取得判定.
 
 	//使用禁止.
 	ItemManager(const ItemManager&) = delete;

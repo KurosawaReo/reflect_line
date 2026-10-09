@@ -23,8 +23,9 @@ class Fireworks final : public ManagerBase
 {
 //▼データ.
 private:
-	list<FwData> fireworks;
-	float		 spawnTimer{};
+	vector<FwData> fireworks;
+
+	float spawnTimer{};
 
 //▼ ===== 関数 ===== ▼.
 private:
@@ -36,7 +37,7 @@ private:
 	void SpawnFireworksLaser    (float x, float y, int count);
 
 	//描画用.
-	void DrawWarningEffect(list<FwData>::iterator it);
+	void DrawWarningEffect(vector<FwData>::iterator it);
 
 public:
 	//コンストラクタ

@@ -20,7 +20,7 @@ class Ripples final : public ManagerBase
 {
 //▼ ===== 変数 ===== ▼.
 private:
-	list<RipplesData> ripples; //波紋配列.
+	vector<RipplesData> ripples; //波紋配列.
 
 	float flashTimer{}; //出現タイマー.
 
@@ -43,9 +43,9 @@ public:
 	bool CheckDistance(double x, double y);
 	void SpawnObstaclegroup();
 
-	int  GetEffectState   (list<RipplesData>::iterator it);
-	void DrawWarningEffect(list<RipplesData>::iterator it);
-	void DrawActiveEffect (list<RipplesData>::iterator it);
+	int  GetEffectState   (vector<RipplesData>::iterator it);
+	void DrawWarningEffect(vector<RipplesData>::iterator it);
+	void DrawActiveEffect (vector<RipplesData>::iterator it);
 
 	//使用禁止.
 	Ripples(const Ripples&) = delete;

@@ -168,7 +168,7 @@ void ItemManager::ItemReset() {
 }
 
 //アイテム発動.
-void ItemManager::ItemUse(list<ItemData>::iterator& it, bool isSuper)
+void ItemManager::ItemUse(vector<ItemData>::iterator& it, bool isSuper)
 {
 	//エフェクト召喚.
 	EffectData effect{};
@@ -202,7 +202,7 @@ void ItemManager::SpawnNow() {
 }
 
 //プレイヤーとの当たり判定.
-bool ItemManager::CheckHitPlayer(list<ItemData>::iterator& it, ItemType* type)
+bool ItemManager::CheckHitPlayer(vector<ItemData>::iterator& it, ItemType* type)
 {
 	//プレイヤーが無効なら中断.
 	if (!player->GetActive()) {

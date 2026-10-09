@@ -91,7 +91,7 @@ void Ripples::SpawnObstaclegroup()
 		}
 	}
 }
-int Ripples::GetEffectState(list<RipplesData>::iterator it)
+int Ripples::GetEffectState(vector<RipplesData>::iterator it)
 {
 	// 残り時間がアクティブ時間より大きければ警告状態
 	if (it->counter > RIPPLES_ACTIVE_DURATION) {
@@ -209,7 +209,7 @@ void Ripples::DrawObstFlash()
 	}
 }
 
-void Ripples::DrawWarningEffect(list<RipplesData>::iterator it)
+void Ripples::DrawWarningEffect(vector<RipplesData>::iterator it)
 {
 	//残り時間から経過時間を計算.
 	float elapsedTime = it->duration - it->counter;
@@ -253,7 +253,7 @@ void Ripples::DrawWarningEffect(list<RipplesData>::iterator it)
 	);
 }
 
-void Ripples::DrawActiveEffect(list<RipplesData>::iterator it)
+void Ripples::DrawActiveEffect(vector<RipplesData>::iterator it)
 {
 	// 残り時間から経過時間を計算
 	float elapsedTime = it->duration - it->counter;

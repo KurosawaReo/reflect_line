@@ -11,8 +11,9 @@ class MeteorManager final : public ManagerBase
 {
 //▼ ===== 変数 ===== ▼.
 private:
-	list<Meteor> meteors;  //隕石配列.
-	float		 timer{}; //隕石生成用.
+	vector<Meteor> meteors; //隕石配列.
+	
+	float timer{}; //隕石生成用.
 
 //▼ ===== 関数 ===== ▼.
 public:

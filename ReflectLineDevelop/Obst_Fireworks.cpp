@@ -176,7 +176,7 @@ void Fireworks::Draw() {
 }
 
 // 予告エフェクト描画
-void Fireworks::DrawWarningEffect(list<FwData>::iterator it) {
+void Fireworks::DrawWarningEffect(vector<FwData>::iterator it) {
 
 	const float sepTime     = 30; //区切り時間.
 	const float elapsedTime = it->counter;

@@ -35,6 +35,7 @@ void LaserManager::Init() {
 	tutorialStg = ManagerInsts::Get<TutorialStage>();
 	soundMng    = ManagerInsts::Get<SoundMng>();
 }
+
 //リセット.
 void LaserManager::Reset() {
 
@@ -46,6 +47,7 @@ void LaserManager::Reset() {
 	//レーザー描画線を全て消去.
 	line.clear();
 }
+
 //更新.
 void LaserManager::Update() {
 
@@ -54,6 +56,7 @@ void LaserManager::Update() {
 	UpdateLaser();     //各レーザーの更新.
 	UpdateLaserLine(); //各レーザー描画線の更新.
 }
+
 //描画.
 void LaserManager::Draw() {
 
@@ -255,21 +258,19 @@ void LaserManager::UpdateLaser() {
 		NextLaser(i, isErase);
 	}
 }
+
 //各レーザー描画線の更新.
 void LaserManager::UpdateLaserLine() {
 
-	for (auto i = line.begin(); i != line.end(); ) {
-
-		//経過時間カウンタ増加.
-		i->counter += gameData->speedRate;
-		//一定フレーム経過したら消去.
-		if (i->counter >= LASER_LINE_DEL_TIME) {
-			i = line.erase(i);
-		}
-		else {
-			i++;
-		}
+	//経過時間カウンタ増加.
+	for (auto& i : line) {
+		i.counter += gameData->speedRate;
 	}
+
+	//消滅判定(一定フレーム経過した線を削除)
+	std::erase_if(line, [](const LaserLineData& i) {
+		return i.counter >= LASER_LINE_DEL_TIME;
+	});
 }
 
 //レーザー召喚.
@@ -287,11 +288,11 @@ void LaserManager::SpawnLaser(DBL_XY pos, DBL_XY vel, LaserType type) {
 	tmp.target     = nullptr;
 	tmp.isGoTarget = false;
 
-	laser.push_back(tmp); //listに追加.
+	laser.push_back(tmp); //配列に追加.
 }
 
 //次のレーザーへ.
-void LaserManager::NextLaser(list<LaserData>::iterator& it, bool isErase) {
+void LaserManager::NextLaser(vector<LaserData>::iterator& it, bool isErase) {
 
 	//次の要素に進む.
 	if (isErase) {
@@ -310,7 +311,7 @@ void LaserManager::NextLaser(list<LaserData>::iterator& it, bool isErase) {
 }
 
 //レーザーの当たり判定.
-void LaserManager::HitLaser(list<LaserData>::iterator& it) {
+void LaserManager::HitLaser(vector<LaserData>::iterator& it) {
 
 	//プレイヤーが無効なら中断.
 	if (!player->GetActive()) {
@@ -378,7 +379,7 @@ void LaserManager::HitLaser(list<LaserData>::iterator& it) {
 }
 
 //レーザー反射.
-void LaserManager::ReflectLaser(list<LaserData>::iterator& it)
+void LaserManager::ReflectLaser(vector<LaserData>::iterator& it)
 {
 	//反射時の元の角度.
 	double ang = _deg(atan2(it->vec.y, it->vec.x));
@@ -409,7 +410,7 @@ void LaserManager::ReflectLaser(list<LaserData>::iterator& it)
 }
 
 //レーザー移動.
-void LaserManager::MoveLaser(list<LaserData>::iterator& it, double speed) {
+void LaserManager::MoveLaser(vector<LaserData>::iterator& it, double speed) {
 
 	//レーザーの移動.
 	it->nowPos += it->vec * speed * gameData->speedRate;
@@ -419,7 +420,7 @@ void LaserManager::MoveLaser(list<LaserData>::iterator& it, double speed) {
 }
 
 //レーザー描画線を生成.
-void LaserManager::GenerateLaserLine(list<LaserData>::iterator& it) {
+void LaserManager::GenerateLaserLine(vector<LaserData>::iterator& it) {
 
 	//前回描画した位置からの距離.
 	const double dis = Dist(it->nowPos, it->befPos);
@@ -444,7 +445,7 @@ void LaserManager::GenerateLaserLine(list<LaserData>::iterator& it) {
 			tmp.counter *= _flt(anim);
 		}
 
-		line.push_back(tmp); //listに追加.
+		line.push_back(tmp); //配列に追加.
 
 		//最後に描画線を出した座標を記録.
 		it->befPos = it->nowPos;
@@ -452,7 +453,7 @@ void LaserManager::GenerateLaserLine(list<LaserData>::iterator& it) {
 }
 
 //レーザー(reflected)の隕石追尾.
-void LaserManager::LaserRefTracking(list<LaserData>::iterator& it)
+void LaserManager::LaserRefTracking(vector<LaserData>::iterator& it)
 {
 	//ターゲットがいなければ中断.
 	if (!it->target) { return; }

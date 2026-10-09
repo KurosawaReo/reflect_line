@@ -44,7 +44,7 @@ class EffectManager final : public ManagerBase
 {
 //▼ ===== 変数 ===== ▼.
 private:
-	list<EffectData> effect; //エフェクト配列.
+	vector<EffectData> effect; //エフェクト配列.
 
 	//画像.
 	Graph* grScore100{};

@@ -391,5 +391,5 @@ void EffectManager::Draw() {
 
 //エフェクト出現.
 void EffectManager::SpawnEffect(const EffectData* data) {
-	effect.push_back(*data); //listに追加.
+	effect.push_back(*data); //配列に追加.
 }
