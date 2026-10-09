@@ -1,13 +1,13 @@
 /*
    - Obst_NormalLaser.h -
 
-   障害物: レーザー発射台(継承元)
+   障害物「追尾レーザー」
 */
 #pragma once
 #include "Global.h"
 
 //移動方向(+1すれば右回転)
-enum MoveDir
+enum class MoveDir
 {
 	Left,
 	Up,
@@ -69,8 +69,7 @@ private:
 	float counter{};   //経過カウンター.
 	float counterTm{}; //発射するタイミング.
 
-
-//▼ ===== 変数 ===== ▼.
+//▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
 	NormalLaser(){}

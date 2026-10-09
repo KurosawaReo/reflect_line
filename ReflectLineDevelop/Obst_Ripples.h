@@ -1,7 +1,7 @@
 /*
-   - Ripples.h -
+   - Obst_Ripples.h -
 
-   è·äQï®: îgñ‰.
+   è·äQï®Åuîgñ‰Åv
 */
 #pragma once
 
@@ -34,14 +34,14 @@ public:
 	void Update() override;
 	void Draw()   override;
 
-	void Hitjudgment();
+	void HitJudgment();
 	void UpdateFlashGeneration();
 	void DrawObstFlash();
 	void SpawnRipples(double x, double y);
 
 	void GenerateRandomPosition(double& x, double& y);
 	bool CheckDistance(double x, double y);
-	void SpawnObstaclegroup();
+	void SpawnObstacleGroup();
 
 	int  GetEffectState   (vector<RipplesData>::iterator it);
 	void DrawWarningEffect(vector<RipplesData>::iterator it);

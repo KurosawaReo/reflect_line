@@ -1,7 +1,5 @@
 /*
-   - Obst_StraightLaser.h -
-
-   áŠQ•¨: ’¼üƒŒ[ƒU[.
+   - Obst_StraightLaser.cpp -
 */
 #include "Obst_StraightLaser.h"
 

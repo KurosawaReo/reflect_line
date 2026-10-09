@@ -1,7 +1,7 @@
 /*
    - Obst_MeteorManager.h -
 
-   障害物: 隕石出現管理.
+   障害物「隕石」Manager
 */
 #pragma once
 #include "Obst_Meteor.h"
@@ -21,9 +21,9 @@ public:
 	MeteorManager(){}
 
 	//get.
-	Meteor* GetHitMeteor   (Line   hit, bool isDestroy);	//範囲内の隕石を取得(1つ)
-	Meteor* GetHitMeteor   (Circle hit, bool isDestroy);	//範囲内の隕石を取得(1つ)
-	Meteor* GetTargetMeteor(DBL_XY pos);					//目標となる隕石を選ぶ.
+	Meteor* GetHitMeteor   (Line   hit);	//範囲内の隕石を取得(1つ)
+	Meteor* GetHitMeteor   (Circle hit);	//範囲内の隕石を取得(1つ)
+	Meteor* GetTargetMeteor(DBL_XY pos);	//目標となる隕石を選ぶ.
 
 	void Init()   override;
 	void Reset()  override;

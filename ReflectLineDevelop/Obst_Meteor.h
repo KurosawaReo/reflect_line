@@ -1,13 +1,13 @@
 /*
    - Obst_Meteor.h -
    
-   áŠQ•¨: è¦Î.
+   áŠQ•¨uè¦Îv
 */
 #pragma once
 #include "Player.h"
 
 //è¦Î‚Ìó‘Ô.
-enum MeteorState
+enum class MeteorState
 {
 	Normal,
 	Destroy, //”j‰ó‰‰o.

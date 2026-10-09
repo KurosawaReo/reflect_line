@@ -169,17 +169,26 @@
 #define SCORE_ANIM_TIME					(50)			//スコアのアニメーション時間.
 
 //カラー.
-#define COLOR_MODE_NOR					(GetColor(50, 255, 255))		//通常モードのメインカラー.
-#define COLOR_MODE_REF					(GetColor(255, 0, 255))			//反射モードのメインカラー.
-#define COLOR_LASER_NORMAL(color)		(GetColor(50, color, 255))		//レーザー(通常)
-#define COLOR_LASER_REFLECT(color)		(GetColor(color/2+128, 0, 255)) //レーザー(反射)
+#define COLOR_MODE_NOR					(GetColor( 50, 255, 255))	//通常モードのメインカラー.
+#define COLOR_MODE_REF					(GetColor(255,   0, 255))	//反射モードのメインカラー.
 #define COLOR_PLY_REFLECT				(GetColor(255, 155, 255))
 #define COLOR_PLY_DEBUG					(GetColor(255, 150, 150))
-#define COLOR_PLY_AFT_NOR				(GetColor(105, 105, 105))		//プレイヤーの残像色(通常)
-#define COLOR_PLY_AFT_REF				(GetColor(255,   0, 255))		//プレイヤーの残像色(反射)
+#define COLOR_PLY_AFT_NOR				(GetColor(105, 105, 105))	//プレイヤーの残像色(通常)
+#define COLOR_PLY_AFT_REF				(GetColor(255,   0, 255))	//プレイヤーの残像色(反射)
 #define COLOR_ITEM						(GetColor(255, 155, 255))
-#define COLOR_PRE_EFFECT				(GetColor(128, 128, 128))		//予測演出.
-#define COLOR_METEOR(pos)				(GetColor(0, _int_r(100 + 155 * Calc::AnimWave(WaveType::CosLoop, pos.x/250)), 255)) //隕石.
+#define COLOR_PRE_EFFECT				(GetColor(128, 128, 128))	//予測演出.
 #define COLOR_BEST_SCORE				(0x20F7DE)
 #define COLOR_SCORE						(0x00FFA0)
 #define COLOR_TIME						(0x80FF9C)
+
+//カラー計算.
+inline UINT ColorLaserNormal(int color) {
+	return GetColor(50, color, 255);
+}
+inline UINT ColorLaserReflect(int color) {
+	return GetColor(color / 2 + 128, 0, 255);
+}
+inline UINT ColorMeteor(const DBL_XY& pos) {
+	const double wave = Calc::AnimWave(WaveType::CosLoop, pos.x / 250);
+	return GetColor(0, _int_r(100 + 155 * wave), 255);
+}

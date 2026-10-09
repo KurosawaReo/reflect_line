@@ -1,7 +1,5 @@
 /*
    - Obst_NormalLaser.cpp -
-
-   障害物: レーザー発射台(継承元)
 */
 #include "Obst_NormalLaser.h" //自身のヘッダ.
 
@@ -29,11 +27,11 @@ using namespace Calc; //計算機能を使用.
 DBL_XY NormalLaserPoint::GetVec() const {
 
 	switch (move.dir) {
-		//                 (move.isLeft) ? 左回り         : 右回り.
-		case Left:  return (move.isLeft) ? DBL_XY( 0, +1) : DBL_XY( 0, -1);
-		case Up:    return (move.isLeft) ? DBL_XY(-1,  0) : DBL_XY(+1,  0);
-		case Right: return (move.isLeft) ? DBL_XY( 0, -1) : DBL_XY( 0, +1);
-		case Down:  return (move.isLeft) ? DBL_XY(+1,  0) : DBL_XY(-1,  0);
+		//                          (move.isLeft) ? 左回り         : 右回り.
+		case MoveDir::Left:  return (move.isLeft) ? DBL_XY( 0, +1) : DBL_XY( 0, -1);
+		case MoveDir::Up:    return (move.isLeft) ? DBL_XY(-1,  0) : DBL_XY(+1,  0);
+		case MoveDir::Right: return (move.isLeft) ? DBL_XY( 0, -1) : DBL_XY( 0, +1);
+		case MoveDir::Down:  return (move.isLeft) ? DBL_XY(+1,  0) : DBL_XY(-1,  0);
 	}
 	return { 0, 0 }; //不正な値.
 }
@@ -62,10 +60,10 @@ void NormalLaserPoint::Update() {
 			Calc::FixPosInArea(&pos, { 0, 0 }, winSize);
 			//回転.
 			if (move.isLeft) {
-				move.dir = static_cast<MoveDir>((move.dir + 3) % MoveDir::Count); //左回り.
+				move.dir = static_cast<MoveDir>((_int(move.dir) + 3) % _int(MoveDir::Count)); //左回り.
 			}
 			else {
-				move.dir = static_cast<MoveDir>((move.dir + 1) % MoveDir::Count); //右回り.
+				move.dir = static_cast<MoveDir>((_int(move.dir) + 1) % _int(MoveDir::Count)); //右回り.
 			}
 		}
 	}
@@ -122,26 +120,26 @@ void NormalLaserPoint::Shot() {
 void NormalLaserPoint::MoveRand()
 {
 	//画面のどの辺にいくか.
-	move.dir = static_cast<MoveDir>(rand() % MoveDir::Count);
+	move.dir = static_cast<MoveDir>(rand() % _int(MoveDir::Count));
 	//どっち周りか.
 	move.isLeft = (rand() % 2 == 0);
 
 	//座標抽選.
 	switch (move.dir)
 	{
-	case Left: //左.
+	case MoveDir::Left: //左.
 		pos.x = 0;
 		pos.y = _dbl(Calc::RandNum(0, WINDOW_HEI - 1));
 		break;
-	case Up: //上.
+	case MoveDir::Up: //上.
 		pos.x = _dbl(Calc::RandNum(0, WINDOW_WID - 1));
 		pos.y = 0;
 		break;
-	case Right: //右.
+	case MoveDir::Right: //右.
 		pos.x = WINDOW_WID;
 		pos.y = _dbl(Calc::RandNum(0, WINDOW_HEI - 1));
 		break;
-	case Down: //下.
+	case MoveDir::Down: //下.
 		pos.x = _dbl(Calc::RandNum(0, WINDOW_WID - 1));
 		pos.y = WINDOW_HEI;
 		break;
@@ -259,22 +257,14 @@ void NormalLaser::DrawObstFlash() {
 			flash[i].counter * LASER_NOR_FLASH_SIZE_SPREAD / flash[i].Duration
 		);
 		int effectSize = _int_r(flash[i].BaseSize * sizeMultiplier);
-		int innerSize = effectSize / 2;
 
 		//プレイヤーの方向を計算.
 		double angle = flash[i].angle;
 		double cos_a = cos(angle);
 		double sin_a = sin(angle);
 
-#if false
-		//エフェクトを時間経過でプレイヤーの方へ進ませる.
-		float progress = flashEffect[i].Counter / flashEffect[i].Duration;
-		double currentX = flashEffect[i].x + cos_a * progress * 1000; // nピクセル分移動
-		double currentY = flashEffect[i].y + sin_a * progress * 1000;
-#else
 		double currentX = flash[i].x;
 		double currentY = flash[i].y;
-#endif
 
 		Triangle tri;
 		//三角形の3点.

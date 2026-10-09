@@ -1,7 +1,5 @@
 /*
-   - Ripples.cpp -
-
-   障害物: 波紋.
+   - Obst_Ripples.cpp -
 */
 #include "Obst_Ripples.h"
 
@@ -35,11 +33,11 @@ void Ripples::Reset()
 void Ripples::GenerateRandomPosition(double& x, double& y)
 {
 	//画面サイズ
-	int screnWidth  = WINDOW_WID;
-	int screnHeight = WINDOW_HEI;
+	int screenWidth  = WINDOW_WID;
+	int screenHeight = WINDOW_HEI;
 	int margin = 100;//画面端からのマージン大き目.
-	x = margin + (rand() % (screnWidth  - margin * 2));
-	y = margin + (rand() % (screnHeight - margin * 2));
+	x = margin + (rand() % (screenWidth  - margin * 2));
+	y = margin + (rand() % (screenHeight - margin * 2));
 }
 bool Ripples::CheckDistance(double x, double y)
 {
@@ -69,7 +67,7 @@ void Ripples::SpawnRipples(double x, double y)
 
 	ripples.push_back(tmp); //listに追加.
 }
-void Ripples::SpawnObstaclegroup()
+void Ripples::SpawnObstacleGroup()
 {
 	//同時出現をランダムに決定.
 	const int spawnCount = (rand() % RIPPLES_MAX_SIMULTANEOUS) + 1;
@@ -111,7 +109,7 @@ void Ripples::UpdateFlashGeneration()
 	//0以下になったら実行.
 	if (flashTimer <= 0) {
 		//フラッシュエフェクト生成.
-		SpawnObstaclegroup();
+		SpawnObstacleGroup();
 		//GameDataのspawnRateを使用してインターバルを調整.
 		flashTimer = RIPPLES_SPAWN_SPAN * gameData->spawnRate;
 	}
@@ -134,7 +132,7 @@ void Ripples::UpdateFlashGeneration()
 void Ripples::Update()
 {
 	UpdateFlashGeneration();
-	Hitjudgment();
+	HitJudgment();
 }
 //描画.
 void Ripples::Draw()
@@ -143,7 +141,7 @@ void Ripples::Draw()
 }
 
 //当たり判定.
-void Ripples::Hitjudgment()
+void Ripples::HitJudgment()
 {
 	bool isPlaySound = false; //一度のみサウンドを流す用.
 	

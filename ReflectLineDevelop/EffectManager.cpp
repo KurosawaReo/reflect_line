@@ -252,7 +252,7 @@ void EffectManager::Draw() {
 				//“§–¾“x.
 				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/METEOR_BREAK_ANIM_TIME));
 
-				Circle cir = { i.pos, i.counter, COLOR_METEOR(i.pos), 1.0f };
+				Circle cir = { i.pos, i.counter, ColorMeteor(i.pos), 1.0f };
 				//•`‰æ.
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
@@ -272,7 +272,7 @@ void EffectManager::Draw() {
 				Line line{};
 				line.stPos = ArcPos(i.pos, i.ang,     i.len);
 				line.edPos = ArcPos(i.pos, i.ang+180, i.len);
-			    line.color = COLOR_METEOR(i.pos);
+			    line.color = ColorMeteor(i.pos);
 				line.thick = 1;
 
 				//•`‰æ.

@@ -12,6 +12,7 @@
 //終了シーン.
 class EndScene final : public IScene
 {
+//▼ ===== 変数 ===== ▼.
 private:
 	Timer timer;              //シーンの経過時間.
 
@@ -22,6 +23,7 @@ private:
 	Graph* grGameover{};
 	Graph* grNewRecord{};
 
+//▼ ===== 関数 ===== ▼.
 public:
 	//sign
 	void SignBestScore() { isBestScore = true; }

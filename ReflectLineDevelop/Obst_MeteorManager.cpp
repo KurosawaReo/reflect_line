@@ -1,7 +1,5 @@
 /*
    - Obst_MeteorManager.cpp -
-
-   障害物: 隕石出現管理.
 */
 #include "Obst_MeteorManager.h"
 
@@ -19,7 +17,7 @@ static SoundMng*      soundMng;
 // ▼*---=[ MeteorManager ]=---*▼ //
 
 //当たった隕石を1つ取得(線と線)
-Meteor* MeteorManager::GetHitMeteor(Line hit, bool isDestroy) {
+Meteor* MeteorManager::GetHitMeteor(Line hit) {
 
 	//全隕石ループ.
 	for (auto& i : meteors) {
@@ -31,7 +29,7 @@ Meteor* MeteorManager::GetHitMeteor(Line hit, bool isDestroy) {
 }
 
 //当たった隕石を1つ取得(線と線)
-Meteor* MeteorManager::GetHitMeteor(Circle hit, bool isDestroy) {
+Meteor* MeteorManager::GetHitMeteor(Circle hit) {
 
 	//全隕石ループ.
 	for (auto& i : meteors) {
@@ -113,7 +111,7 @@ void MeteorManager::Update() {
 	}
 
 	//プレイヤーとの当たり判定.
-	if (GetHitMeteor(player->GetHit(), false)) {
+	if (GetHitMeteor(player->GetHit())) {
 		player->Death(); //死亡.
 	}
 }

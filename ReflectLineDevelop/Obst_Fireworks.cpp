@@ -1,7 +1,5 @@
 /*
    - Obst_Fireworks.cpp -
-
-   è·äQï®: â‘âŒ.
 */
 #include "Obst_Fireworks.h"
 
@@ -66,8 +64,6 @@ void Fireworks::SpawnFireworks(float x, float y) {
 	tmp.targetY = y;
 	tmp.x = x;
 	tmp.y = y;
-	tmp.vx = 0.0f;
-	tmp.vy = 0.0f;
 	tmp.counter = FIREWORKS_WARNING_DURATION;
 	tmp.sparkCount = FIREWORKS_SPARKS_COUNT + (rand() % 8);
 

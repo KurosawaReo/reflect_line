@@ -1,21 +1,17 @@
 /*
    - Obst_Fireworks.h -
 
-   障害物: 花火.
+   障害物「花火」
 */
 #pragma once
 
 //花火(Fireworks)データ.
 struct FwData 
 {
-	float x, y;                // 座標
-	float targetX, targetY;    // 目標座標（爆発位置）
-	float vx, vy;              // 速度
-	float counter;             // カウンタ
-	int   sparkCount;          // 火花数
-
-	int   fallDelay;           // 落下までの遅延
-	bool  hasFallen;           // 落下済みか
+	float x, y;                //座標.
+	float targetX, targetY;    //目標座標.
+	float counter;             //経過時間.
+	int   sparkCount;          //レーザー数.
 };
 
 //花火管理.

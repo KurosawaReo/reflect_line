@@ -1,7 +1,7 @@
 /*
    - Obst_StraightLaser.h -
 
-   障害物: 直線レーザー.
+   障害物「直線レーザー」
 */
 #pragma once
 

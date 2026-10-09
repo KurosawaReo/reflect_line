@@ -21,7 +21,7 @@ static EffectManager* effectMng;
 static SoundMng*      soundMng;
 static InputMng*      inputMng;
 
-// ¥*--=<[ StraightLaser ]>=--*¥ //
+// ¥*--=<[ EndlessStage ]>=--*¥ //
 
 //‰Šú‰».
 void EndlessStage::Init() {

@@ -29,7 +29,6 @@ struct LaserData
 	Meteor*   target;     //目標隕石.
 	bool      isGoTarget; //目標地点に向かって進むか.
 
-	int       logNum;     //記録した軌跡の数.
 	float     counter;    //経過時間.
 };
 

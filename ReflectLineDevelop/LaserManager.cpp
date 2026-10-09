@@ -75,11 +75,11 @@ void LaserManager::Draw() {
 			case LaserType::Normal:
 			case LaserType::Straight:
 			case LaserType::Falling:
-				tmpLine.color = COLOR_LASER_NORMAL(color); //通常カラー.
+				tmpLine.color = ColorLaserNormal(color); //通常カラー.
 				break;
 			case LaserType::Reflect:
 			case LaserType::SuperReflect:
-				tmpLine.color = COLOR_LASER_REFLECT(color); //反射カラー.
+				tmpLine.color = ColorLaserReflect(color); //反射カラー.
 				break;
 
 			default: assert(FALSE); break;
@@ -206,7 +206,7 @@ void LaserManager::UpdateLaser() {
 				}
 
 				//隕石と当たっているなら.
-				if (auto meteor = meteorMng->GetHitMeteor(i->hit, true)) {
+				if (auto meteor = meteorMng->GetHitMeteor(i->hit)) {
 
 					//壊れてない隕石であれば.
 					if (meteor->GetState() == MeteorState::Normal) {
@@ -281,9 +281,8 @@ void LaserManager::SpawnLaser(DBL_XY pos, DBL_XY vel, LaserType type) {
 	tmp.nowPos     = pos;	//初期座標.
 	tmp.befPos     = pos;	//初期座標.
 	tmp.vec        = vel;	//初期方向.
-	tmp.counter    = 0;		//経過時間カウンタ初期化
-	tmp.logNum     = 0;		//軌跡カウンタ初期化
-	tmp.type       = type;	//タイプの登録
+	tmp.counter    = 0;		//経過時間カウンタ初期化.
+	tmp.type       = type;	//タイプの登録.
 
 	tmp.target     = nullptr;
 	tmp.isGoTarget = false;

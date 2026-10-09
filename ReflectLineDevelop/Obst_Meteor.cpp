@@ -1,7 +1,5 @@
 /*
    - Obst_Meteor.cpp -
-
-   áŠQ•¨: è¦Î.
 */
 #include "Obst_Meteor.h"
 
@@ -80,7 +78,7 @@ void Meteor::Draw() {
 		DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 		[&](){
 
-			MY_COLOR color = COLOR_METEOR(pos);
+			MY_COLOR color = ColorMeteor(pos);
 
 			//‘S‚Ä‚Ì•`‰æü.
 			for (auto& i : shape.line) {

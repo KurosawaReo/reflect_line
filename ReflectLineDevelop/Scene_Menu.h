@@ -38,13 +38,6 @@ struct MenuColor
 //メニューシーン.
 class MenuScene final : public IScene
 {
-//▼ ===== 実体 ===== ▼.
-public:
-	static MenuScene& GetInst() {
-		static MenuScene inst; //自身のインスタンス.
-		return inst;
-	}
-
 //▼ ===== 変数 ===== ▼.
 private:
 	int       cursorIdx = 0;  //カーソルの選択位置.
