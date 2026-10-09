@@ -31,10 +31,12 @@ void EndlessStage::Init() {
 	soundMng  = ManagerInsts::Get<SoundMng>();
 	inputMng  = ManagerInsts::Get<InputMng>();
 }
+
 //リセット.
 void EndlessStage::Reset() {
-
+	isStarted = false;
 }
+
 //更新.
 void EndlessStage::Update() {
 
@@ -89,7 +91,7 @@ void EndlessStage::Update() {
 			break;
 
 		case 1:
-			if (gameData->counter >= 1500) { //1500 = 出現間隔約??%地点.
+			if (gameData->counter >= 1500) {
 				gameData->level = 2; //Lv2へ.
 
 				//サウンド.
@@ -110,7 +112,7 @@ void EndlessStage::Update() {
 			break;
 
 		case 2:
-			if (gameData->counter >= 3500) { //3500 = 出現間隔約??%地点.
+			if (gameData->counter >= 3500) {
 				gameData->level = 3; //Lv3へ.
 
 				//サウンド.
@@ -131,7 +133,7 @@ void EndlessStage::Update() {
 			break;
 
 		case 3:
-			if (gameData->counter >= 6000) { //6000 = 出現間隔約??%地点.
+			if (gameData->counter >= 6000) {
 				gameData->level = 4; //Lv4へ.
 
 				//サウンド.
@@ -152,7 +154,7 @@ void EndlessStage::Update() {
 			break;
 
 		case 4:
-			if (gameData->counter >= 9000) { //9000 = 出現間隔約??%地点.
+			if (gameData->counter >= 9000) {
 				gameData->level = 5; //Lv5へ.
 
 				//サウンド.
@@ -178,6 +180,7 @@ void EndlessStage::Update() {
 		default: assert(false); break;
 	}
 }
+
 //描画.
 void EndlessStage::Draw() {
 }

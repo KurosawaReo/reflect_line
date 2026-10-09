@@ -75,11 +75,6 @@ public:
 	void GenerateLaserLine(vector<LaserData>::iterator&);				//レーザー描画線を生成.
 	void LaserRefTracking (vector<LaserData>::iterator&);				//反射レーザーの隕石追尾.
 
-	bool IsExistEnemyLaser(DBL_XY pos, float len);						//敵のレーザーが1つでも存在するかどうか.
-
-	//未使用.
-	void LaserReflectRange(Circle cir);									//レーザーを一括反射.
-
 	//使用禁止.
 	LaserManager(const LaserManager&) = delete;
 	LaserManager& operator=(const LaserManager&) = delete;

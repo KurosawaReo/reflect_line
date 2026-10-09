@@ -6,10 +6,6 @@
 */
 #pragma once
 
-//再定義防止用(TODO:なぜかこれを外すと再定義エラーになる)
-#if !defined GLOBAL
-#define GLOBAL
-
 //====================================================================//
 //【設定】
 
@@ -187,5 +183,3 @@
 #define COLOR_BEST_SCORE				(0x20F7DE)
 #define COLOR_SCORE						(0x00FFA0)
 #define COLOR_TIME						(0x80FF9C)
-
-#endif

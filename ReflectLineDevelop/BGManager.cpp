@@ -13,16 +13,8 @@ static GameData*    gameData;
 // ▼*---=[ BGManager ]=---*▼ //
 
 //set.
-void BGManager::SetBgNo(int _no) {
-
-	//背景番号の範囲を確認.
-	const bool isValid = IsNumInRange(_no, 0, _int(bg.size()));
-
-	//不正な値は設定しない.
-	assert(isValid);
-	if (!isValid) { return; }
-
-	useBgNo = _no;
+void BGManager::SetBgType(BGType type) {
+	bgType = type;
 }
 
 //初期化.
@@ -37,7 +29,8 @@ void BGManager::Init() {
 	//背景クラス生成.
 	bg.push_back(make_unique<BG1>());
 	bg.push_back(make_unique<BG2>());
-	bg.push_back(make_unique<BG3>());
+//	bg.push_back(make_unique<BG3>());
+// 
 	//初期化.
 	for (auto& i : bg) {
 		i->Init();
@@ -47,7 +40,7 @@ void BGManager::Init() {
 //リセット.
 void BGManager::Reset() {
 
-	useBgNo = 1;
+	bgType = BGType::Tile;
 
 	//リセット.
 	for (auto& i : bg) {
@@ -62,8 +55,16 @@ void BGManager::Update() {
 	if (gameData->isPause) { return; }
 
 	//更新.
-	if (useBgNo != 0) {
-		bg[useBgNo - 1]->Update();
+	switch (bgType) 
+	{
+		case BGType::Tile:
+			bg[0]->Update();
+			break;
+		case BGType::Space3D:
+			bg[1]->Update();
+			break;
+
+		default: assert(false); break;
 	}
 }
 
@@ -79,8 +80,16 @@ void BGManager::Draw() {
 	//描画(通常時)
 	if (modeAlpha < 1.0) {
 		//背景別.
-		if (useBgNo != 0) {
-			bg[useBgNo - 1]->DrawNor(1-modeAlpha);
+		switch (bgType)
+		{
+			case BGType::Tile:
+				bg[0]->DrawNor(1 - modeAlpha);
+				break;
+			case BGType::Space3D:
+				bg[1]->DrawNor(1 - modeAlpha);
+				break;
+
+			default: assert(false); break;
 		}
 	}
 
@@ -90,9 +99,18 @@ void BGManager::Draw() {
 		double alpha3count = 1.0;
 
 		//背景別.
-		if (useBgNo != 0) {
-			bg[useBgNo - 1]->DrawRef(modeAlpha);
+		switch (bgType)
+		{
+			case BGType::Tile:
+				bg[0]->DrawRef(modeAlpha);
+				break;
+			case BGType::Space3D:
+				bg[1]->DrawRef(modeAlpha);
+				break;
+
+			default: assert(false); break;
 		}
+
 		//残り3秒になったら.
 		if (refTime <= 3.0) {
 			alpha3count = 0.5 + 0.5 * Calc::AnimWave(WaveType::CosLoop, refTime*4);
@@ -114,15 +132,31 @@ void BGManager::Draw() {
 //ポーズする.
 void BGManager::Pause() {
 
-	if (useBgNo != 0) {
-		bg[useBgNo - 1]->Pause();
+	switch (bgType)
+	{
+		case BGType::Tile:
+			bg[0]->Pause();
+			break;
+		case BGType::Space3D:
+			bg[1]->Pause();
+			break;
+
+		default: assert(false); break;
 	}
 }
 
 //ポーズ解除.
 void BGManager::PauseEnd() {
 
-	if (useBgNo != 0) {
-		bg[useBgNo - 1]->PauseEnd();
+	switch (bgType)
+	{
+		case BGType::Tile:
+			bg[0]->PauseEnd();
+			break;
+		case BGType::Space3D:
+			bg[1]->PauseEnd();
+			break;
+
+		default: assert(false); break;
 	}
 }

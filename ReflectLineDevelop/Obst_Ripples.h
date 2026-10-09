@@ -37,7 +37,7 @@ public:
 	void Hitjudgment();
 	void UpdateFlashGeneration();
 	void DrawObstFlash();
-	void SpawnRipples(double x, double y); // Ç±ÇÃçsÇí«â¡
+	void SpawnRipples(double x, double y);
 
 	void GenerateRandomPosition(double& x, double& y);
 	bool CheckDistance(double x, double y);

@@ -276,7 +276,7 @@ void LaserManager::UpdateLaserLine() {
 //レーザー召喚.
 void LaserManager::SpawnLaser(DBL_XY pos, DBL_XY vel, LaserType type) {
 
-	LaserData tmp;			//レーザー作成.
+	LaserData tmp{};		//レーザー作成.
 
 	tmp.nowPos     = pos;	//初期座標.
 	tmp.befPos     = pos;	//初期座標.
@@ -494,44 +494,5 @@ void LaserManager::LaserRefTracking(vector<LaserData>::iterator& it)
 
 		// 方向を計算して設定.
 		it->vec = { cos(newAngle), sin(newAngle) };
-	}
-}
-
-//敵のレーザーが1つでも存在するかどうか.
-//(未使用)
-bool LaserManager::IsExistEnemyLaser(DBL_XY pos, float len) {
-
-	//全てのレーザー.
-	for (const auto& i : laser) {
-		//敵のレーザーなら.
-		if (i.type == LaserType::Normal   ||
-			i.type == LaserType::Straight ||
-			i.type == LaserType::Falling)
-		{
-			//消えかかってる落下レーザーは除外.
-			if (i.type == LaserType::Falling &&
-				i.counter > LASER_FAL_HIT_ABLE) 
-			{
-				continue;
-			}
-			//距離が範囲内ならtrueを返す.
-			if (Dist(pos, i.nowPos) <= len) {
-				return true; 
-			}
-		}
-	}
-	return false; //1つもない.
-}
-
-//レーザーを一括反射(未使用)
-void LaserManager::LaserReflectRange(Circle cir) {
-	
-	//有効なレーザー.
-	for (auto i = laser.begin(); i != laser.end(); i++) {
-		const Circle cir2 = { i->nowPos, 1, {}, {} };
-		//範囲内なら.
-		if (HitCirCir(cir, cir2)) {
-			ReflectLaser(i); //その場で反射.
-		}
 	}
 }

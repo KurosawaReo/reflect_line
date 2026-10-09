@@ -80,9 +80,11 @@ void Meteor::Draw() {
 		DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 		[&](){
 
+			MY_COLOR color = COLOR_METEOR(pos);
+
 			//全ての描画線.
 			for (auto& i : shape.line) {
-				i.color = COLOR_METEOR(pos);
+				i.color = color;
 				i.Draw(true);
 			}
 
@@ -90,7 +92,7 @@ void Meteor::Draw() {
 			if (gameData->stage == StageType::Tutorial) {
 				//ターゲットされてなければ.
 				if (!isTargeting) {
-					DrawStr str(_T("隕石"), pos.ToInt(), COLOR_METEOR(pos));
+					DrawStr str(_T("隕石"), pos.ToInt(), color);
 					str.Draw(Anchor::Mid, gameData->fonts.at("jp-size1").GetFont());
 				}
 			}

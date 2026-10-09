@@ -81,13 +81,13 @@ void MenuScene::Update() {
 
 		switch (cursorIdx)
 		{
+			//エンドレスモードへ.
 			case 0:
 			{
-				//耐久モードへ.
 				sceneMng->SetScene(_T("Game"));
 				gameData->stage = StageType::Endless;
 				//背景変更.
-				bgMng->SetBgNo(3);
+				bgMng->SetBgType(BGType::Space3D);
 
 #if !defined BGM_NONE
 
@@ -103,13 +103,13 @@ void MenuScene::Update() {
 			}
 			break;
 
+			//チュートリアルへ.
 			case 1:
 			{
-				//チュートリアルへ.
 				sceneMng->SetScene(_T("Game"));
 				gameData->stage = StageType::Tutorial;
 				//背景変更.
-				bgMng->SetBgNo(1);
+				bgMng->SetBgType(BGType::Tile);
 				//プレイログに記録.
 				gameMng->WritePlayLog(true);
 

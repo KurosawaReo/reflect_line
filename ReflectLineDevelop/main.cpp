@@ -29,8 +29,10 @@ int WINAPI WinMain(
 ){
 #endif
 
-	//Managerクラス実体生成.
-	//生成した順番に実行されるようになる.
+	/*
+	   [管理クラス生成]
+	   生成した順にInitやUpdateなどが自動で実行される.
+	*/
 	ManagerInsts::NewManager<InputMng>();
 	ManagerInsts::NewManager<SoundMng>();
 	ManagerInsts::NewManager<TimerMng>();

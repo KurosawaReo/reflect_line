@@ -102,17 +102,17 @@ int Ripples::GetEffectState(vector<RipplesData>::iterator it)
 	}
 }
 
-// 定期的にエフェクトを生成する関数を追加
+//定期的にエフェクトを生成する.
 void Ripples::UpdateFlashGeneration()
 {
 	//タイマー減少.
 	flashTimer -= gameData->speedRate;
+
 	//0以下になったら実行.
 	if (flashTimer <= 0) {
-		// 新しいフラッシュエフェクトを生成
-		SpawnObstaclegroup();  // ランダム位置に複数生成するように変更
-
-		// GameDataのspawnRateを使用してインターバルを調整
+		//フラッシュエフェクト生成.
+		SpawnObstaclegroup();
+		//GameDataのspawnRateを使用してインターバルを調整.
 		flashTimer = RIPPLES_SPAWN_SPAN * gameData->spawnRate;
 	}
 

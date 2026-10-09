@@ -378,7 +378,7 @@ void Player::DrawPlayer() {
 	}
 
 	//反射モード時.
-	if (mode == PlayerMode::ItemReflect ||
+	if (mode == PlayerMode::ItemReflect      ||
 		mode == PlayerMode::ItemReflectSuper
 	){
 		//反射バリア.
@@ -390,14 +390,6 @@ void Player::DrawPlayer() {
 				);
 			}
 		);
-	}
-	else {
-		//TODO: ダッシュ反射の継続時間が分かる演出をどうするか?
-		/*
-		//ダッシュ反射円.
-		Circle cir = { hit.pos, _flt(40 * alpha), COLOR_MODE_REF, 1 };
-		DrawCircleKR(cir, Anchor::Mid, false, true);
-		*/
 	}
 
 	//プレイヤー本体.
