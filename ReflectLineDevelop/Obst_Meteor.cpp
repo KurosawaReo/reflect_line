@@ -91,7 +91,7 @@ void Meteor::Draw() {
 				//ターゲットされてなければ.
 				if (!isTargeting) {
 					DrawStr str(_T("隕石"), pos.ToInt(), COLOR_METEOR(pos));
-					str.Draw(Anchor::Mid, gameData->fonts["jp-size1"].GetFont());
+					str.Draw(Anchor::Mid, gameData->fonts.at("jp-size1").GetFont());
 				}
 			}
 		}

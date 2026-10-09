@@ -370,7 +370,7 @@ void EffectManager::Draw() {
 						//円.
 						mainCir.Draw(Anchor::Mid, false, true);
 						//テキスト.					
-						str.Draw(Anchor::Mid, gameData->fonts["en-size3"].GetFont());
+						str.Draw(Anchor::Mid, gameData->fonts.at("en-size3").GetFont());
 
 						//ランプ(必要な数だけ)
 						for (int j = 0; j < lampUseCnt; j++) {

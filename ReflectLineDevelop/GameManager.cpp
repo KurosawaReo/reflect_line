@@ -297,7 +297,7 @@ void GameManager::GamePauseEnd() {
 void GameManager::DrawPause() {
 
 	DrawStr str(_T("PAUSE"), App::GetWindowRect().GetMid(), 0xffffff);
-	str.Draw(Anchor::Mid, gameData->fonts["en-size5"].GetFont());
+	str.Draw(Anchor::Mid, gameData->fonts.at("en-size5").GetFont());
 }
 
 //ゲーム終了(死亡)

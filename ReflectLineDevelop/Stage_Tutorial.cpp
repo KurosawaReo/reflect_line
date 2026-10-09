@@ -731,7 +731,9 @@ void TutorialStage::DrawTopText(int line, double alpha, MY_STRING text) {
 	}
 
 	//ƒtƒHƒ“ƒg.
-	const int useFont = (line == 1) ? gameData->fonts["jp-size3"].GetFont() : gameData->fonts["jp-size2"].GetFont();
+	const int useFont = (line == 1) ? 
+		gameData->fonts.at("jp-size3").GetFont() : 
+		gameData->fonts.at("jp-size2").GetFont();
 
 	{
 		const int margin = 24;

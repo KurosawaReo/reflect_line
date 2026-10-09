@@ -127,7 +127,7 @@ void EndScene::Draw() {
 				//GAME OVER.
 				grGameover->DrawExtend({ WINDOW_WID / 2, 370 + 30 * anim }, { 0.5, 0.5 }, Anchor::Mid, true, true);
 				//テキスト.
-				str.Draw(Anchor::Mid, gameData->fonts["jp-size3"].GetFont());
+				str.Draw(Anchor::Mid, gameData->fonts.at("jp-size3").GetFont());
 			}
 		);
 	}
@@ -146,7 +146,7 @@ void EndScene::Draw() {
  				fixTime = floorf(gameTime * 10.0f) / 10.0f;
 			}
 
-			const int font = gameData->fonts["en-size2"].GetFont();
+			const int font = gameData->fonts.at("en-size2").GetFont();
 			const int lineSpace = 40;
 
 			//テキスト.
@@ -258,7 +258,7 @@ void EndScene::Draw() {
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim),
 				[&]() {
-					str.Draw(Anchor::Mid, gameData->fonts["en-size2"].GetFont()); //テキスト.
+					str.Draw(Anchor::Mid, gameData->fonts.at("en-size2").GetFont()); //テキスト.
 				}
 			);
 		}

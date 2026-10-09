@@ -133,7 +133,7 @@ void ItemManager::Draw()
 		//チュートリアル用.
 		if (gameData->stage == StageType::Tutorial) {
 			DrawStr str(_T("アイテム"), i.pos.ToInt() + INT_XY(0, -35), COLOR_ITEM);
-			str.Draw(Anchor::Mid, gameData->fonts["jp-size1"].GetFont());
+			str.Draw(Anchor::Mid, gameData->fonts.at("jp-size1").GetFont());
 		}
 	}
 }

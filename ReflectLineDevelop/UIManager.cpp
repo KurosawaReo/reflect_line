@@ -77,7 +77,7 @@ void UIManager::Draw() {
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha),
 				[&]() {
-					str1.Draw(Anchor::Mid, gameData->fonts["en-size5"].GetFont());
+					str1.Draw(Anchor::Mid, gameData->fonts.at("en-size5").GetFont());
 				}
 			);
 
@@ -87,7 +87,7 @@ void UIManager::Draw() {
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha2),
 					[&]() {
-						str2.Draw(Anchor::Mid, gameData->fonts["en-size4"].GetFont());
+						str2.Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
 						grUiBackScore->DrawExtend({ (double)str2.pos.x, (double)str2.pos.y + 28 }, { 0.35, 0.4 });
 					}
 				);
@@ -96,7 +96,7 @@ void UIManager::Draw() {
 					DrawModeID::None, DrawBlendModeID::Alpha, _int(100 * animSin),
 					[&]() {
 						str2.color = 0xFFFFFF;
-						str2.Draw(Anchor::Mid, gameData->fonts["en-size4"].GetFont());
+						str2.Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
 					}
 				);
 			}
@@ -148,7 +148,7 @@ void UIManager::Draw() {
 						//画像.
 						grUiBackLevel->DrawExtend({WINDOW_WID/2, 70}, {0.4, 0.35});
 						//テキスト.
-						str[0].Draw(Anchor::Mid, gameData->fonts["en-size5"].GetFont());
+						str[0].Draw(Anchor::Mid, gameData->fonts.at("en-size5").GetFont());
 					}
 				);
 			}
@@ -160,7 +160,7 @@ void UIManager::Draw() {
 						//画像.
 						grUiBackBestScore->DrawExtend(str[1].pos.ToDbl() + DBL_XY(0, 28), { 0.35, 0.4 });
 						//テキスト.
-						str[1].Draw(Anchor::Mid, gameData->fonts["en-size4"].GetFont());
+						str[1].Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
 					}
 				);
 			}
@@ -172,7 +172,7 @@ void UIManager::Draw() {
 						//画像.
 						grUiBackScore->DrawExtend(str[2].pos.ToDbl() + DBL_XY(0, 28), { 0.35, 0.4 });
 						//テキスト.
-						str[2].Draw(Anchor::Mid, gameData->fonts["en-size4"].GetFont());
+						str[2].Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
 					}
 				);
 			}
@@ -184,7 +184,7 @@ void UIManager::Draw() {
 						//画像.
 						grUiBackTime->DrawExtend(str[3].pos.ToDbl() + DBL_XY(0, 28), { 0.35, 0.4 });
 						//テキスト.
-						str[3].Draw(Anchor::Mid, gameData->fonts["en-size4"].GetFont());
+						str[3].Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
 					}
 				);
 			}
@@ -197,21 +197,21 @@ void UIManager::Draw() {
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(100 * animSin1),
 				[&]() {
-					str[1].Draw(Anchor::Mid, gameData->fonts["en-size4"].GetFont());
+					str[1].Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
 				}
 			);
 			//タイミング2.
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(100 * animSin2),
 				[&]() {
-					str[2].Draw(Anchor::Mid, gameData->fonts["en-size4"].GetFont());
+					str[2].Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
 				}
 			);
 			//タイミング3.
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(100 * animSin3),
 				[&]() {
-					str[3].Draw(Anchor::Mid, gameData->fonts["en-size4"].GetFont());
+					str[3].Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
 				}
 			);
 		}

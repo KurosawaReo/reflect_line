@@ -120,7 +120,7 @@ void Player::Draw()
 	//無敵モード表示.
 	if (isDebug) {
 		DrawStr str(_T("[Debug] 無敵モード"), {WINDOW_WID/2, WINDOW_HEI/2+300}, COLOR_PLY_DEBUG);
-		str.Draw(Anchor::Mid, gameData->fonts["jp-size3"].GetFont());
+		str.Draw(Anchor::Mid, gameData->fonts.at("jp-size3").GetFont());
 	}
 #endif
 
@@ -408,7 +408,7 @@ void Player::DrawPlayer() {
 	//チュートリアル用.
 	if (gameData->stage == StageType::Tutorial) {
 		DrawStr str(_T("プレイヤー"), hit.pos.ToInt() + INT_XY(0, -40), 0xFFFFFF);
-		str.Draw(Anchor::Mid, gameData->fonts["jp-size1"].GetFont());
+		str.Draw(Anchor::Mid, gameData->fonts.at("jp-size1").GetFont());
 	}
 }
 

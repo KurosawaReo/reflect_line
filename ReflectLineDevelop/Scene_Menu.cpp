@@ -209,7 +209,7 @@ void MenuScene::Draw() {
 
 		//テキスト描画.
 		DrawStr str(_T("モード選択"), basePos.ToInt() + offset, 0x00FFFF);
-		str.Draw(Anchor::Mid, gameData->fonts["jp-size4"].GetFont());
+		str.Draw(Anchor::Mid, gameData->fonts.at("jp-size4").GetFont());
 	}
 
 	//▼各選択肢.
@@ -254,7 +254,7 @@ void MenuScene::Draw() {
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 				[&]() {
-					str.Draw(Anchor::Mid, gameData->fonts["jp-size4"].GetFont());
+					str.Draw(Anchor::Mid, gameData->fonts.at("jp-size4").GetFont());
 				}
 			);
 
@@ -380,7 +380,7 @@ void MenuScene::Draw() {
 		box.Draw(Anchor::LU, false);
 
 		DrawStr str2(_T("操作"), { infoX + 10, infoY - 10 }, 0x00FFFF);
-		str2.Draw(Anchor::LD, gameData->fonts["jp-size2"].GetFont());
+		str2.Draw(Anchor::LD, gameData->fonts.at("jp-size2").GetFont());
 
 		//テキスト.
 		DrawStr str = { _T(""), INT_XY(infoX, infoY) + mLayout.loreInner, mColor.normal };
@@ -413,7 +413,7 @@ void MenuScene::Draw() {
 		//1行ずつ表示.
 		for (auto& i : texts) {
 			str.text = i;
-			str.Draw(Anchor::LU, gameData->fonts["jp-size2"].GetFont());
+			str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
 			str.pos.y += mLayout.loreLineSpace; //次の行へ.
 		}
 	}
@@ -421,7 +421,7 @@ void MenuScene::Draw() {
 	//▼モード説明タイトル（説明文枠の上に表示）
 	{
 		DrawStr str2(_T("モード説明"), { textBoxX+10, textBoxY-10 }, 0x00FFFF);
-		str2.Draw(Anchor::LD, gameData->fonts["jp-size2"].GetFont());
+		str2.Draw(Anchor::LD, gameData->fonts.at("jp-size2").GetFont());
 
 		// 説明文枠の枠線（水色）	
 		Box box = { DBL_XY(textBoxX, textBoxY), DBL_XY(textBoxWidth, textBoxHeight), mColor.frame, 1.0f };
@@ -446,7 +446,7 @@ void MenuScene::Draw() {
 				//1行ずつ表示.
 				for (auto& i : texts) {
 					str.text = i;
-					str.Draw(Anchor::LU, gameData->fonts["jp-size2"].GetFont());
+					str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
 					str.pos.y += mLayout.loreLineSpace; //次の行へ.
 				}
 			}
@@ -466,7 +466,7 @@ void MenuScene::Draw() {
 				//1行ずつ表示.
 				for (auto& i : texts) {
 					str.text = i;
-					str.Draw(Anchor::LU, gameData->fonts["jp-size2"].GetFont());
+					str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
 					str.pos.y += mLayout.loreLineSpace; //次の行へ.
 				}
 			}
@@ -474,7 +474,7 @@ void MenuScene::Draw() {
 
 		case 2:
 			str.text = _T("タイトル画面に戻ります。");
-			str.Draw(Anchor::LU, gameData->fonts["jp-size2"].GetFont());
+			str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
 			break;
 		}
 	}

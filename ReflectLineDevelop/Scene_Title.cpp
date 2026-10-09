@@ -71,7 +71,7 @@ void TitleScene::Draw() {
 	//画面左下の操作方法表記.
 	DrawStr howPlay(_T(""), { 30, WINDOW_HEI - 30 }, 0x00FFFF);
 	{
-		const int font = gameData->fonts["jp-size1"].GetFont();
+		const int font = gameData->fonts.at("jp-size1").GetFont();
 
 		//テキスト切り替え.
 #if defined INPUT_CHANGE_ARCADE
@@ -161,7 +161,7 @@ void TitleScene::Draw() {
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim1),
 			[&]() {
-				str.Draw(Anchor::Mid, gameData->fonts["en-size3"].GetFont()); //スコア値.
+				str.Draw(Anchor::Mid, gameData->fonts.at("en-size3").GetFont()); //スコア値.
 			}
 		);
 		//描画(画像)
@@ -213,7 +213,7 @@ void TitleScene::Draw() {
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim),
 			[&]() {
-				str.Draw(Anchor::Mid, gameData->fonts["en-size2"].GetFont()); //テキスト.
+				str.Draw(Anchor::Mid, gameData->fonts.at("en-size2").GetFont()); //テキスト.
 			}
 		);
 	}
