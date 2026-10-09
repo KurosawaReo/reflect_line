@@ -243,6 +243,7 @@ void GameManager::Update() {
 			}
 		}
 	}
+
 	//特定の操作でゲーム終了
 	if (inputMng->IsPushActionTime(_T("GameQuit")) >= FPS * 1) {
 		App::Quit(); //ボタン長押しで終了.
@@ -278,8 +279,8 @@ void GameManager::GamePause() {
 	bg->Pause();       //背景のポーズ.
 	gameScene.Pause(); //ゲームシーンのポーズ.
 
-	sceneMng->SetAutoExeMode(MngAutoExe::DrawOnly); //シーン      : 描画のみ.
-	DrawOnlyObjects();                              //オブジェクト: 描画のみ.
+	sceneMng->SetAutoExeMode(MngAutoExe::DrawOnly); //シーン　　　 : 描画のみ.
+	DrawOnlyObjects();                              //オブジェクト : 描画のみ.
 }
 
 //ポーズ解除.
@@ -290,8 +291,8 @@ void GameManager::GamePauseEnd() {
 	bg->PauseEnd();       //背景のポーズ解除.
 	gameScene.PauseEnd(); //ゲームシーンのポーズ解除.
 
-	sceneMng->SetAutoExeMode(MngAutoExe::Active);   //シーン      : 稼働.
-	RestartObjects();                               //オブジェクト: 稼働.
+	sceneMng->SetAutoExeMode(MngAutoExe::Active);   //シーン　　　 : 稼働.
+	RestartObjects();                               //オブジェクト : 稼働.
 }
 //ポーズ画面.
 void GameManager::DrawPause() {

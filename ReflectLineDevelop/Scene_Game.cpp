@@ -188,6 +188,7 @@ void GameScene::UpdateReflectMode() {
 		}
 	}
 }
+
 //反射モードの描画.
 void GameScene::DrawReflectMode() {
 
@@ -197,7 +198,7 @@ void GameScene::DrawReflectMode() {
 	{
 		//テキストの設定.
 		MY_STRING text = NumToString((int)ceil(tmReflectMode.GetPassTime()));
-		DrawStr str(text, { WINDOW_WID / 2, WINDOW_HEI / 2 }, COLOR_ITEM);
+		DrawStr str(text, App::GetWindowRect().GetMid(), COLOR_ITEM);
 
 		//画面中央に数字を表示.
 		{
@@ -210,19 +211,23 @@ void GameScene::DrawReflectMode() {
 				[&]() {
 					//最初の1秒.
 					if (tmReflectMode.GetPassTime() > REFLECT_MODE_TIME - 1) {
+						//画像描画.
 						grReflectText->DrawExtend(
-							{ WINDOW_WID / 2, WINDOW_HEI / 2 }, { 0.3 + 0.2 * anim, 0.3 + 0.2 * anim }, Anchor::Mid, true, true
+							App::GetWindowRect().GetMid().ToDbl(), 
+							{0.3 + 0.2 * anim, 0.3 + 0.2 * anim}, Anchor::Mid, true, true
 						);
 					}
 					//最後の3秒.
 					if (tmReflectMode.GetPassTime() <= 3) {
-						str.Draw(Anchor::Mid, gameData->fonts.at("en-size5").GetFont()); //数字.
+						//数字.
+						str.Draw(Anchor::Mid, gameData->fonts.at("en-size5").GetFont());
 					}
 				}
 			);
 		}
 	}
 }
+
 //反射モード終了.
 void GameScene::ReflectModeEnd() {
 

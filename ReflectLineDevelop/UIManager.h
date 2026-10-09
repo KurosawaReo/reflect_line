@@ -33,6 +33,9 @@ public:
 	void Update() override;
 	void Draw()   override;
 
+	void DrawTutorial(float time, int offset);
+	void DrawEndless(float time, int offset);
+
 	//Žg—p‹ÖŽ~.
 	UIManager(const UIManager&) = delete;
 	UIManager& operator=(const UIManager&) = delete;
