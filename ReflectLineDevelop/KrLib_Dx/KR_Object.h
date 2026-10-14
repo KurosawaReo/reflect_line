@@ -1,6 +1,6 @@
 /*
    - KR_Object.h - (DxLib)
-   ver.2026/10/09
+   ver.2026/10/14
 
    オブジェクト機能。
    描画や当たり判定などの機能をオブジェクト指向で使える。
@@ -11,7 +11,7 @@
   #include "KR_Global.h"
 #endif
 //[include] ".h"ファイルで使うもの.
-#include "KR_Draw.h"
+#include "KR_DrawGraph.h"
 #include "KR_Timer.h"
 
 //KrLib名前空間.
