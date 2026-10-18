@@ -54,7 +54,9 @@ namespace KR
 
 	//ˆÚ“®ŒÀŠE‚ğ‰z‚¦‚È‚¢‚æ‚¤ˆÊ’uC³.
 	void ObjectShape::FixPosInArea(DBL_RECT rect) {
-		Calc::FixPosInArea(GetPosPtr(), GetSize().ToInt(), rect);
+		DBL_XY pos = GetPos();								//À•W‚ğget.
+		Calc::FixPosInArea(&pos, GetSize().ToInt(), rect);	//À•W‚ğ•â³.
+		SetPos(pos);										//À•W‚ğset.
 	}
 	//ƒGƒŠƒA‚ğ‰z‚¦‚Ä‚¢‚é‚©‚Ç‚¤‚©.
 	bool ObjectShape::IsOutInArea(DBL_RECT rect, bool isCompOut, Surface* surface) {
@@ -311,6 +313,15 @@ namespace KR
 
 // ¥*--=<[ ObjectPoint ]>=--*¥ //
 
+	//‰~‚Æ‚Ì”»’è.
+	bool ObjectPoint::HitCheckCir(const Circle& other) const {
+		return Calc::HitCir(other, this->pos);
+	}
+	//lŠpŒ`‚Æ‚Ì”»’è.
+	bool ObjectPoint::HitCheckBox(const Box& other) const {
+		return Calc::HitBox(other, this->pos);
+	}
+
 	//}Œ`(“_)‚ğ•`‰æ.
 	void ObjectPoint::DrawShape(bool isFill, bool isAnti, bool isCameraDisp) const {
 
@@ -320,8 +331,8 @@ namespace KR
 		//¬‚³‚¢‰~‚ğ•`‰æ‚·‚é.
 		Circle tmpCir;
 		tmpCir.pos   = pos + offset;
-		tmpCir.r     = 5;
-		tmpCir.color = ColorID::Red;
+		tmpCir.r     = drawR;
+		tmpCir.color = drawColor;
 
 		//•`‰æ.
 		try {
