@@ -1,6 +1,6 @@
 /*
    - KR_Sound.h - (DxLib)
-   ver.2026/08/04
+   ver.2026/10/09
 
    サウンド再生機能。
 */
@@ -65,7 +65,7 @@ namespace KR
 	//▼ ===== 関数 ===== ▼.
 	public:
 		//コンストラクタ.
-		SoundMng(int order) : ManagerBase(order) {}
+		SoundMng(){}
 		//デストラクタ.
 		~SoundMng();
 

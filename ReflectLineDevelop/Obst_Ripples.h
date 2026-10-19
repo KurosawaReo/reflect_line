@@ -1,7 +1,7 @@
 /*
-   - Ripples.h -
+   - Obst_Ripples.h -
 
-   障害物: 波紋.
+   障害物「波紋」
 */
 #pragma once
 
@@ -20,32 +20,32 @@ class Ripples final : public ManagerBase
 {
 //▼ ===== 変数 ===== ▼.
 private:
-	list<RipplesData> ripples; //波紋配列.
+	vector<RipplesData> ripples; //波紋配列.
 
 	float flashTimer{}; //出現タイマー.
 
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	Ripples(int order) : ManagerBase(order) {}
+	Ripples(){}
 
 	void Init()   override;
 	void Reset()  override;
 	void Update() override;
 	void Draw()   override;
 
-	void Hitjudgment();
+	void HitJudgment();
 	void UpdateFlashGeneration();
 	void DrawObstFlash();
-	void SpawnRipples(double x, double y); // この行を追加
+	void SpawnRipples(double x, double y);
 
 	void GenerateRandomPosition(double& x, double& y);
 	bool CheckDistance(double x, double y);
-	void SpawnObstaclegroup();
+	void SpawnObstacleGroup();
 
-	int  GetEffectState   (list<RipplesData>::iterator it);
-	void DrawWarningEffect(list<RipplesData>::iterator it);
-	void DrawActiveEffect (list<RipplesData>::iterator it);
+	int  GetEffectState   (vector<RipplesData>::iterator it);
+	void DrawWarningEffect(vector<RipplesData>::iterator it);
+	void DrawActiveEffect (vector<RipplesData>::iterator it);
 
 	//使用禁止.
 	Ripples(const Ripples&) = delete;

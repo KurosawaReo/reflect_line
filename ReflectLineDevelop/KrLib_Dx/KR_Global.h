@@ -91,7 +91,7 @@ namespace KR
 		Circle();
 		Circle(DBL_XY _pos, float _r, MY_COLOR _color, float _thick);
 		//描画.
-		void Draw(Anchor anc = Anchor::Mid, bool isFill = true, bool isAnti = false, bool isCameraDisp = true);
+		void Draw(Anchor anc = Anchor::Mid, bool isFill = true, bool isAnti = false, bool isCameraDisp = true) const;
 	};
 
 	//四角形データ.
@@ -106,7 +106,7 @@ namespace KR
 		Box();
 		Box(DBL_XY _pos, DBL_XY _size, MY_COLOR _color, float _thick);
 		//描画.
-		void Draw(Anchor anc = Anchor::Mid, bool isFill = true, bool isAnti = false, bool isCameraDisp = true);
+		void Draw(Anchor anc = Anchor::Mid, bool isFill = true, bool isAnti = false, bool isCameraDisp = true) const;
 	};
 
 	//三角形データ.
@@ -120,7 +120,7 @@ namespace KR
 		Triangle();
 		Triangle(DBL_XY _pos1, DBL_XY _pos2, DBL_XY _pos3, MY_COLOR _color, float _thick);
 		//描画.
-		void Draw(bool isFill = true, bool isAnti = false, bool isCameraDisp = true);
+		void Draw(bool isFill = true, bool isAnti = false, bool isCameraDisp = true) const;
 	};
 
 	//線データ.
@@ -135,7 +135,7 @@ namespace KR
 		Line();
 		Line(DBL_XY _stPos, DBL_XY _edPos, MY_COLOR _color, float _thick);
 		//描画.
-		void Draw(bool isAnti = false, bool isCameraDisp = true);
+		void Draw(bool isAnti = false, bool isCameraDisp = true) const;
 	};
 
 	//扇形データ.
@@ -152,7 +152,7 @@ namespace KR
 		Pie();
 		Pie(DBL_XY _pos, double _r, double _stAng, double _arcAng, MY_COLOR _color, float _thick);
 		//描画.
-		void Draw(bool isAnti = false, bool isCameraDisp = true);
+		void Draw(bool isAnti = false, bool isCameraDisp = true) const;
 	};
 
 	//ベジエ曲線.
@@ -169,7 +169,7 @@ namespace KR
 		BezierLine();
 		BezierLine(DBL_XY _stPos, DBL_XY _edPos, DBL_XY _stContrPos, DBL_XY _edContrPos, MY_COLOR _color, float _thick);
 		//描画.
-		void Draw(bool isDot, bool isAnti = false, bool isCameraDisp = true);
+		void Draw(bool isDot, bool isAnti = false, bool isCameraDisp = true) const;
 	};
 
 	//スプライン曲線.
@@ -183,7 +183,7 @@ namespace KR
 		Spline();
 		Spline(const vector<DBL_XY>& _points, MY_COLOR _color, float _thick);
 		//描画.
-		void Draw(bool isDot, bool isAnti = false, bool isCameraDisp = true);
+		void Draw(bool isDot, bool isAnti = false, bool isCameraDisp = true) const;
 	};
 
 	//ポリゴン.
@@ -198,6 +198,6 @@ namespace KR
 		Polygon();
 		Polygon(DBL_XY _pos, const vector<DBL_XY>& _points, MY_COLOR _color, float _thick);
 		//描画.
-		void Draw(bool isSurround = false, bool isAnti = false, bool isCameraDisp = true);
+		void Draw(bool isSurround = false, bool isAnti = false, bool isCameraDisp = true) const;
 	};
 }

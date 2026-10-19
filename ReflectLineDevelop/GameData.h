@@ -11,12 +11,6 @@ enum class StageType
 	Tutorial,
 };
 
-//操作方法の種類.
-enum class OperateType
-{
-
-};
-
 //ゲームデータ[継承不可]
 class GameData final : public ManagerBase
 {
@@ -43,7 +37,7 @@ public:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	GameData() : ManagerBase(0) {}
+	GameData() : ManagerBase() {}
 
 	//add.
 	void AddScore(int score);

@@ -1,6 +1,6 @@
 /*
    - KR_Object.h - (DxLib)
-   ver.2026/09/03
+   ver.2026/10/15
 
    オブジェクト機能。
    描画や当たり判定などの機能をオブジェクト指向で使える。
@@ -11,7 +11,7 @@
   #include "KR_Global.h"
 #endif
 //[include] ".h"ファイルで使うもの.
-#include "KR_Draw.h"
+#include "KR_DrawGraph.h"
 #include "KR_Timer.h"
 
 //KrLib名前空間.
@@ -22,9 +22,9 @@ namespace KR
 	{
 	//▼ ===== 変数 ===== ▼.
 	private:
-		vector<MY_STRING> useImg{};    //使う画像データ.
-		int               useImgNo{};  //使う画像データのindex.
-		Timer             tmImgAnim{}; //画像切り替え用タイマー.
+		vector<Graph*> useImg{};    //使う画像データ.
+		int            useImgNo{};  //使う画像データのindex.
+		Timer          tmImgAnim{}; //画像切り替え用タイマー.
 
 	public:
 		DBL_XY offset{};   //画像をずらす量.
@@ -47,15 +47,14 @@ namespace KR
 		virtual void Draw   () = 0; //描画.
 		virtual bool IsErase() const { return false; } //消滅条件(ObjectMng専用)
 
-		//座標, サイズ.
-		virtual void    SetPos   (DBL_XY)       = 0;
-		virtual void    AddPos   (DBL_XY)       = 0;
-		virtual DBL_XY  GetPos   ()       const = 0;
-		virtual DBL_XY* GetPosPtr()             = 0;
-		virtual DBL_XY  GetSize  ()       const = 0;
+		//座標.
+		virtual void   SetPos(DBL_XY)       = 0;
+		virtual void   AddPos(DBL_XY)       = 0;
+		virtual DBL_XY GetPos()       const = 0;
+		virtual DBL_XY GetSize()      const = 0; //FixPosInAreaの判定に必要.
 		//画像.
-		void         SetImage		(MY_STRING name);
-		void         SetImages      (vector<MY_STRING> names, float changeTime);
+		void         SetGraph		(Graph* graph);
+		void         SetGraphs      (vector<Graph*> graphs, float changeTime);
 		void         StopImageAnim  (bool isStop);
 		//Calcの機能.
 		void         FixPosInArea   (DBL_RECT rect);
@@ -91,20 +90,19 @@ namespace KR
 			cir.color = 0xFFFFFF; //デフォルト色.
 		}
 		//get.
-		const Circle* GetCir() const { return &cir; } //円を取得.
+		Circle* GetCir() { return &cir; } //円を取得.
 
-		//座標, サイズ.
-		void      SetPos   (DBL_XY _pos)       override { cir.pos = _pos; }
-		void      AddPos   (DBL_XY _pos)       override { cir.pos += _pos; }
-		DBL_XY    GetPos   ()            const override { return cir.pos; }
-		DBL_XY*   GetPosPtr()                  override { return &cir.pos; }
-		DBL_XY    GetSize  ()            const override { return {cir.r*2, cir.r*2}; }
+		//座標.
+		void   SetPos(DBL_XY _pos)       override { cir.pos = _pos; }
+		void   AddPos(DBL_XY _pos)       override { cir.pos += _pos; }
+		DBL_XY GetPos()            const override { return cir.pos; }
+		DBL_XY GetSize()           const override { return { cir.r, cir.r }; }
 		//当たり判定.
-		bool      HitCheckCir (const Circle& cir)  const;
-		bool      HitCheckBox (const Box&    box)  const;
-		bool      HitCheckLine(const Line&   line, DBL_XY* nearestPos = nullptr) const;
+		bool   HitCheckCir (const Circle& cir)  const;
+		bool   HitCheckBox (const Box&    box)  const;
+		bool   HitCheckLine(const Line&   line, DBL_XY* nearestPos = nullptr) const;
 		//描画.
-		void      DrawShape(bool isFill = true, bool isAnti = false, bool isCameraDisp = true) const override;
+		void   DrawShape(bool isFill = true, bool isAnti = false, bool isCameraDisp = true) const override;
 	};
 
 	//オブジェクト(四角形) [継承想定]
@@ -122,19 +120,18 @@ namespace KR
 			box.color = 0xFFFFFF; //デフォルト色.
 		}
 		//get.
-		const Box* GetBox() const { return &box; } //四角形を取得.
+		Box*   GetBox() { return &box; } //四角形を取得.
 
 		//座標, サイズ.
-		void      SetPos   (DBL_XY _pos)       override { box.pos = _pos; }
-		void      AddPos   (DBL_XY _pos)       override { box.pos += _pos; }
-		DBL_XY    GetPos   ()            const override { return box.pos; }
-		DBL_XY*   GetPosPtr()                  override { return &box.pos; }
-		DBL_XY    GetSize  ()            const override { return box.size; }
+		void   SetPos(DBL_XY _pos)       override { box.pos = _pos; }
+		void   AddPos(DBL_XY _pos)       override { box.pos += _pos; }
+		DBL_XY GetPos()            const override { return box.pos; }
+		DBL_XY GetSize()           const override { return box.size; }
 		//当たり判定.
-		bool      HitCheckCir(const Circle& cir) const;
-		bool      HitCheckBox(const Box&    box) const;
+		bool   HitCheckCir(const Circle& cir) const;
+		bool   HitCheckBox(const Box&    box) const;
 		//描画.
-		void      DrawShape(bool isFill = true, bool isAnti = false, bool isCameraDisp = true) const override;
+		void   DrawShape(bool isFill = true, bool isAnti = false, bool isCameraDisp = true) const override;
 	};
 
 	//オブジェクト(形を持たない点) [継承想定]
@@ -142,17 +139,30 @@ namespace KR
 	{
 		//▼ ===== 変数 ===== ▼.
 	private:
-		DBL_XY pos;	//座標.
+		DBL_XY	 pos;		//座標.
+		float	 drawR;		//半径(描画用)
+		MY_COLOR drawColor;	//色(描画用)
 
 		//▼ ===== 関数 ===== ▼.
 	public:
+		//コンストラクタ.
+		ObjectPoint() {
+			drawR = 5;					//デフォルト半径.
+			drawColor = ColorID::Red;	//デフォルト色.
+		}
+		//点の設定.
+		void   SetDrawR    (float _r)        { drawR = _r; }
+		void   SetDrawColor(MY_COLOR _color) { drawColor = _color; }
+
 		//座標, サイズ.
-		void      SetPos(DBL_XY _pos)       override { pos = _pos; }
-		void      AddPos(DBL_XY _pos)       override { pos += _pos; }
-		DBL_XY    GetPos()            const override { return pos; }
-		DBL_XY*   GetPosPtr()               override { return &pos; }
-		DBL_XY    GetSize()           const override { return {0, 0}; } //サイズなし.
+		void   SetPos(DBL_XY _pos)       override { pos = _pos; }
+		void   AddPos(DBL_XY _pos)       override { pos += _pos; }
+		DBL_XY GetPos()            const override { return pos; }
+		DBL_XY GetSize()           const override { return {0, 0}; } //Pointのためサイズはなし.
+		//当たり判定.
+		bool   HitCheckCir(const Circle& cir) const;
+		bool   HitCheckBox(const Box&    box) const;
 		//描画.
-		void      DrawShape(bool isFill = true, bool isAnti = false, bool isCameraDisp = true) const override;
+		void   DrawShape(bool isFill = true, bool isAnti = false, bool isCameraDisp = true) const override;
 	};
 }

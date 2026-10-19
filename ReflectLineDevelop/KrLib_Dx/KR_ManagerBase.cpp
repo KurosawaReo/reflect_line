@@ -11,7 +11,7 @@
 namespace KR
 {
 	//コンストラクタ.
-	ManagerBase::ManagerBase(int _order, MngAutoExe _mode) :
-		order(_order), mode(_mode), befMode(_mode)
+	ManagerBase::ManagerBase(MngAutoExe _mode) :
+		mode(_mode), befMode(_mode)
 	{}
 }

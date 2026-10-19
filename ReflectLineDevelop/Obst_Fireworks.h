@@ -1,21 +1,17 @@
 /*
    - Obst_Fireworks.h -
 
-   障害物: 花火.
+   障害物「花火」
 */
 #pragma once
 
 //花火(Fireworks)データ.
 struct FwData 
 {
-	float x, y;                // 座標
-	float targetX, targetY;    // 目標座標（爆発位置）
-	float vx, vy;              // 速度
-	float counter;             // カウンタ
-	int   sparkCount;          // 火花数
-
-	int   fallDelay;           // 落下までの遅延
-	bool  hasFallen;           // 落下済みか
+	float x, y;                //座標.
+	float targetX, targetY;    //目標座標.
+	float counter;             //経過時間.
+	int   sparkCount;          //レーザー数.
 };
 
 //花火管理.
@@ -23,8 +19,9 @@ class Fireworks final : public ManagerBase
 {
 //▼データ.
 private:
-	list<FwData> fireworks;
-	float		 spawnTimer{};
+	vector<FwData> fireworks;
+
+	float spawnTimer{};
 
 //▼ ===== 関数 ===== ▼.
 private:
@@ -33,14 +30,14 @@ private:
 	void SpawnFireworks           (float x, float y);
 	void UpdateFireworksGeneration();
 	void UpdateIndividualFireworks();
-	void CreateFireworksSparks    (float x, float y);
+	void SpawnFireworksLaser    (float x, float y, int count);
 
 	//描画用.
-	void DrawWarningEffect(list<FwData>::iterator it);
+	void DrawWarningEffect(vector<FwData>::iterator it);
 
 public:
 	//コンストラクタ
-	Fireworks(int order) : ManagerBase(order) {}
+	Fireworks(){}
 
 	void Init()   override;
 	void Reset()  override;
@@ -48,6 +45,6 @@ public:
 	void Draw()   override;
 
 	//使用禁止.
-	Fireworks(const Fireworks*) = delete;
-	Fireworks* operator=(const Fireworks*) = delete;
+	Fireworks(const Fireworks&) = delete;
+	Fireworks& operator=(const Fireworks&) = delete;
 };

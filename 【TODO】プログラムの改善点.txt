@@ -1,0 +1,58 @@
+【すぐ直せる問題】
+
+26. rand() と Calc::RandNum が混在（NormalLaser / StraightLaser / Ripples / Fireworks）。RandNum に統一すれば srand も要らなくなる。
+
+27. 文字コードが混在している。47ファイルが Shift-JIS で、4ファイル（GameManager.cpp、Scene_End/Menu/Title.cpp）が UTF-8 BOM。GitHub や他PCで文字化けする。UTF-8 に統一して、文字セット設定を確認したうえでビルドし、日本語表示をチェックする。
+
+28. _stprintf と TCHAR[256]（UIManager、Scene_Title）を、自作の Format::StrFormat に統一する。
+
+29. 警告レベルを /W4 にして警告を0にする。変数名の隠蔽（auto i が for の i を隠している、Fireworks:125 と Ripples:188）、符号比較、%d と size_t が出るはず。
+
+【時間のかかる問題】
+
+★ 隕石ターゲットの生ポインタ（use-after-free の可能性）
+LaserData::target は list<Meteor> 要素への生ポインタ。隕石は画面外や破壊で erase されるが、レーザーには通知されない。
+その後 target->GetPos() や SetIsTargeting(false) が解放済みメモリに触れる（LaserManager.cpp:305, 398, 474）。
+本修正は、隕石に ID を振り、レーザーは ID を持ち、MeteorManager::Find(id) で引く形。
+
+★ 「チュートリアルか」の分岐が約17箇所に散在
+Player / LaserManager / Item / Meteor / Scene_* が Tutorial を知っている。
+ステージ側に通知（OnLaserReflected / OnItemTaken / OnMeteorBroken）を持たせ、ステージが受ける形にする。
+「プレイヤー」「隕石」などの説明ラベル描画もステージ側へ移せる。
+
+★ static ポインタ＋ManagerInsts::Get への依存
+全 .cpp の先頭に static X* x; が約100行ある。依存が見えにくく、Player⇄LaserManager⇄GameManager⇄Scene で循環しやすい。
+NormalLaser は自分自身まで static に持っている。
+参照をまとめた GameContext を渡す形にする。または 2 の通知で逆向きの依存を消す。
+
+Tutorial の進行が二重 switch＋数値直書き
+stepNo × stepInnerNo の switch に、20、8秒、2000点 が直書きされている。IsEnd の引数名がメンバと同名。
+ステップをデータ化する（{文言, 終了条件のラムダ, 開始処理} の配列）か、StateMachine を使う。
+動画枠の GradLine 描画も3重複している。
+
+Endless のレベル処理が4回コピペ（Stage_Endless.cpp:83-171）
+{しきい値, EffectType, 開始処理} のテーブルにする。
+Endless_Level1〜5 と Tutorial_Step1〜4 の enum 9個も「バナー種別＋番号」にできる。EffectManager の同形の case も2箇所に出ている。
+
+オブジェクト管理が list ベース
+Laser / Effect / Item / Meteor / Ripples / Fireworks が対象。spawn のたびにノードを確保する。
+上限付きの固定プール（NormalLaser の flash[] が既にその形）か、vector＋swap-pop にする。
+1 のハンドル化と同時にやると効率が良い。
+
+描画のバッチ化と、更新/描画の分離
+DrawMode::Exe(lambda) を1個ずつ呼ぶので、ブレンド設定が大量に走る（BG3、レーザー線、星）。同じブレンドのものはまとめる。
+NormalLaser::DrawObstFlash は Draw の中で validFlag = false と状態を更新している。Update へ移す。
+
+巨大関数と重複ロジック
+MenuScene::Draw が約330行、UIManager::Draw、TitleScene::Draw も長い。
+「Push [SPACE]」の入力デバイス分岐が Title / End / Menu / Tutorial の4ファイルに重複している。
+floorf(gameTime*10)/10 が3箇所（GameData / Scene_End / UIManager）にある。GameData::GetFixedGameTime() にまとめる。
+メニュー項目は enum＋テーブルにする（3 が5箇所に直書き）。
+スコア説明の「+500」などは SCORE_* と二重管理。Format で差し込む。
+GameManager の Stop/DrawOnly/RestartObjects は同じ11個の vector を3回作っている。共通関数にする。
+
+#define が113個（Global.h） を constexpr / enum class にする。RIPPLES_STATE_* は enum class が向いている。MenuColor は DxLib_Init 前に GetColor を呼ぶ形なので、念のため 0xRRGGBB の定数にしておくと安全。
+
+エラー時の見え方と Reset の呼び方
+リソース読み込みに失敗すると、ログを出して黒画面のまま WaitKey で待つ。提出先PCで相対パス（Resources/）が合わないと原因が分からない。MessageBox でファイル名を出したい。
+App::Reset() を Update の途中で呼んでいる（Menu / End / Tutorial）。「リセット要求フラグ」にして、フレーム末に実行する形が安全。

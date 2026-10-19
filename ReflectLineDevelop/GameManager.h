@@ -16,13 +16,15 @@ class GameManager final : public ManagerBase
 {
 //▼ ===== 変数 ===== ▼.
 private:
-	MY_STRING gameSceneBgm{}; //ゲームシーンで使用するBGM名.
+	MY_STRING    gameSceneBgm{};	//ゲームシーンで使用するBGM名.
+
+	InputDevice  lastInputDevice{};	//最後の入力端末.
 
 	/* シーン関係 */
-	TitleScene titleScene{};
-	GameScene  gameScene{};
-	MenuScene  menuScene{};
-	EndScene   endScene{};
+	TitleScene   titleScene{};
+	GameScene    gameScene{};
+	MenuScene    menuScene{};
+	EndScene     endScene{};
 
 #if defined DEBUG_SHOW_FPS
 	TimerMicro tmFps{};	//fps計測用タイマー.
@@ -31,11 +33,13 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	GameManager(int order) : ManagerBase(order) {}
-
+	GameManager(){}
+	//set.
+	void		SetLastInputDevice(InputDevice type) { lastInputDevice = type; }
 	//get.
-	GameScene* GetGameScene()    { return &gameScene; }
-	MY_STRING  GetGameSceneBgm() { return gameSceneBgm; }
+	GameScene*	GetGameScene()		       { return &gameScene;    }
+	MY_STRING	GetGameSceneBgm()	 const { return gameSceneBgm;  }
+	InputDevice	GetLastInputDevice() const { return lastInputDevice; }
 
 	//メイン処理.
 	void Init()   override;
@@ -60,6 +64,6 @@ public:
 	void WritePlayLog(bool isTutorial);
 
 	//使用禁止.
-	GameManager(const GameManager*) = delete;
-	GameManager* operator=(const GameManager*) = delete;
+	GameManager(const GameManager&) = delete;
+	GameManager& operator=(const GameManager&) = delete;
 };

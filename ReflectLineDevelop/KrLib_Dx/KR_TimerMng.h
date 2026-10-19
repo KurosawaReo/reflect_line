@@ -1,8 +1,8 @@
 /*
    - KR_TimerMng.h - (DxLib)
-   ver.2026/07/02
+   ver.2026/10/09
 
-   時間管理機能。[試作品]
+   時間管理機能。
 */
 #pragma once
 //[include] KR_Global.
@@ -22,7 +22,7 @@ namespace KR
 		float            time{}; //何秒後に実行するか.
 	};
 
-	class TimerMng : public ManagerBase
+	class TimerMng final : public ManagerBase
 	{
 	private:
 		vector<ReservFunc> functions{}; //予約リスト.
@@ -30,7 +30,7 @@ namespace KR
 
 	public:
 		//コンストラクタ.
-		TimerMng(int order) : ManagerBase(order) {}
+		TimerMng(){}
 
 		void Init()   override;
 		void Reset()  override {}
@@ -51,6 +51,7 @@ namespace KR
 			//予約リストに追加.
 			functions.push_back(newFunc);
 		}
+
 		//全ての予約を中止する.
 		void ReservCancelAll();
 	};

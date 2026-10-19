@@ -267,7 +267,7 @@ namespace KR
 		line.color = pie.color;
 		line.thick = pie.thick;
 		try {
-			DrawLineKR(line, isAnti, isCameraDisp);
+			line.Draw(isAnti, isCameraDisp);
 		}
 		catch (const ErrorMsg& err) {
 			throw ErrorMsg(_T("DrawPieKR"), err.GetMsg());
@@ -277,7 +277,7 @@ namespace KR
 		//ê¸2Çï`âÊ.
 		line.stPos = pos2;
 		try {
-			DrawLineKR(line, isAnti, isCameraDisp);
+			line.Draw(isAnti, isCameraDisp);
 		}
 		catch (const ErrorMsg& err) {
 			throw ErrorMsg(_T("DrawPieKR"), err.GetMsg());
@@ -311,7 +311,7 @@ namespace KR
 			line.thick = pie.thick;
 			//ê¸Çï`âÊ.
 			try {
-				DrawLineKR(line, isAnti, isCameraDisp);
+				line.Draw(isAnti, isCameraDisp);
 			}
 			catch (const ErrorMsg& err) {
 				throw ErrorMsg(_T("DrawArcKR"), err.GetMsg());
@@ -355,7 +355,7 @@ namespace KR
 				line.edPos = Calc::BezierPoint(bLine, nt);
 				//ê¸ï`âÊ.
 				try {
-					DrawLineKR(line, isAnti, isCameraDisp);
+					line.Draw(isAnti, isCameraDisp);
 				}
 				catch (const ErrorMsg& err) {
 					throw ErrorMsg(_T("DrawBezierLineKR"), err.GetMsg());
@@ -399,7 +399,7 @@ namespace KR
 				line.thick = spline.thick;
 				//ï`âÊ.
 				try {
-					DrawLineKR(line, isAnti, isCameraDisp);
+					line.Draw(isAnti, isCameraDisp);
 				}
 				catch (const ErrorMsg& err) {
 					throw ErrorMsg(_T("DrawSplineKR"), err.GetMsg());
@@ -430,7 +430,7 @@ namespace KR
 			line.edPos = poly.pos + poly.points[(i + 1) % poly.points.size()]; //ÉTÉCÉYÇí¥Ç¶ÇΩÇÁ0Ç…ñﬂÇ∑.
 			//ï`âÊ.
 			try {
-				DrawLineKR(line, isAnti, isCameraDisp);
+				line.Draw(isAnti, isCameraDisp);
 			}
 			catch (const ErrorMsg& err) {
 				throw ErrorMsg(_T("DrawPolygonKR"), err.GetMsg());
@@ -535,7 +535,7 @@ namespace KR
 					line.stPos = { crossList[i].x,   _dbl(y) };
 					line.edPos = { crossList[i + 1].x, _dbl(y) };
 					line.color = poly.color;
-					DrawLineKR(line, false, isCameraDisp);
+					line.Draw(false, isCameraDisp);
 				}
 			}
 		}

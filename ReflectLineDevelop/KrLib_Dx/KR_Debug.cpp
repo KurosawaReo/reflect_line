@@ -72,14 +72,14 @@ namespace KR
 			cir.pos   = {_dbl(pos.x), _dbl(pos.y)};
 			cir.r     = 10;
 			cir.color = color;
-			DrawCircleKR(cir);
+			cir.Draw();
 		}
 		void DispPos(DBL_XY pos, MY_COLOR color) {
 			Circle cir;
 			cir.pos   = pos;
 			cir.r     = 10;
 			cir.color = color;
-			DrawCircleKR(cir);
+			cir.Draw();
 		}
 
 		//マウスカーソルに合わせてカメラを動かす.

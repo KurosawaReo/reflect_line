@@ -47,7 +47,7 @@ namespace KR
 	//▼ ===== 関数 ===== ▼.
 	public:
 		//コンストラクタ.
-		SceneMng(int order) : ManagerBase(order) {}
+		SceneMng(){}
 
 		//get.
 		MY_STRING GetSceneName() { return nowSceneName; }

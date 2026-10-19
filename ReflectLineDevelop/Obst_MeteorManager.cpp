@@ -1,7 +1,5 @@
 /*
    - Obst_MeteorManager.cpp -
-
-   障害物: 隕石出現管理.
 */
 #include "Obst_MeteorManager.h"
 
@@ -19,7 +17,7 @@ static SoundMng*      soundMng;
 // ▼*---=[ MeteorManager ]=---*▼ //
 
 //当たった隕石を1つ取得(線と線)
-Meteor* MeteorManager::GetHitMeteor(Line hit, bool isDestroy) {
+Meteor* MeteorManager::GetHitMeteor(Line hit) {
 
 	//全隕石ループ.
 	for (auto& i : meteors) {
@@ -31,7 +29,7 @@ Meteor* MeteorManager::GetHitMeteor(Line hit, bool isDestroy) {
 }
 
 //当たった隕石を1つ取得(線と線)
-Meteor* MeteorManager::GetHitMeteor(Circle hit, bool isDestroy) {
+Meteor* MeteorManager::GetHitMeteor(Circle hit) {
 
 	//全隕石ループ.
 	for (auto& i : meteors) {
@@ -113,27 +111,12 @@ void MeteorManager::Update() {
 	}
 
 	//プレイヤーとの当たり判定.
-	if (GetHitMeteor(player->GetHit(), false)) {
+	if (GetHitMeteor(player->GetHit())) {
 		player->Death(); //死亡.
 	}
 }
 
 void MeteorManager::Draw() {
-
-#if defined	DEBUG_METEOR_SPAWN
-	//隕石の目標地点範囲.
-	{
-		DrawMode _(DrawModeID::None, DrawBlendModeID::Alpha, 100);
-
-		Box box = {{WINDOW_WID/2, WINDOW_HEI/2}, {METEOR_GOAL_RAND_RANGE*2, METEOR_GOAL_RAND_RANGE*2}, 0xFFA0A0};
-		DrawBoxKR(&box, Anchor::Mid);
-	}
-#endif
-
-#if defined DEBUG_OBJ_ACTIVE
-	//デバッグ表示.
-	DrawFormatString(0, 140, 0xFF00FF, _T("隕石　　　　　 : %d"), meteor.size());
-#endif
 
 	//全隕石ループ.
 	for (auto& i : meteors) {

@@ -1,7 +1,5 @@
 /*
    - Obst_Fireworks.cpp -
-
-   障害物: 花火.
 */
 #include "Obst_Fireworks.h"
 
@@ -66,8 +64,6 @@ void Fireworks::SpawnFireworks(float x, float y) {
 	tmp.targetY = y;
 	tmp.x = x;
 	tmp.y = y;
-	tmp.vx = 0.0f;
-	tmp.vy = 0.0f;
 	tmp.counter = FIREWORKS_WARNING_DURATION;
 	tmp.sparkCount = FIREWORKS_SPARKS_COUNT + (rand() % 8);
 
@@ -117,13 +113,13 @@ void Fireworks::UpdateIndividualFireworks() {
 		}
 		//爆発.
 		else {
-			//花火のレーザーを生成.
-			CreateFireworksSparks(i->x, i->y);
+			//花火レーザーを生成.
+			SpawnFireworksLaser(i->x, i->y, i->sparkCount);
 
 			//爆発音.
 			if (!isPlaySound) {
-				if (auto i = soundMng->Get(_T("Fireworks"))) {
-					i->Play(false, 100); //再生.
+				if (auto j = soundMng->Get(_T("Fireworks"))) {
+					j->Play(false, 100); //再生.
 				}
 				isPlaySound = true; //もう再生しない.
 			}
@@ -133,14 +129,12 @@ void Fireworks::UpdateIndividualFireworks() {
 	}
 }
 
-// 花火の火花作成（LaserManagerを使用）- 落下効果付き
-void Fireworks::CreateFireworksSparks(float x, float y) {
+//花火レーザー生成.
+void Fireworks::SpawnFireworksLaser(float x, float y, int count) {
 
-	//仮で0番の火花数を使用(←追記:これがなにかは不明)
-	const int sparkCount = fireworks.begin()->sparkCount;
-
-	for (int i = 0; i < sparkCount; i++) {
-		float angle = _flt((2.0f * M_PI * i) / sparkCount);
+	//スパーク数分ループ.
+	for (int i = 0; i < count; i++) {
+		float angle = _flt((2.0f * M_PI * i) / count);
 
 		// 初期速度をランダムに調整
 		float baseSpeed = 2.5f + (float)(rand() % 3); // 2.5~4.5の範囲
@@ -171,11 +165,6 @@ void Fireworks::Update() {
 // 描画
 void Fireworks::Draw() {
 
-#if defined DEBUG_OBJ_ACTIVE
-	//デバッグ表示.
-	DrawFormatString(0, 180, 0xFF00FF, _T("花火　　　　　 : %d"), fireworks.size());
-#endif
-
 	//全花火.
 	for (auto i = fireworks.begin(); i != fireworks.end(); i++) {
 		DrawWarningEffect(i);
@@ -183,7 +172,7 @@ void Fireworks::Draw() {
 }
 
 // 予告エフェクト描画
-void Fireworks::DrawWarningEffect(list<FwData>::iterator it) {
+void Fireworks::DrawWarningEffect(vector<FwData>::iterator it) {
 
 	const float sepTime     = 30; //区切り時間.
 	const float elapsedTime = it->counter;

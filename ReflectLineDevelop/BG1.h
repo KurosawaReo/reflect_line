@@ -5,7 +5,7 @@
 #include "BGBase.h"
 
 //背景タイル.
-class BG_Tile
+class BG1_Tile
 {
 	friend class BG1; //アクセス許可.
 private:
@@ -16,6 +16,10 @@ private:
 	double sinNum{};
 
 	Timer shineTimer = Timer(TimerMode::CountDown, 3); //発光する時間.
+
+	//画像.
+	Graph* grBgTileNor{};
+	Graph* grBgTileRef{};
 
 public:
 	void Init   ();                 //初期化.
@@ -32,7 +36,7 @@ class BG1 : public BGBase
 {
 //▼ ===== 変数 ===== ▼.
 private:
-	vector<BG_Tile> tiles; //背景タイルデータ.
+	vector<BG1_Tile> tiles; //背景タイルデータ.
 
 	TimerMicro tmShine = TimerMicro(TimerMode::CountDown, 1000000/60); //光る間隔.
 

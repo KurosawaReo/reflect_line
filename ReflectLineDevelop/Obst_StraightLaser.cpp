@@ -1,7 +1,5 @@
 /*
-   - Obst_StraightLaser.h -
-
-   è·äQï®: íºê¸ÉåÅ[ÉUÅ[.
+   - Obst_StraightLaser.cpp -
 */
 #include "Obst_StraightLaser.h"
 
@@ -136,7 +134,7 @@ void StraightLaserPoint::DrawPreLine(float count)
 		DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * (1 - alpha)),
 		[&](){
 			preLine.color = COLOR_PRE_EFFECT;
-			DrawLineKR(preLine, true);
+			preLine.Draw(true);
 		}
 	);
 }

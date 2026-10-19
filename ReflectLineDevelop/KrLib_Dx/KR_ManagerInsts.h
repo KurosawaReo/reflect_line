@@ -1,6 +1,6 @@
 /*
    - KR_ManagerInsts.h - (DxLib)
-   ver.2026/06/14
+   ver.2026/10/09
 
    Managerを管理するクラス。
 */
@@ -25,29 +25,38 @@ namespace KR
 
 	//▼ ===== 変数 ===== ▼.
 	private:
-		vector<unique_ptr<ManagerBase>> mngInsts; //Managerの実体を保存する配列.
+		//ManagerBaseを継承したクラスの実体配列.
+		vector<unique_ptr<ManagerBase>> mngInsts;
+
+		int nextOrderNum = 1; //次のorder値.
 
 	//▼ ===== 関数 ===== ▼.
 	private:
 		//コンストラクタ.
-		ManagerInsts(){}
+		ManagerInsts() = default;
 		
 		//管理クラスを探す.
 		ManagerBase* GetMngClass(const std::type_info& type) const;
 
 	public:
-		//生成して登録.
-		//ManagerBaseを継承したクラスのみ指定可能.
+		/*
+		   管理クラスを生成.
+		   ManagerBaseを継承したクラスのみ指定可能.
+		   Tクラスはコンストラクタを定義しないとエラーが出る.
+		*/
 		template<class T, class... Args> 
 			requires std::derived_from<T, ManagerBase> and std::constructible_from<T, Args...>
 		static T* NewManager(Args&&... args) {
 
 			//実体生成.
-			auto obj = make_unique<T>(std::forward<Args>(args)...);
-			T* ptr = obj.get(); //ポインタ取得.
-
-			inst.mngInsts.emplace_back(std::move(obj)); //配列に所有権を移動.
-
+			unique_ptr<T> obj = make_unique<T>(std::forward<Args>(args)...);
+			//ポインタ取得.
+			T* ptr = obj.get();
+			//order値を設定.
+			obj->SetOrder(inst.nextOrderNum);
+			inst.nextOrderNum++;
+			//配列に所有権を移動.
+			inst.mngInsts.emplace_back(std::move(obj));
 			//ポインタを返す.
 			return ptr;
 		}

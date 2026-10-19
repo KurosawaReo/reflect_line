@@ -14,7 +14,7 @@ namespace KR
     namespace Format
     {
 	    //フォーマット(文字列に変数を挿入する)
-	    MY_STRING StrFormat(MY_STRING text, ...) {
+	    MY_STRING StrFormat(const TCHAR* text, ...) {
 
             TCHAR ret[256];
 
@@ -26,7 +26,7 @@ namespace KR
             int err = _vsntprintf_s(
                 ret, _countof(ret), //TCHAR型配列とサイズ.
                 _TRUNCATE,          //終端の設定.
-                text.c_str(),       //文字列("%d"などが入ったもの)
+                text,				//文字列("%d"などが入ったもの)
                 args                //挿入する変数(複数可)
             );
 

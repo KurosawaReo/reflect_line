@@ -153,7 +153,7 @@ namespace KR
 				//描画.
 				for (auto& i : tmp) {
 					i.color = 0x00ffff;
-					DrawLineKR(i, isAnti, isCameraDisp);
+					i.Draw(isAnti, isCameraDisp);
 				}
 			}
 			//制御点の円.
@@ -232,8 +232,6 @@ namespace KR
 	}
 	//get.
 	vector<DBL_XY> FreeContr::GetPointPos() const {
-
-		const int size = _int(points.size());
 
 		vector<DBL_XY> posList; //座標リスト.
 

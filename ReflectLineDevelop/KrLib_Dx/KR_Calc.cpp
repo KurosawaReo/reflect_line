@@ -12,33 +12,63 @@ namespace KR
 	//計算用の関数群.
 	namespace Calc
 	{
+		//当たり判定(円と点)
+		bool HitCir(const Circle& cir, DBL_XY pos) {
+
+			//距離差.
+			const double dx = pos.x - cir.pos.x;
+			const double dy = pos.y - cir.pos.y;
+			//半径以下ならhit(√を削減するために2乗して計算)
+			return pow(dx, 2) + pow(dy, 2) <= pow(cir.r, 2);
+		}
+
+		//当たり判定(四角形と点)
+		bool HitBox(const Box& box, DBL_XY pos) {
+
+			//四角形の範囲内なら.
+			return
+				pos.x <= box.pos.x + box.size.x && pos.x >= box.pos.x - box.size.x &&
+				pos.y <= box.pos.y + box.size.y && pos.y >= box.pos.y - box.size.y;
+		}
+
+		//当たり判定(扇形と点)
+		bool HitPie(const Pie& pie, DBL_XY pos) {
+
+			//扇形の中心からの距離.
+			const double distLen = Dist(pie.pos, pos);
+			//扇形の中心からの角度.
+			const double ang = FacingAng(pie.pos, pos);
+			//扇形の中心角.
+			const double centerAng = pie.stAng + pie.arcAng / 2;
+			//角度差(1.0～-1.0の範囲, 距離差が少ないほど1.0に近づく)
+			const double distAng = cos(_rad(centerAng - ang));
+
+			//hit条件.
+			if (distLen <= pie.r &&						//条件1: 扇形の半径内に入っている.
+				distAng >= cos(_rad(pie.arcAng / 2))    //条件2: 扇形の角度の範囲に入っている.
+			) {
+				return true;
+			}
+			return false;
+		}
+
 		//当たり判定(円と円)
 		bool HitCirCir(const Circle& cir1, const Circle& cir2) {
 
 			//距離差.
-			double x = cir1.pos.x - cir2.pos.x;
-			double y = cir1.pos.y - cir2.pos.y;
-			//距離が半径の合計以下なら(√を削減するために2乗して計算)
-			if (x*x + y*y <= pow(cir1.r+cir2.r, 2)) {
-				return true; //hit.
-			}
-			else {
-				return false;
-			}
+			const double dx = cir1.pos.x - cir2.pos.x;
+			const double dy = cir1.pos.y - cir2.pos.y;
+			//距離が半径の合計以下ならhit(√を削減するために2乗して計算)
+			return pow(dx, 2) + pow(dy, 2) <= pow(cir1.r + cir2.r, 2);
 		}
 
 		//当たり判定(四角と四角)
 		bool HitBoxBox(const Box& box1, const Box& box2) {
 
 			//中央基準座標での判定.
-			if (fabs(box1.pos.x - box2.pos.x) <= (box1.size.x + box2.size.x)/2 &&
-				fabs(box1.pos.y - box2.pos.y) <= (box1.size.y + box2.size.y)/2
-			){
-				return true; //hit.
-			}
-			else {
-				return false;
-			}
+			return
+				fabs(box1.pos.x - box2.pos.x) <= (box1.size.x + box2.size.x) / 2 &&
+				fabs(box1.pos.y - box2.pos.y) <= (box1.size.y + box2.size.y) / 2;
 		}
 
 		//当たり判定(四角と円)
@@ -51,7 +81,7 @@ namespace KR
 			NumLimRange(&nearest.x, box.pos.x - box.size.x/2, box.pos.x + box.size.x/2);
 			NumLimRange(&nearest.y, box.pos.y - box.size.y/2, box.pos.y + box.size.y/2);
 			//円の中心との座標差.
-			DBL_XY dist = nearest - cir.pos;
+			const DBL_XY dist = nearest - cir.pos;
 
 			//当たったかどうか(距離が半径以下ならhit)
 			if (dist.Dist() <= cir.r) {
@@ -79,26 +109,26 @@ namespace KR
 			}
 
 			//線の始点→終点.
-			DBL_XY v1 = line.edPos - line.stPos;
+			const DBL_XY v1 = line.edPos - line.stPos;
 			//線の終点→始点.
-			DBL_XY v2 = line.stPos - line.edPos;
+			const DBL_XY v2 = line.stPos - line.edPos;
 			//線の始点→円.
-			DBL_XY v3 = cir.pos - line.stPos;
+			const DBL_XY v3 = cir.pos - line.stPos;
 			//線の終点→円.
-			DBL_XY v4 = cir.pos - line.edPos;
+			const DBL_XY v4 = cir.pos - line.edPos;
 
 			//[外積] 線から円の距離を計算.
-			double dist = abs(Calc::CrossProduct(v1.Normalize(), v3));
+			const double dist = abs(Calc::CrossProduct(v1.Normalize(), v3));
 			//[内積] 線と円の角度差を計算.
-			double ang1 = Calc::DotProduct(v1, v3);
-			double ang2 = Calc::DotProduct(v2, v4);
+			const double ang1 = Calc::DotProduct(v1, v3);
+			const double ang2 = Calc::DotProduct(v2, v4);
 
 			//最近傍点の計算.
 			if (nearestPos) {
 				//線の始点から最近傍点までの距離を求める.
-				double dist = Calc::DotProduct(v3, v1.Normalize());
+				const double distNear = Calc::DotProduct(v3, v1.Normalize());
 				//最近傍点の座標を求める.
-				*nearestPos = line.stPos + v1.Normalize() * dist;
+				*nearestPos = line.stPos + v1.Normalize() * distNear;
 			}
 
 			//当たり判定.
@@ -139,27 +169,6 @@ namespace KR
 			if (s3 == 0 && OnSegment(line2.stPos, line2.edPos, line1.stPos)) { return true; }
 			if (s4 == 0 && OnSegment(line2.stPos, line2.edPos, line1.edPos)) { return true; }
 
-			return false;
-		}
-
-		//当たり判定(扇形と点)
-		bool HitPie(const Pie& pie, DBL_XY pos) {
-
-			//扇形の中心からの距離.
-			double distLen = Dist(pie.pos, pos);
-			//扇形の中心からの角度.
-			double ang = FacingAng(pie.pos, pos);
-			//扇形の中心角.
-			double centerAng = pie.stAng + pie.arcAng/2;
-			//角度差(1.0～-1.0の範囲, 距離差が少ないほど1.0に近づく)
-			double distAng = cos(_rad(centerAng-ang));
-
-			//hit条件.
-			if (distLen <= pie.r                   && //条件1: 扇形の半径内に入っている.
-				distAng >= cos(_rad(pie.arcAng/2))    //条件2: 扇形の角度の範囲に入っている.
-			){
-				return true;
-			}
 			return false;
 		}
 

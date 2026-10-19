@@ -21,7 +21,7 @@ static EffectManager* effectMng;
 static SoundMng*      soundMng;
 static InputMng*      inputMng;
 
-// ▼*--=<[ StraightLaser ]>=--*▼ //
+// ▼*--=<[ EndlessStage ]>=--*▼ //
 
 //初期化.
 void EndlessStage::Init() {
@@ -31,15 +31,18 @@ void EndlessStage::Init() {
 	soundMng  = ManagerInsts::Get<SoundMng>();
 	inputMng  = ManagerInsts::Get<InputMng>();
 }
+
 //リセット.
 void EndlessStage::Reset() {
-
+	isStarted = false;
 }
+
 //更新.
 void EndlessStage::Update() {
 
 	//最初のみ.
-	if (gameData->counter == 0) {
+	if (!isStarted) {
+
 		//サウンド.
 		if (auto i = soundMng->Get(_T("LevelUp"))) {
 			i->Play(false, 100);
@@ -65,6 +68,8 @@ void EndlessStage::Update() {
 			ManagerInsts::Get<NormalLaser>  ()->UseLaserPointCnt(2); //レーザーは2つ.
 #endif
 		}
+
+		isStarted = true; //以後は処理しない.
 	}
 	else {
 #if defined _DEBUG //Releaseでは入れない.
@@ -84,8 +89,9 @@ void EndlessStage::Update() {
 	{
 		case 0:
 			break;
+
 		case 1:
-			if (gameData->counter >= 1500) { //1500 = 出現間隔約??%地点.
+			if (gameData->counter >= 1500) {
 				gameData->level = 2; //Lv2へ.
 
 				//サウンド.
@@ -104,8 +110,9 @@ void EndlessStage::Update() {
 #endif
 			}
 			break;
+
 		case 2:
-			if (gameData->counter >= 3500) { //3500 = 出現間隔約??%地点.
+			if (gameData->counter >= 3500) {
 				gameData->level = 3; //Lv3へ.
 
 				//サウンド.
@@ -124,8 +131,9 @@ void EndlessStage::Update() {
 #endif
 			}
 			break;
+
 		case 3:
-			if (gameData->counter >= 6000) { //6000 = 出現間隔約??%地点.
+			if (gameData->counter >= 6000) {
 				gameData->level = 4; //Lv4へ.
 
 				//サウンド.
@@ -144,8 +152,9 @@ void EndlessStage::Update() {
 #endif
 			}
 			break;
+
 		case 4:
-			if (gameData->counter >= 9000) { //9000 = 出現間隔約??%地点.
+			if (gameData->counter >= 9000) {
 				gameData->level = 5; //Lv5へ.
 
 				//サウンド.
@@ -164,12 +173,14 @@ void EndlessStage::Update() {
 #endif
 			}
 			break;
+
 		case 5:
 			break;
 
-		default: assert(FALSE); break;
+		default: assert(false); break;
 	}
 }
+
 //描画.
 void EndlessStage::Draw() {
 }

@@ -53,6 +53,9 @@ void TutorialStage::Init() {
 	soundMng	 = ManagerInsts::Get<SoundMng>();
 	sceneMng	 = ManagerInsts::Get<SceneMng>();
 	timerMng	 = ManagerInsts::Get<TimerMng>();
+	//画像・動画取得.
+	grReflectModeDeath = GraphMng::Get(_T("reflect_mode_death"));
+	grDashReflect      = GraphMng::Get(_T("dash_reflect"));
 
 	//タイマー
 	startTimer = Timer(TimerMode::CountUp, 0);
@@ -90,7 +93,7 @@ void TutorialStage::Update() {
 		endTimer.GetState() != TimerState::Active
 	){
 		//終了条件を満たしていれば.
-		if (IsEnd(stepNo, stepInnerNo)) {
+		if (IsEnd()) {
 
 			endTimer.Start();
 
@@ -351,9 +354,10 @@ void TutorialStage::UpdateStep3() {
 
 				//動画用.
 				timerMng->ReservExe(
-					1.0f, []() {
+					1.0f, 
+					[&]() {
 						//動画.
-						GraphMng::Get(_T("reflect_mode_death"))->PlayMovie(PlayTypeID::Loop);
+						grReflectModeDeath->PlayMovie(PlayTypeID::Loop);
 						//ゲーム速度.
 						gameData->speedRate = 0.1f;
 						//無敵にする.
@@ -375,11 +379,12 @@ void TutorialStage::UpdateStep3() {
 			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
 
 				//動画.
-				GraphMng::Get(_T("reflect_mode_death"))->StopMovie();
+				grReflectModeDeath->StopMovie();
 
 				timerMng->ReservExe(
-					1.0f, []() {
-						GraphMng::Get(_T("dash_reflect"))->PlayMovie(PlayTypeID::Loop);
+					1.0f, 
+					[&]() {
+						grDashReflect->PlayMovie(PlayTypeID::Loop);
 					}
 				);
 
@@ -411,7 +416,7 @@ void TutorialStage::UpdateStep3() {
 				uiMng->SetIsShowScore(true);
 
 				//動画用.
-				GraphMng::Get(_T("dash_reflect"))->StopMovie();
+				grDashReflect->StopMovie();
 				gameData->speedRate = 1.0f;  //ゲーム速度.
 				player->SetIsNoDeath(false); //無敵解除.
 
@@ -478,18 +483,58 @@ void TutorialStage::DrawStep1() {
         case 0:
         {
             DrawTopText(1, drawAlpha, _T("移動する"));
-            DrawTopText(2, drawAlpha, _T("キーボード　　 : WASD / ↑↓←→"));
-            DrawTopText(3, drawAlpha, _T("コントローラー : 左スティック　 "));
-			DrawTopText(4, drawAlpha, _T("アーケード　　 : レバー　　　　 "));
+
+			//2行目のテキスト.
+			MY_STRING textLine2 = _T("null");
+
+			//[操作表示] 操作によって表示するテキストを変える.
+#if defined INPUT_CHANGE_ARCADE
+			textLine2 = _T("アーケード操作 : レバー");
+#else
+			//最後の操作端末を取得.
+			switch (gameMng->GetLastInputDevice()) 
+			{
+				case InputDevice::Key:
+					textLine2 = _T("キーボード操作 : WASD / ↑↓←→");
+					break;
+				case InputDevice::PadXbox:
+					textLine2 = _T("コントローラー操作 : 左スティック");
+					break;
+
+				//キーボードとコントローラ以外の操作になるのはおかしい.
+				default: assert(false); break;
+			}
+#endif
+		    DrawTopText(2, drawAlpha, textLine2);
         }
         break;
 
 		case 1:
 		{
 			DrawTopText(1, drawAlpha, _T("ダッシュする"));
-			DrawTopText(2, drawAlpha, _T("キーボード　　 : SHIFTキー "));
-			DrawTopText(3, drawAlpha, _T("コントローラー : Bボタン　 "));
-			DrawTopText(4, drawAlpha, _T("アーケード　　 : 右上ボタン"));
+
+			//2行目のテキスト.
+			MY_STRING textLine2 = _T("null");
+
+			//[操作表示] 操作によって表示するテキストを変える.
+#if defined INPUT_CHANGE_ARCADE
+			textLine2 = _T("アーケード操作 : 右上ボタン");
+#else
+			//最後の操作端末を取得.
+			switch (gameMng->GetLastInputDevice())
+			{
+				case InputDevice::Key:
+					textLine2 = _T("キーボード操作 : SHIFTキー");
+					break;
+				case InputDevice::PadXbox:
+					textLine2 = _T("コントローラー操作 : Bボタン");
+					break;
+
+					//キーボードとコントローラ以外の操作になるのはおかしい.
+				default: assert(false); break;
+			}
+#endif
+			DrawTopText(2, drawAlpha, textLine2);
 		}
 		break;
 
@@ -562,7 +607,7 @@ void TutorialStage::DrawStep3() {
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(MOVIE_BACK_ALPHA * drawAlpha),
 				[]() {
 					Box box = { App::GetWindowRect().GetMid().ToDbl(), App::GetWindowSize().ToDbl(), 0x000000, 0 };
-					DrawBoxKR(box);
+					box.Draw();
 				}
 			);
 			
@@ -576,10 +621,10 @@ void TutorialStage::DrawStep3() {
 				[&]() {
 					//座標 & サイズ.
 					const DBL_XY pos  = App::GetWindowRect().GetMid().ToDbl() + DBL_XY(0, 100);
-					const DBL_XY size = GraphMng::Get(_T("reflect_mode_death"))->GetSize().ToDbl();
+					const DBL_XY size = grReflectModeDeath->GetSize().ToDbl();
 
 					//動画.
-					GraphMng::Get(_T("reflect_mode_death"))->Draw(pos);
+					grReflectModeDeath->Draw(pos);
 					//枠線.
 					GradLine gradLine;
 					gradLine.AddPoint(pos + DBL_XY(-size.x/2, -size.y/2), {0, 255, 255, _int_r(255 * drawAlpha)});
@@ -599,7 +644,7 @@ void TutorialStage::DrawStep3() {
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(MOVIE_BACK_ALPHA * drawAlpha),
 				[]() {
 					Box box = { App::GetWindowRect().GetMid().ToDbl(), App::GetWindowSize().ToDbl(), 0x000000, 0 };
-					DrawBoxKR(box);
+					box.Draw();
 				}
 			);
 
@@ -613,10 +658,10 @@ void TutorialStage::DrawStep3() {
 				[&]() {
 					//座標 & サイズ.
 					const DBL_XY pos = App::GetWindowRect().GetMid().ToDbl() + DBL_XY(0, 100);
-					const DBL_XY size = GraphMng::Get(_T("dash_reflect"))->GetSize().ToDbl();
+					const DBL_XY size = grDashReflect->GetSize().ToDbl();
 
 					//動画.
-					GraphMng::Get(_T("dash_reflect"))->Draw(pos);
+					grDashReflect->Draw(pos);
 					//枠線.
 					GradLine gradLine;
 					gradLine.AddPoint(pos + DBL_XY(-size.x / 2, -size.y / 2), { 0, 255, 255, _int_r(255 * drawAlpha) });
@@ -686,7 +731,9 @@ void TutorialStage::DrawTopText(int line, double alpha, MY_STRING text) {
 	}
 
 	//フォント.
-	const int useFont = (line == 1) ? gameData->fonts["jp-size3"].GetFont() : gameData->fonts["jp-size2"].GetFont();
+	const int useFont = (line == 1) ? 
+		gameData->fonts.at("jp-size3").GetFont() : 
+		gameData->fonts.at("jp-size2").GetFont();
 
 	{
 		const int margin = 24;
@@ -701,7 +748,7 @@ void TutorialStage::DrawTopText(int line, double alpha, MY_STRING text) {
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(100 * alpha),
 			[&]() {
-				DrawBoxKR(box, Anchor::LU);
+				box.Draw(Anchor::LU);
 			}
 		);
 		//テキスト.
@@ -730,7 +777,7 @@ void TutorialStage::DrawTopText(int line, double alpha, MY_STRING text) {
 }
 
 //このステップを終了するか判定.
-bool TutorialStage::IsEnd(int stepNo, int stepInnerNo) {
+bool TutorialStage::IsEnd() {
 
 	bool ret = false; //終了条件を満たしたか.
 

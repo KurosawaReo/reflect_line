@@ -17,16 +17,16 @@ namespace KR
 // ¥*--=<[ ObjectShape ]>=--*¥ //
 
 	//‰æ‘œ.
-	void ObjectShape::SetImage(MY_STRING name) {
-		useImg.clear();         //ƒŠƒZƒbƒg.
-		useImg.push_back(name); //‰æ‘œ–¼‚ğ“o˜^.
-		useImgNo = 0;           //1–‡‚µ‚©‚È‚¢ê‡‚Í0‚ÅŒÅ’è.
+	void ObjectShape::SetGraph(Graph* graph) {
+		useImg.clear();          //ƒŠƒZƒbƒg.
+		useImg.push_back(graph); //‰æ‘œ‚ğ“o˜^.
+		useImgNo = 0;            //1–‡‚µ‚©‚È‚¢ê‡‚Í0‚ÅŒÅ’è.
 	}
-	void ObjectShape::SetImages(vector<MY_STRING> names, float changeTime) {
+	void ObjectShape::SetGraphs(vector<Graph*> graphs, float changeTime) {
 		//“¯‚¶‚à‚Ì‚Å‚È‚¯‚ê‚Î.
-		if (useImg != names) {
-			useImg = names; //‰æ‘œ–¼”z—ñ‚ğ“o˜^.
-			useImgNo = 0;   //Å‰‚Í0”Ô–Ú‚©‚ç.
+		if (useImg != graphs) {
+			useImg = graphs; //‰æ‘œ”z—ñ‚ğ“o˜^.
+			useImgNo = 0;    //Å‰‚Í0”Ô–Ú‚©‚ç.
 			//Ø‚è‘Ö‚¦ŠÔ‚Ìİ’è.
 			tmImgAnim = Timer(TimerMode::CountDown, changeTime);
 		}
@@ -54,7 +54,9 @@ namespace KR
 
 	//ˆÚ“®ŒÀŠE‚ğ‰z‚¦‚È‚¢‚æ‚¤ˆÊ’uC³.
 	void ObjectShape::FixPosInArea(DBL_RECT rect) {
-		Calc::FixPosInArea(GetPosPtr(), GetSize().ToInt(), rect);
+		DBL_XY pos = GetPos();								//À•W‚ğget.
+		Calc::FixPosInArea(&pos, GetSize().ToInt(), rect);	//À•W‚ğ•â³.
+		SetPos(pos);										//À•W‚ğset.
 	}
 	//ƒGƒŠƒA‚ğ‰z‚¦‚Ä‚¢‚é‚©‚Ç‚¤‚©.
 	bool ObjectShape::IsOutInArea(DBL_RECT rect, bool isCompOut, Surface* surface) {
@@ -112,7 +114,7 @@ namespace KR
 		//‰æ‘œ–¼‚ğ“o˜^‚µ‚Ä‚¢‚é‚È‚ç.
 		if (useImg.size() > 0) {
 			//‰æ‘œƒf[ƒ^‚ª‚ ‚éê‡.
-			if (auto pImg = GraphMng::Get(useImg[useImgNo])) {
+			if (Graph* pImg = useImg[useImgNo]) {
 				//À•W‚Éoffset‚ğ‘«‚·.
 				DBL_XY pos = GetPos() + offset;
 				//•`‰æ.
@@ -148,7 +150,7 @@ namespace KR
 		//‰æ‘œ–¼‚ğ“o˜^‚µ‚Ä‚¢‚é‚È‚ç.
 		if (useImg.size() > 0) {
 			//‰æ‘œƒf[ƒ^‚ª‚ ‚éê‡.
-			if (auto pImg = GraphMng::Get(useImg[useImgNo])) {
+			if (Graph* pImg = useImg[useImgNo]) {
 				//À•W‚Éoffset‚ğ‘«‚·.
 				DBL_XY pos = GetPos() + offset;
 				//•`‰æ.
@@ -184,7 +186,7 @@ namespace KR
 		//‰æ‘œ–¼‚ğ“o˜^‚µ‚Ä‚¢‚é‚È‚ç.
 		if (useImg.size() > 0) {
 			//‰æ‘œƒf[ƒ^‚ª‚ ‚éê‡.
-			if (auto pImg = GraphMng::Get(useImg[useImgNo])) {
+			if (Graph* pImg = useImg[useImgNo]) {
 				//À•W‚Éoffset‚ğ‘«‚·.
 				DBL_XY pos = GetPos() + offset;
 				//•`‰æ.
@@ -220,7 +222,7 @@ namespace KR
 		//‰æ‘œ–¼‚ğ“o˜^‚µ‚Ä‚¢‚é‚È‚ç.
 		if (useImg.size() > 0) {
 			//‰æ‘œƒf[ƒ^‚ª‚ ‚éê‡.
-			if (auto pImg = GraphMng::Get(useImg[useImgNo])) {
+			if (Graph* pImg = useImg[useImgNo]) {
 				//À•W‚Éoffset‚ğ‘«‚·.
 				DBL_XY pos = GetPos() + offset;
 				//•`‰æ.
@@ -248,16 +250,16 @@ namespace KR
 // ¥*--=<[ ObjectCir ]>=--*¥ //
 
 	//‰~‚Æ‚Ì”»’è.
-	bool ObjectCir::HitCheckCir(const Circle& cir) const {
-		return Calc::HitCirCir(cir, this->cir);
+	bool ObjectCir::HitCheckCir(const Circle& other) const {
+		return Calc::HitCirCir(other, this->cir);
 	}
 	//lŠpŒ`‚Æ‚Ì”»’è.
-	bool ObjectCir::HitCheckBox(const Box& box) const {
-		return Calc::HitBoxCir(box, this->cir);
+	bool ObjectCir::HitCheckBox(const Box& other) const {
+		return Calc::HitBoxCir(other, this->cir);
 	}
 	//ü‚Æ‚Ì“–‚½‚è”»’è.
-	bool ObjectCir::HitCheckLine(const Line& line, DBL_XY* nearestPos) const {
-		return Calc::HitLineCir(line, this->cir, nearestPos);
+	bool ObjectCir::HitCheckLine(const Line& other, DBL_XY* nearestPos) const {
+		return Calc::HitLineCir(other, this->cir, nearestPos);
 	}
 
 	//}Œ`(‰~)‚ğ•`‰æ.
@@ -271,7 +273,7 @@ namespace KR
 		tmpCir.pos += offset;
 		//•`‰æ.
 		try {
-			DrawCircleKR(tmpCir, Anchor::Mid, isFill, isAnti, isCameraDisp);
+			tmpCir.Draw(Anchor::Mid, isFill, isAnti, isCameraDisp);
 		}
 		catch (const ErrorMsg& err) {
 			throw ErrorMsg(_T("ObjectCir::DrawShape"), err.GetMsg());
@@ -282,12 +284,12 @@ namespace KR
 // ¥*--=<[ ObjectBox ]>=--*¥ //
 
 	//‰~‚Æ‚Ì”»’è.
-	bool ObjectBox::HitCheckCir(const Circle& cir) const {
-		return Calc::HitBoxCir(this->box, cir);
+	bool ObjectBox::HitCheckCir(const Circle& other) const {
+		return Calc::HitBoxCir(this->box, other);
 	}
 	//lŠpŒ`‚Æ‚Ì”»’è.
-	bool ObjectBox::HitCheckBox(const Box& box) const {
-		return Calc::HitBoxBox(this->box, box);
+	bool ObjectBox::HitCheckBox(const Box& other) const {
+		return Calc::HitBoxBox(this->box, other);
 	}
 
 	//}Œ`(lŠpŒ`)‚ğ•`‰æ.
@@ -301,7 +303,7 @@ namespace KR
 		tmpBox.pos += offset;
 		//•`‰æ.
 		try {
-			DrawBoxKR(tmpBox, Anchor::Mid, isFill, isAnti, isCameraDisp);
+			tmpBox.Draw(Anchor::Mid, isFill, isAnti, isCameraDisp);
 		}
 		catch (const ErrorMsg& err) {
 			throw ErrorMsg(_T("ObjectBox::DrawShape"), err.GetMsg());
@@ -310,6 +312,15 @@ namespace KR
 	}
 
 // ¥*--=<[ ObjectPoint ]>=--*¥ //
+
+	//‰~‚Æ‚Ì”»’è.
+	bool ObjectPoint::HitCheckCir(const Circle& other) const {
+		return Calc::HitCir(other, this->pos);
+	}
+	//lŠpŒ`‚Æ‚Ì”»’è.
+	bool ObjectPoint::HitCheckBox(const Box& other) const {
+		return Calc::HitBox(other, this->pos);
+	}
 
 	//}Œ`(“_)‚ğ•`‰æ.
 	void ObjectPoint::DrawShape(bool isFill, bool isAnti, bool isCameraDisp) const {
@@ -320,12 +331,12 @@ namespace KR
 		//¬‚³‚¢‰~‚ğ•`‰æ‚·‚é.
 		Circle tmpCir;
 		tmpCir.pos   = pos + offset;
-		tmpCir.r     = 5;
-		tmpCir.color = ColorID::Red;
+		tmpCir.r     = drawR;
+		tmpCir.color = drawColor;
 
 		//•`‰æ.
 		try {
-			DrawCircleKR(tmpCir, Anchor::Mid, isFill, isAnti, isCameraDisp);
+			tmpCir.Draw(Anchor::Mid, isFill, isAnti, isCameraDisp);
 		}
 		catch (const ErrorMsg& err) {
 			throw ErrorMsg(_T("ObjectPoint::DrawShape"), err.GetMsg());

@@ -44,21 +44,26 @@ class EffectManager final : public ManagerBase
 {
 //▼ ===== 変数 ===== ▼.
 private:
-	list<EffectData> effect; //エフェクト配列.
+	vector<EffectData> effect; //エフェクト配列.
+
+	//画像.
+	Graph* grScore100{};
+	Graph* grScore500{};
+	Graph* grReflectEffect{};
 
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	EffectManager(int order) : ManagerBase(order) {}
+	EffectManager(){}
 
 	void Init()	  override;
 	void Reset()  override;
 	void Update() override;
 	void Draw()	  override;
 
-	void SpawnEffect (const EffectData* data); //エフェクト出現.
+	void SpawnEffect(const EffectData* data); //エフェクト出現.
 
 	//使用禁止.
-	EffectManager(const EffectManager*) = delete;
-	EffectManager* operator=(const EffectManager*) = delete;
+	EffectManager(const EffectManager&) = delete;
+	EffectManager& operator=(const EffectManager&) = delete;
 };

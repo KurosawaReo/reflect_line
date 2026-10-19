@@ -13,10 +13,16 @@ private:
 
 	bool isShowScore{}; //スコアを表示するかどうか.
 
+	//画像.
+	Graph* grUiBackLevel{};
+	Graph* grUiBackBestScore{};
+	Graph* grUiBackScore{};
+	Graph* grUiBackTime{};
+
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	UIManager(int order) : ManagerBase(order) {}
+	UIManager(){}
 
 	//set.
 	void SetIsShowScore(bool _flag)  { isShowScore   = _flag;  }
@@ -27,7 +33,10 @@ public:
 	void Update() override;
 	void Draw()   override;
 
+	void DrawTutorial(float time, int offset);
+	void DrawEndless(float time, int offset);
+
 	//使用禁止.
-	UIManager(const UIManager*) = delete;
-	UIManager* operator=(const UIManager*) = delete;
+	UIManager(const UIManager&) = delete;
+	UIManager& operator=(const UIManager&) = delete;
 };

@@ -47,10 +47,9 @@ namespace KR
             static_cast<T>(lhs) | static_cast<T>(rhs)
         );
     }
-
     //FileOpenModeが持つフラグを判定する.
     //enum classはビット演算できないため、一度整数型に変換して判定する.
-    static bool HasFlag(FileOpenMode value, FileOpenMode flag)
+    inline static bool HasFlag(FileOpenMode value, FileOpenMode flag)
     {
         //enum classの基底型(intなど)を取得.
         using T = std::underlying_type_t<FileOpenMode>;

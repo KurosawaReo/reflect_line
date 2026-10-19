@@ -1,7 +1,7 @@
 /*
    - Obst_StraightLaser.h -
 
-   障害物: 直線レーザー.
+   障害物「直線レーザー」
 */
 #pragma once
 
@@ -36,7 +36,7 @@ private:
 //▼ ===== 関数 ===== ▼.
 public:
 	//コンストラクタ.
-	StraightLaser(int order) : ManagerBase(order) {}
+	StraightLaser(){}
 
 	void Init()   override;
 	void Reset()  override;

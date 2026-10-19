@@ -32,6 +32,9 @@ void EndScene::Init() {
 	soundMng = ManagerInsts::Get<SoundMng>();
 	inputMng = ManagerInsts::Get<InputMng>();
 	sceneMng = ManagerInsts::Get<SceneMng>();
+	//画像取得.
+	grGameover  = GraphMng::Get(_T("gameover"));
+	grNewRecord = GraphMng::Get(_T("new_record"));
 
 	//タイマー.
 	timer = Timer(TimerMode::CountUp, 0);
@@ -103,7 +106,8 @@ void EndScene::Draw() {
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(128 * anim),
 			[&]() {
-				DrawBoxKR(box, Anchor::LU); //画面を暗くする(UI以外)
+				//画面を暗くする(UI以外)
+				box.Draw(Anchor::LU);
 			}
 		);
 	}
@@ -121,9 +125,9 @@ void EndScene::Draw() {
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim),
 			[&]() {
 				//GAME OVER.
-				GraphMng::Get(_T("gameover"))->DrawExtend({ WINDOW_WID / 2, 370 + 30 * anim }, { 0.5, 0.5 }, Anchor::Mid, true, true);
+				grGameover->DrawExtend({ WINDOW_WID / 2, 370 + 30 * anim }, { 0.5, 0.5 }, Anchor::Mid, true, true);
 				//テキスト.
-				str.Draw(Anchor::Mid, gameData->fonts["jp-size3"].GetFont());
+				str.Draw(Anchor::Mid, gameData->fonts.at("jp-size3").GetFont());
 			}
 		);
 	}
@@ -142,7 +146,7 @@ void EndScene::Draw() {
  				fixTime = floorf(gameTime * 10.0f) / 10.0f;
 			}
 
-			const int font = gameData->fonts["en-size2"].GetFont();
+			const int font = gameData->fonts.at("en-size2").GetFont();
 			const int lineSpace = 40;
 
 			//テキスト.
@@ -165,9 +169,9 @@ void EndScene::Draw() {
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(128 * anim),
 				[&]() {
 					//枠線.
-					DrawBoxKR(box, Anchor::Mid, true, true);
+					box.Draw(Anchor::Mid, true, true);
 					box.color = 0xFFFFFF;
-					DrawBoxKR(box, Anchor::Mid, false, true);
+					box.Draw(Anchor::Mid, false, true);
 				}
 			);
 			//描画.
@@ -176,7 +180,7 @@ void EndScene::Draw() {
 				[&]() {
 
 					//GAME OVER.
-					GraphMng::Get(_T("gameover"))->DrawExtend({ WINDOW_WID / 2, 370 + 30 * anim }, { 0.5, 0.5 }, Anchor::Mid, true, true); //GAME OVER
+					grGameover->DrawExtend({ WINDOW_WID / 2, 370 + 30 * anim }, { 0.5, 0.5 }, Anchor::Mid, true, true); //GAME OVER
 
 					//テキスト(1行ずつ表示)
 					for (auto& i : texts) {
@@ -203,7 +207,7 @@ void EndScene::Draw() {
 					DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim),
 					[&]() {
 						//NEW RECORD
-						GraphMng::Get(_T("new_record"))->DrawExtend(
+						grNewRecord->DrawExtend(
 							{ WINDOW_WID / 2, WINDOW_HEI / 2 - 330 + anim * 20 }, { 0.4, 0.4 }, Anchor::Mid, true, true
 						);
 					}
@@ -217,19 +221,44 @@ void EndScene::Draw() {
 				}
 			}
 		}
+
 		//一定時間が経ったら.
 		if (timer.GetPassTime() > delay2) {
 
 			//アニメーション値.
 			double anim = Calc::AnimWave(WaveType::CosLoop, timer.GetPassTime() - delay2);
 			//テキスト.
-			DrawStr str(_T("Push [SPACE] [A Button]"), { WINDOW_WID / 2, WINDOW_HEI / 2 + 145 }, 0xFFFFFF);
+			DrawStr str(_T(""), { WINDOW_WID / 2, WINDOW_HEI / 2 + 145 }, 0xFFFFFF);
+
+			//[操作表示] 操作によって表示するテキストを変える.
+#if defined INPUT_CHANGE_ARCADE
+			str.text = _T("Push Upper Left Button");
+#else
+			//最後の操作端末を取得.
+			switch (gameMng->GetLastInputDevice())
+			{
+				case InputDevice::None:
+					str.text = _T("Push [A Button] or [SPACE]");
+					break;
+
+				case InputDevice::Key:
+					str.text = _T("Push [SPACE]");
+					break;
+
+				case InputDevice::PadXbox:
+					str.text = _T("Push [A Button]");
+					break;
+
+				//キーボードとコントローラ以外の操作になるのはおかしい.
+				default: assert(false); break;
+			}
+#endif
 
 			//描画.
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim),
 				[&]() {
-					str.Draw(Anchor::Mid, gameData->fonts["en-size2"].GetFont()); //テキスト.
+					str.Draw(Anchor::Mid, gameData->fonts.at("en-size2").GetFont()); //テキスト.
 				}
 			);
 		}

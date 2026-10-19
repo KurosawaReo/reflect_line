@@ -4,10 +4,12 @@
 #include "Scene_Title.h"
 
 //依存関係.
+#include "GameManager.h"
 #include "GameData.h"
 #include "BGManager.h"
 #include "Obst_MeteorManager.h"
 //参照.
+static GameManager*   gameMng;
 static GameData*      gameData;
 static BGManager*     bgMng;
 static MeteorManager* meteorMng;
@@ -17,12 +19,18 @@ static SceneMng*      sceneMng;
 
 //初期化.
 void TitleScene::Init() {
+
 	//参照取得.
+	gameMng   = ManagerInsts::Get<GameManager>();
 	gameData  = ManagerInsts::Get<GameData>();
 	bgMng     = ManagerInsts::Get<BGManager>();
 	meteorMng = ManagerInsts::Get<MeteorManager>();
 	inputMng  = ManagerInsts::Get<InputMng>();
 	sceneMng  = ManagerInsts::Get<SceneMng>();
+	//画像取得.
+	grLogo            = GraphMng::Get("logo");
+	grLogoAll         = GraphMng::Get("logo_all");
+	grUiBackBestScore = GraphMng::Get("ui_back_best_score");
 
 	timer = Timer(TimerMode::CountUp, 0);
 }
@@ -34,8 +42,8 @@ void TitleScene::Reset() {
 
 //入った瞬間.
 void TitleScene::Enter() {
-	timer.Start();     //タイマー開始.
-	bgMng->SetBgNo(1); //背景を設定.
+	timer.Start();					//タイマー開始.
+	bgMng->SetBgType(BGType::Tile);	//背景を設定.
 }
 
 //抜けた瞬間.
@@ -45,24 +53,31 @@ void TitleScene::Exit() {
 
 //更新.
 void TitleScene::Update() {
+
+	InputData inputData; //何で操作したか取得する用.
+
 	//特定の操作でゲーム開始.
-	if (inputMng->IsPushActionTime(_T("GameNext")) == 1) {
-		sceneMng->SetScene(_T("Menu")); //メニューシーンへ.
+	if (inputMng->IsPushActionTime(_T("GameNext"), &inputData) == 1) {
+		//操作端末を記録.
+		gameMng->SetLastInputDevice(inputData.device);
+		//メニューシーンへ.
+		sceneMng->SetScene(_T("Menu"));
 	}
 }
 
 //描画.
 void TitleScene::Draw() {
 
-	//操作方法明記.
+	//画面左下の操作方法表記.
 	DrawStr howPlay(_T(""), { 30, WINDOW_HEI - 30 }, 0x00FFFF);
 	{
-		const int font = gameData->fonts["jp-size1"].GetFont();
+		const int font = gameData->fonts.at("jp-size1").GetFont();
 
+		//テキスト切り替え.
 #if defined INPUT_CHANGE_ARCADE
-		howPlay.text = _T("アーケード操作");
+		howPlay.text = _T("アーケード操作版");
 #else
-		howPlay.text = _T("コントローラ操作");
+		howPlay.text = _T("PC操作版");
 #endif
 		howPlay.Draw(Anchor::LD, font);
 
@@ -100,7 +115,7 @@ void TitleScene::Draw() {
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim),
 				[&]() {
-					GraphMng::Get(_T("logo"))->DrawExtend(
+					grLogo->DrawExtend(
 						DBL_XY{ WINDOW_WID / 2, _dbl(logoY) }, imgSize, Anchor::Mid, true, true
 					);
 				}
@@ -116,14 +131,14 @@ void TitleScene::Draw() {
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * (1 - anim2)),
 				[&]() {
-					GraphMng::Get(_T("logo"))->DrawExtend({ WINDOW_WID / 2, logoY - anim1 * 80 }, imgSize, Anchor::Mid, true, true);
+					grLogo->DrawExtend({ WINDOW_WID / 2, logoY - anim1 * 80 }, imgSize, Anchor::Mid, true, true);
 				}
 			);
 			//ロゴ2枚目.
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim1),
 				[&]() {
-					GraphMng::Get(_T("logo_all"))->DrawExtend({ WINDOW_WID / 2, logoY - anim1 * 80 }, imgSize, Anchor::Mid, true, true);
+					grLogoAll->DrawExtend({ WINDOW_WID / 2, logoY - anim1 * 80 }, imgSize, Anchor::Mid, true, true);
 				}
 			);
 		}
@@ -146,16 +161,16 @@ void TitleScene::Draw() {
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim1),
 			[&]() {
-				str.Draw(Anchor::Mid, gameData->fonts["en-size3"].GetFont()); //スコア値.
+				str.Draw(Anchor::Mid, gameData->fonts.at("en-size3").GetFont()); //スコア値.
 			}
 		);
 		//描画(画像)
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim2),
 			[&]() {
-				GraphMng::Get(_T("ui_back_best_score"))->
+				grUiBackBestScore->
 					DrawExtend({ WINDOW_WID / 2, drawY + (10 + 18 * anim2) }, { 0.45, 0.4 }, Anchor::Mid, true, true);
-				GraphMng::Get(_T("ui_back_best_score"))->
+				grUiBackBestScore->
 					DrawExtend({ WINDOW_WID / 2, drawY - (10 + 18 * anim2) }, { 0.45, 0.4 }, Anchor::Mid, true, true);
 			}
 		);
@@ -168,12 +183,37 @@ void TitleScene::Draw() {
 		//アニメーション値.
 		double anim = Calc::AnimWave(WaveType::CosLoop, timer.GetPassTime() - delay4);
 		//テキスト.
-		DrawStr str(_T("Push [SPACE] [A Button]"), { WINDOW_WID / 2, drawY }, 0xFFFFFF);
+		DrawStr str(_T(""), { WINDOW_WID / 2, drawY }, 0xFFFFFF);
+
+		//[操作表示] 操作によって表示するテキストを変える.
+#if defined INPUT_CHANGE_ARCADE
+		str.text = _T("Push Upper Left Button");
+#else
+		//最後の操作端末を取得.
+		switch (gameMng->GetLastInputDevice())
+		{
+			case InputDevice::None:
+				str.text = _T("Push [A Button] or [SPACE]");
+				break;
+
+			case InputDevice::Key:
+				str.text = _T("Push [SPACE]");
+				break;
+
+			case InputDevice::PadXbox:
+				str.text = _T("Push [A Button]");
+				break;
+
+			//キーボードとコントローラ以外の操作になるのはおかしい.
+			default: assert(false); break;
+		}
+#endif
+
 		//描画.
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim),
 			[&]() {
-				str.Draw(Anchor::Mid, gameData->fonts["en-size2"].GetFont()); //テキスト.
+				str.Draw(Anchor::Mid, gameData->fonts.at("en-size2").GetFont()); //テキスト.
 			}
 		);
 	}
