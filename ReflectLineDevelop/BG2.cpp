@@ -259,8 +259,13 @@ void BG2::DrawStars(double modeAlpha, bool isReflect)
 
 	for (auto& i : star)
 	{
+		//奥行きに応じた拡大率.
 		const double scale = FOV / i.z;
-		const double size = 0.3 * (1.0 - i.z / Z_MAX);
+
+		//奥ほど小さく、手前ほど大きくする.
+		const double size = 0.3 * scale;
+
+		//奥ほど透明にする.
 		const double alpha = 128 * (1.0 - i.z / Z_MAX) * modeAlpha;
 
 		//座標.
@@ -268,6 +273,8 @@ void BG2::DrawStars(double modeAlpha, bool isReflect)
 			center.x + i.x * scale,
 			center.y + i.y * scale
 		};
+
+		//画面外なら描画しない.
 		if (pos.x < -100 || pos.x > WINDOW_WID + 100) { continue; }
 		if (pos.y < -100 || pos.y > WINDOW_HEI + 100) { continue; }
 
@@ -277,10 +284,14 @@ void BG2::DrawStars(double modeAlpha, bool isReflect)
 			{
 				//反射モードになったら変色.
 				if (isReflect) {
-					grBgStarRef->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
+					grBgStarRef->DrawExtend(
+						pos, { size, size }, Anchor::Mid, true, true
+					);
 				}
 				else {
-					grBgStarNor->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
+					grBgStarNor->DrawExtend(
+						pos, { size, size }, Anchor::Mid, true, true
+					);
 				}
 			}
 		);
