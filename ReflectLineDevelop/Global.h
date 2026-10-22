@@ -6,31 +6,33 @@
 */
 #pragma once
 
-//====================================================================//
-//【設定】
+/*
+   [デバッグ用操作]
+   Mキー: 無敵
+   Lキー: レベルタイマー加速
+*/
 
-//デバッグ用操作.
-//Mキー: 無敵.
-//Lキー: レベルタイマー加速.
+/* ============================================================================== */
+// ▼*--=<[ 設定 ]>=--*▼ //
 
 /* デバッグ用 */
-//#define DEBUG_SHOW_FPS		//FPS表示.　
-//#define DEBUG_CONTR_INPUT		//コントローラ操作表示.
+//#define DEBUG_SHOW_FPS			//FPS表示.　
+//#define DEBUG_CONTR_INPUT			//コントローラ操作表示.
 
 /* ゲーム設定 */
-//#define INPUT_CHANGE_ARCADE   //定義するとアーケード操作にする, しないとコントローラ操作に.
-//#define BGM_NONE              //定義するとBGMをoffに.
+//#define INPUT_CHANGE_ARCADE		//定義するとアーケード操作にする, しないとコントローラ操作に.
+//#define BGM_NONE					//定義するとBGMをoffに.
 
 /* 撮影用 */
-//#define INVALID_ITEM            //定義すると「アイテム」　　を無効にする.
-//#define INVALID_OBST_NOR_LASER  //定義すると「追尾レーザー」を無効にする.
-//#define INVALID_OBST_STR_LASER  //定義すると「直線レーザー」を無効にする.
-//#define INVALID_OBST_RIPPLES    //定義すると「波紋」　　　　を無効にする.
-//#define INVALID_OBST_FIREWORKS  //定義すると「花火」　　　　を無効にする.
-//#define INVALID_OBST_METEOR     //定義すると「隕石」　　　　を無効にする.
+//#define INVALID_ITEM				//定義すると「アイテム」　　を無効にする.
+//#define INVALID_OBST_NOR_LASER	//定義すると「追尾レーザー」を無効にする.
+//#define INVALID_OBST_STR_LASER	//定義すると「直線レーザー」を無効にする.
+//#define INVALID_OBST_RIPPLES		//定義すると「波紋」　　　　を無効にする.
+//#define INVALID_OBST_FIREWORKS	//定義すると「花火」　　　　を無効にする.
+//#define INVALID_OBST_METEOR		//定義すると「隕石」　　　　を無効にする.
 
-//====================================================================//
-//【定数】
+/* ============================================================================== */
+// ▼*--=<[ 定数 ]>=--*▼ //
 
 //DxLib設定.
 #define FILE_DATA_SCORE					_T("Data/highscore.data")	//ハイスコア記録.
@@ -61,6 +63,17 @@
 
 #define MIDDLE_ANIM_TIME				(120)			//レベルアップアニメーション時間.
 
+//レベル.
+#define LEVEL_2_COUNTER					(1500)			//Lv2に上がるcount値.
+#define LEVEL_3_COUNTER					(3500)			//Lv3に上がるcount値.
+#define LEVEL_4_COUNTER					(6000)			//Lv4に上がるcount値.
+#define LEVEL_5_COUNTER					(9000)			//Lv5に上がるcount値.
+
+//スコア.
+#define SCORE_TAKE_ITEM					(100)			//アイテムを取った時のスコア.
+#define SCORE_BREAK_METEOR				(500)			//隕石を壊した時のスコア.
+#define SCORE_ANIM_TIME					(50)			//スコアのアニメーション時間.
+
 //メニュー.
 #define MENU_OPTION_COUNT				(3)				//選択肢の数.
 
@@ -88,7 +101,7 @@
 #define ITEM_SPEED						(3)				//アイテム移動スピード.  
 #define ITEM_RESPAWN_TIME				(400)           //アイテム復活時間.
 
-//レーザー総合.
+//[障害物] レーザー(全体)
 #define LASER_REF_ROT_MAX				(10)			//レーザー(reflected)の曲がる限界角度.
 #define LASER_REF_TRACK_ST_TM			(10)			//レーザー(reflected)の追尾開始時間.
 #define LASER_REF_TRACK_ED_TM			(30)			//レーザー(reflected)の追尾終了時間.
@@ -100,7 +113,7 @@
 #define LASER_REF_ANIM_TIME				(30)			//反射アニメーション時間.
 #define LASER_HIT_R						(3)				//レーザーのヒット半径.
 
-//障害物: 通常レーザー.
+//[障害物] 通常レーザー.
 #define LASER_NOR_SHOT_RESET			(300)			//砲台の発射リセット時間.
 #define LASER_NOR_SHOT_START			(20)			//砲台の発射開始時間.
 #define LASER_NOR_SHOT_SPAN				(5)				//砲台の発射間隔時間.
@@ -113,15 +126,15 @@
 #define LASER_NOR_PRE_LASER1_SIZE		(50)            //発射前エフェクト1のサイズ.
 #define LASER_NOR_PRE_LASER2_SIZE		(20)            //発射前エフェクト2のサイズ.
 
-//障害物: 直線レーザー.
+//[障害物] 直線レーザー.
 #define LASER_STR_SPAWN_SPAN			(350)			//直線レーザーの出現間隔.
 #define LASER_STR_PREDICTION_TIME		(60)			//直線レーザーの予測線の出る時間.
 
-//障害物: 落下レーザー(花火用)
+//[障害物] 落下レーザー(花火用)
 #define LASER_FAL_DEL_TIME				(100)			//消えるまでの時間.
 #define LASER_FAL_HIT_ABLE				(60)			//↑のうち、当たり判定を持たせる時間.
 
-//障害物: 隕石.
+//[障害物] 隕石.
 #define METEOR_SPAWN_SPAN				(200)			//隕石の出現時間間隔.
 #define METEOR_SPEED					(2)				//移動速度.
 #define METEOR_DEST_OUT_DIS				(50)			//隕石が画面外で消える距離.
@@ -129,13 +142,13 @@
 #define METEOR_GOAL_RAND_RANGE			(500)			//隕石の目標地点の乱数範囲.
 #define METEOR_BREAK_ANIM_TIME			(50)			//隕石破壊破片のアニメ時間.
 #define METEOR_BREAK_ANIM_CNT			(15)			//隕石破壊破片の数.
-
+//[障害物] 隕石 > 構成線
 #define METEOR_LINE_CNT_MIN				(5)				//最低n角形.
 #define METEOR_LINE_CNT_MAX				(16)			//最大n角形.
 #define METEOR_LINE_DIS_MIN				(30.0)			//頂点の最短距離.
 #define METEOR_LINE_DIS_MAX				(50.0)			//頂点の最大距離.
 
-//障害物: 波紋.
+//[障害物] 波紋.
 #define RIPPLES_FLASH_MAX				(30)            //最大フラッシュエフェクト数.
 #define RIPPLES_FLASH_SIZE_INIT			(5.0f)          //フラッシュエフェクトの初期サイズ.
 #define RIPPLES_FLASH_SIZE_SPREAD		(3)             //フラッシュエフェクトの拡大量.
@@ -150,7 +163,7 @@
 #define RIPPLES_MAX_SIMULTANEOUS		(3)				//最大同時出現数.
 #define RIPPLES_MIN_DISTANCE			(100)			//最小距離.
 
-//障害物: 花火.
+//[障害物] 花火.
 #define FIREWORKS_RND_MAX				(2)				//花火出現最大数
 #define FIREWORKS_SPAWN_SPAN			(600)			//花火生成間隔（フレーム）
 #define FIREWORKS_WARNING_DURATION		(120)			//予告を出す長さ（フレーム）
@@ -159,14 +172,6 @@
 #define FIREWORKS_SPARKS_COUNT			(16)			//火花の数（ベース）
 #define FIREWORKS_MIN_DISTANCE			(120)			//花火同士の最小距離
 #define FIREWORKS_GRAVITY				(0.3f)			//重力加速度
-
-//メニュー.
-#define MENU_ELECTR_MOVE_SPEED			(0.1)			//電気の動く速度.
-
-//スコア.
-#define SCORE_TAKE_ITEM					(100)			//アイテムを取った時のスコア.
-#define SCORE_BREAK_METEOR				(500)			//隕石を壊した時のスコア.
-#define SCORE_ANIM_TIME					(50)			//スコアのアニメーション時間.
 
 //カラー.
 #define COLOR_MODE_NOR					(GetColor( 50, 255, 255))	//通常モードのメインカラー.

@@ -142,7 +142,7 @@ void EffectManager::Update() {
 			}
 			break;
 
-			default: assert(FALSE); break;
+			default: assert(false); break;
 		}
 
 		//Ÿ‚Ì—v‘f‚Éi‚Ş.
