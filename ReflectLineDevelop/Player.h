@@ -63,13 +63,22 @@ private:
 	Graph* grPlayerNor{};
 
 //▼ ===== 関数 ===== ▼.
+private:
+	//Update系.
+	void UpdateMove   ();	//プレイヤー移動.
+	void UpdateDash   ();	//ダッシュ更新.
+	void UpdateAfter  ();	//残像更新.
+	//Draw系.
+	void DrawAfter    ();									 //残像描画.
+	void DrawAfterNor (int idx);						  	 //残像描画(通常時)
+	void DrawAfterDash(int idx, double anim1, double anim2); //残像描画(ダッシュ時)
+	void DrawPlayer   ();									 //本体描画.
+
 public:
 	//コンストラクタ.
 	Player(){}
 
 	//set.
-	void       SetPos            (DBL_XY     _pos ) { hit.pos         = _pos;  }
-	void       SetActive         (bool       _flag) { active          = _flag; }
 	void       SetMode           (PlayerMode _mode) { mode            = _mode; }
 	void       SetIsNoDeath      (bool       _flag) { isNoDeath       = _flag; }
 	void       SetIsDashRefEffect(bool       _flag) { isDashRefEffect = _flag; }
@@ -88,18 +97,8 @@ public:
 	void Update() override;
 	void Draw  () override;
 
-	//Update系.
-	void UpdateDash   ();	//ダッシュ更新.
-	void UpdateAfter  ();	//残像更新.
-	//Draw系.
-	void DrawAfter    ();									 //残像描画.
-	void DrawAfterNor (int idx);						  	 //残像描画(通常時)
-	void DrawAfterDash(int idx, double anim1, double anim2); //残像描画(ダッシュ時)
-	void DrawPlayer   ();									 //本体描画.
-
-	void Move();		//プレイヤー移動.
-	void Death();		//プレイヤー死亡.
-	void Revival();		//プレイヤー復活.
+	void Death();	//プレイヤー死亡.
+	void Revival();	//プレイヤー復活.
 
 	void SpawnEffectSpark(); //ダッシュ反射エフェクト生成.
 

@@ -8,9 +8,16 @@ class EndlessStage final : public ManagerBase
 {
 //▼ ===== 変数 ===== ▼.
 private:
-	bool isStarted{}; //最初の1フレーム処理用.
 	
 //▼ ===== 関数 ===== ▼.
+private:
+	//レベルアップ処理.
+	void UpLevel1();
+	void UpLevel2();
+	void UpLevel3();
+	void UpLevel4();
+	void UpLevel5();
+
 public:
 	//コンストラクタ.
 	EndlessStage(){}

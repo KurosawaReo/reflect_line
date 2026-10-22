@@ -47,7 +47,6 @@ public:
 
 	void ResetScore();
 
-	//–¢Žg—p.
 	void Init()   override;
 	void Reset()  override;
 	void Update() override{};

@@ -151,7 +151,7 @@
     <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="GameData.cpp" />
     <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="KrLib_cpp\KR_Calc.cpp" />
     <ClCompile Include="KrLib_cpp\KR_Device.cpp" />
     <ClCompile Include="KrLib_cpp\KR_File.cpp" />
@@ -205,7 +205,7 @@
     <ClInclude Include="GameData.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Global.h" />
-    <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="KrLib_cpp\KR_Calc.h" />
     <ClInclude Include="KrLib_cpp\KR_Device.h" />
     <ClInclude Include="KrLib_cpp\KR_File.h" />

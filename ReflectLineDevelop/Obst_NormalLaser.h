@@ -70,6 +70,10 @@ private:
 	float counterTm{}; //発射するタイミング.
 
 //▼ ===== 関数 ===== ▼.
+private:
+	//描画系.
+	void DrawObstFlash();
+
 public:
 	//コンストラクタ.
 	NormalLaser(){}
@@ -80,13 +84,8 @@ public:
 	void Update() override;
 	void Draw  () override;
 
-	//描画系.
-	void DrawObstFlash();
- 
-	void CreateFlashEffect(double x, double y);
-
-	//何個発射台を使うか.
-	void UseLaserPointCnt(int count);
+ 	void CreateFlashEffect(double x, double y);	//エフェクト生成.
+	void EnableCount(int count);				//発射台を有効にする数の設定.
 
 	//使用禁止.
 	NormalLaser(const NormalLaser&) = delete;

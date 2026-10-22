@@ -1,8 +1,8 @@
 /*
-   - Item.cpp -
-   Item管理.
+   - ItemManager.cpp -
+   アイテム管理.
 */
-#include "Item.h"
+#include "ItemManager.h"
 
 //依存関係.
 #include "Player.h"
@@ -49,52 +49,8 @@ void ItemManager::Reset()
 void ItemManager::Update()
 {
 	//反射モード中は処理しない.
-	if (gameData->isReflectMode) {
-		return;
-	}
-
-	counter -= gameData->speedRate; //時間経過.
-
-	//アイテム出現.
-	if (counter <= 0) {
-		ItemSpawn();
-		counter = ITEM_SPAWN_TIME;
-	}
-
-	//全アイテムループ.
-	for (auto i = items.begin(); i != items.end(); ) {
-
-		//カウンター.
-		i->counter += gameData->speedRate;
-		//落下.
-		i->pos.y += ITEM_SPEED * gameData->speedRate;
-
-		ItemType type;
-
-		//当たり判定.
-		if (CheckHitPlayer(i, &type)){
-			//効果発動.
-			switch (type)
-			{
-				case ItemType::Normal:
-					ItemUse(i, false);
-					break;
-				case ItemType::Super:
-					ItemUse(i, true);
-					break;
-
-				default: assert(false); break;
-			}
-			break;
-		}
-
-		//次の要素へ, 画面下を超えたら消滅.
-		if (i->pos.y > WINDOW_HEI + ITEM_SIZE + 50) {
-			i = items.erase(i);
-		}
-		else {
-			i++;
-		}
+	if (!gameData->isReflectMode) {
+		ItemUpdate();
 	}
 }
 
@@ -138,6 +94,54 @@ void ItemManager::Draw()
 	}
 }
 
+//アイテム更新.
+void ItemManager::ItemUpdate() {
+
+	spawnCounter -= gameData->speedRate; //時間経過.
+
+	//アイテム出現.
+	if (spawnCounter <= 0) {
+		ItemSpawn();
+		spawnCounter = ITEM_SPAWN_TIME;
+	}
+
+	//全アイテムループ.
+	for (auto i = items.begin(); i != items.end(); ) {
+
+		//カウンター.
+		i->counter += gameData->speedRate;
+		//落下.
+		i->pos.y += ITEM_SPEED * gameData->speedRate;
+
+		ItemType type;
+
+		//当たり判定.
+		if (CheckHitPlayer(i, &type)) {
+			//効果発動.
+			switch (type)
+			{
+			case ItemType::Normal:
+				ItemUse(i, false);
+				break;
+			case ItemType::Super:
+				ItemUse(i, true);
+				break;
+
+			default: assert(false); break;
+			}
+			break;
+		}
+
+		//次の要素へ, 画面下を超えたら消滅.
+		if (i->pos.y > WINDOW_HEI + ITEM_SIZE + 50) {
+			i = items.erase(i);
+		}
+		else {
+			i++;
+		}
+	}
+}
+
 //アイテム召喚.
 void ItemManager::ItemSpawn() {
 
@@ -158,23 +162,26 @@ void ItemManager::ItemSpawn() {
 	items.push_back(item); //配列に追加.
 }
 
-//全てリセット.
+//アイテムリセット.
 void ItemManager::ItemReset() {
 	
 	//全てのアイテムを消去.
 	items.clear();
 	//カウンターリセット.
-	counter = ITEM_SPAWN_TIME;
+	spawnCounter = ITEM_SPAWN_TIME;
+}
+
+//今すぐアイテムを出現させる.
+void ItemManager::SpawnNow() {
+	spawnCounter = 0;
 }
 
 //アイテム発動.
 void ItemManager::ItemUse(vector<ItemData>::iterator& it, bool isSuper)
 {
-	//エフェクト召喚.
-	EffectData effect{};
-	effect.type = EffectType::Score100;
-	effect.pos  = it->pos;
-	effectMng->SpawnEffect(&effect);
+	//先に座標を取得.
+	const DBL_XY pos = it->pos;
+
 	//スコア加算.
 	gameData->AddScore(SCORE_TAKE_ITEM);
 
@@ -186,19 +193,20 @@ void ItemManager::ItemUse(vector<ItemData>::iterator& it, bool isSuper)
 		player->SetMode(PlayerMode::ItemReflect);
 	}
 
-	ItemReset();
-
-	//アイテムを使用.
-	gameMng->ItemUsed();
 	//サウンド.
 	if (auto i = soundMng->Get(_T("ItemUse"))) {
 		i->Play(false, 70); //ポワーン.
 	}
-}
+	//エフェクト.
+	effectMng->SpawnEffect({
+		.type = EffectType::Score100,
+		.pos = pos
+	});
 
-//今すぐアイテムを出現させる.
-void ItemManager::SpawnNow() {
-	counter = 0;
+	//アイテムリセット.
+	ItemReset();
+	//アイテム発動.
+	gameMng->ItemUsed();
 }
 
 //プレイヤーとの当たり判定.

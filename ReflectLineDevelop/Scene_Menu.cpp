@@ -1,30 +1,74 @@
-ï»¿/*
+/*
    - Scene_Menu.cpp -
 */
 #include "Scene_Menu.h"
 
-//ä¾å­˜é–¢ä¿‚.
+//ˆË‘¶ŠÖŒW.
 #include "BGManager.h"
 #include "GameData.h"
 #include "GameManager.h"
-//å‚ç…§.
+//QÆ.
 static GameData*    gameData;
 static GameManager* gameMng;
 static BGManager*   bgMng;
-//å‚ç…§(KRãƒ©ã‚¤ãƒ–ãƒ©ãƒª)
+//QÆ(KRƒ‰ƒCƒuƒ‰ƒŠ)
 static SoundMng*    soundMng;
 static InputMng*    inputMng;
 static SceneMng*    sceneMng;
 
-//å†ç”Ÿã™ã‚‹å‹•ç”»ã‚’å–å¾—.
-Graph* MenuScene::GetPlayMovie() {
-	return grMenuMovie[cursorIdx];
+// ƒTƒ€ƒlŠÖŒW(CalcRect‚ÆDrawThumbnail‚Å‹¤—L).
+static constexpr double THUMB_EXTEND = 0.7; // ‰æ‘œ•`‰æ”{—¦.
+static constexpr int    THUMB_MARGIN = 10;  // ˜g‚ğ‰æ‘œ‚æ‚è‚Ç‚ê‚¾‚¯‘å‚«‚­‚·‚é‚©.
+
+// ¥*---=[ MenuAnim ]=---*¥ //
+
+//set.
+void MenuCursor::SetCursorRotSpeed(double speed) {
+	cursorRotSpeed = speed;
 }
 
-//åˆæœŸåŒ–.
+//ƒŠƒZƒbƒg.
+void MenuCursor::Reset() {
+	cursorIdx = 0;
+	Update(0);
+}
+
+//XV.
+void MenuCursor::Update(double counter) {
+
+	//‰ñ“]Šp“x‚ğ‘¬“x‚É‰‚¶‚Äi‚ß‚é.
+	cursorRotAngle += cursorRotSpeed / 50.0 * M_PI;
+	//‰ñ“]‘¬“x‚ğ•W€‘¬“x(1.0)‚ÖŠŠ‚ç‚©‚É–ß‚·.
+	cursorRotSpeed += (1.0 - cursorRotSpeed) * 0.03;
+	//ƒJ[ƒ\ƒ‹— •\’l.
+	cursorWave = sin(cursorRotAngle);
+	//‘•üü‚Ì–¾–Å.
+	linePulse = sin(counter / 100.0 * M_PI);
+
+	//ƒ^ƒCƒgƒ‹—¼˜e‚Ì–îˆó‰‰o.
+	const double delay[2] = { 0, 20 };
+
+	for (int i = 0; i < 2; i++) {
+		//is—¦.
+		const double rate = Calc::AnimLoopRate(counter - delay[i], 120);
+
+		//ˆÚ“®—Ê‚Æ“§–¾“x.
+		arrow[i].move = Calc::AnimEase(EaseType::OutInQuad, rate);
+		arrow[i].alpha = sin(rate * M_PI);
+	}
+}
+
+// ¥*---=[ MenuScene ]=---*¥ //
+
+//Ä¶‚·‚é“®‰æ‚ğæ“¾.
+Graph* MenuScene::GetPlayMovie() {
+	return grMenuMovie[mCursor.cursorIdx];
+}
+
+//‰Šú‰».
 void MenuScene::Init() {
 
-	//å‚ç…§å–å¾—.
+	//QÆæ“¾.
 	gameData = ManagerInsts::Get<GameData>();
 	gameMng  = ManagerInsts::Get<GameManager>();
 	bgMng    = ManagerInsts::Get<BGManager>();
@@ -32,7 +76,7 @@ void MenuScene::Init() {
 	inputMng = ManagerInsts::Get<InputMng>();
 	sceneMng = ManagerInsts::Get<SceneMng>();
 	
-	//å‹•ç”»å–å¾—.
+	//“®‰ææ“¾.
 	for (int i = 0; i < MENU_OPTION_COUNT; i++) {
 		grMenuMovie[i] = GraphMng::Get(_T("menu_movie") + NumToString(i+1));
 	}
@@ -40,84 +84,100 @@ void MenuScene::Init() {
 	Reset();
 }
 
-//ãƒªã‚»ãƒƒãƒˆ.
+//ƒŠƒZƒbƒg.
 void MenuScene::Reset() {
-	cursorIdx = 0;
+
+	counter = 0;		//Œo‰ßŠÔ‚ğ–ß‚·.
+	isBlink = false;	//“_–Å‚à–ß‚·.
+
 	tmBlink.Start();
+	mCursor.Reset();
+
+	//ƒŒƒCƒAƒEƒg‚ÌŒvZ.
+	CalcMenuRect();
 }
 
-//å…¥ã£ãŸç¬é–“.
+//“ü‚Á‚½uŠÔ.
 void MenuScene::Enter() {
-	//å‹•ç”»å†ç”Ÿ.
+
+	//ƒŒƒCƒAƒEƒg‚ÌŒvZ.
+	CalcMenuRect();
+
+	//“®‰æÄ¶.
 	if (auto i = GetPlayMovie()) {
 		i->PlayMovie(PlayTypeID::Loop, true);
 	}
 }
 
-//æŠœã‘ãŸç¬é–“.
+//”²‚¯‚½uŠÔ.
 void MenuScene::Exit() {
 	StopAllMovie();
 }
 
-//æ›´æ–°.
+//XV.
 void MenuScene::Update() {
 
-	//ã‚«ãƒ¼ã‚½ãƒ«ç§»å‹•æ“ä½œ.
-	if (inputMng->IsPushActionTime(_T("MenuUp")) % 20 == 1) {
-		cursorIdx = (cursorIdx + MENU_OPTION_COUNT - 1) % MENU_OPTION_COUNT; //-1ã—ã¦ã€MENU_OPTION_COUNTã®ä½™ã‚Šã‚’ãƒ«ãƒ¼ãƒ—.
-		OnCursorMove();
+	//ƒJ[ƒ\ƒ‹ˆÚ“®‘€ì(’·‰Ÿ‚µ‚É‚à‘Î‰)
+	{
+		if (inputMng->IsPushActionTime(_T("MenuUp")) % 20 == 1) {
+			//-1‚µ‚ÄAMENU_OPTION_COUNT‚Ì—]‚è‚ğƒ‹[ƒv.
+			mCursor.cursorIdx = (mCursor.cursorIdx + MENU_OPTION_COUNT - 1) % MENU_OPTION_COUNT;
+			OnCursorMove();
+		}
+		if (inputMng->IsPushActionTime(_T("MenuDown")) % 20 == 1) {
+			//+1‚µ‚ÄAMENU_OPTION_COUNT‚Ì—]‚è‚ğƒ‹[ƒv.
+			mCursor.cursorIdx = (mCursor.cursorIdx + 1) % MENU_OPTION_COUNT;
+			OnCursorMove();
+		}
 	}
-	if (inputMng->IsPushActionTime(_T("MenuDown")) % 20 == 1) { //é•·æŠ¼ã—ã«ã‚‚å¯¾å¿œ.
-		cursorIdx = (cursorIdx + 1) % MENU_OPTION_COUNT;                     //+1ã—ã¦ã€MENU_OPTION_COUNTã®ä½™ã‚Šã‚’ãƒ«ãƒ¼ãƒ—.
-		OnCursorMove();
-	}
-	//ç‚¹æ»…çµ‚äº†.
+
+	//“_–ÅI—¹.
 	if (tmBlink.GetPassTime() <= 0) {
 		isBlink = false;
 	}
 
-	//æ±ºå®šæ“ä½œ.
+	//Œˆ’è‘€ì.
 	if (inputMng->IsPushActionTime(_T("MenuNext")) == 1) {
 
-		switch (cursorIdx)
+		switch (mCursor.cursorIdx)
 		{
-			//ã‚¨ãƒ³ãƒ‰ãƒ¬ã‚¹ãƒ¢ãƒ¼ãƒ‰ã¸.
+			//ƒGƒ“ƒhƒŒƒXƒ‚[ƒh‚Ö.
 			case 0:
 			{
 				sceneMng->SetScene(_T("Game"));
 				gameData->stage = StageType::Endless;
-				//èƒŒæ™¯å¤‰æ›´.
+				//”wŒi•ÏX.
 				bgMng->SetBgType(BGType::Space3D);
 
 #if !defined BGM_NONE
 
 				soundMng->StopAll();
 
-				//BGMåã‚’å–å¾—.
+				//BGM–¼‚ğæ“¾.
 				MY_STRING bgmName = gameMng->GetGameSceneBgm();
-				//BGMã‚’å†ç”Ÿ.
+				//BGM‚ğÄ¶.
 				if (auto i = soundMng->Get(bgmName)) {
-					i->Play(true, BGM_VOLUME_ENDLESS); //å†ç”Ÿ.
+					i->Play(true, BGM_VOLUME_ENDLESS); //Ä¶.
 				}
 #endif
 			}
 			break;
 
-			//ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã¸.
+			//ƒ`ƒ…[ƒgƒŠƒAƒ‹‚Ö.
 			case 1:
 			{
 				sceneMng->SetScene(_T("Game"));
 				gameData->stage = StageType::Tutorial;
-				//èƒŒæ™¯å¤‰æ›´.
+				//”wŒi•ÏX.
 				bgMng->SetBgType(BGType::Tile);
-				//ãƒ—ãƒ¬ã‚¤ãƒ­ã‚°ã«è¨˜éŒ².
+				//ƒvƒŒƒCƒƒO‚É‹L˜^.
 				gameMng->WritePlayLog(true);
 
 #if !defined BGM_NONE
 				//BGM.
 				soundMng->StopAll();
 				if (auto i = soundMng->Get(_T("BGM_Tutorial"))) {
-					i->Play(true, BGM_VOLUME_TUTORIAL); //å†ç”Ÿ.
+					i->Play(true, BGM_VOLUME_TUTORIAL); //Ä¶.
 				}
 #endif
 			}
@@ -125,7 +185,7 @@ void MenuScene::Update() {
 
 			case 2:
 			{
-				sceneMng->SetScene(_T("Title")); //ã‚¿ã‚¤ãƒˆãƒ«ã¸.
+				sceneMng->SetScene(_T("Title")); //ƒ^ƒCƒgƒ‹‚Ö.
 				App::Reset();
 			}
 			break;
@@ -133,29 +193,35 @@ void MenuScene::Update() {
 			default: assert(false); break;
 		}
 
-		//ã‚µã‚¦ãƒ³ãƒ‰.
+		//ƒTƒEƒ“ƒh.
 		if (auto i = soundMng->Get(_T("MenuOK"))) {
 			i->Play(false, 70);
 		}
 	}
 
-	//çµŒéæ™‚é–“.
+	//ƒJƒEƒ“ƒ^[.
 	counter += 1;
+	//ƒJ[ƒ\ƒ‹XV.
+	mCursor.Update(counter);
 }
 
-//æç”».
+//•`‰æ.
 void MenuScene::Draw() {
+	//•”ˆÊ‚²‚Æ‚Ì•`‰æ.
+	DrawBG();
+	DrawTopText();
+	DrawOptions();
+	DrawCursor();
+	DrawThumbnail();
+	DrawGuideLines();
+	DrawPanelDescOperate();
+	DrawPanelDescMode();
+}
 
-	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å€¤.
-	//ã“ã®å€¤ã‚’åŸºæº–ã«ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’åˆ¶å¾¡ã™ã‚‹.
-	const double anim1 = sin(counter/ 50 * M_PI);
-	const double anim2 = sin(counter/100 * M_PI);
-	const double anim3 = Calc::AnimEase(EaseType::OutInQuad, fmod(counter, 120)/120);
-	const double anim4 = sin(fmod(counter, 120)/120 * M_PI);
-	const double anim5 = Calc::AnimEase(EaseType::OutInQuad, fmod(counter-20, 120)/120);
-	const double anim6 = sin(fmod(counter-20, 120)/120 * M_PI);
+//[•`‰æ] ƒƒjƒ…[‘S‘Ì‚Ì”wŒi.
+void MenuScene::DrawBG() {
 
-	//â–¼ãƒ¡ãƒ‹ãƒ¥ãƒ¼å…¨ä½“ã®èƒŒæ™¯.
+	//— ‚ğˆÃ‚­‚·‚é.
 	DrawMode::Exe(
 		DrawModeID::None, DrawBlendModeID::Alpha, 128,
 		[&]() {
@@ -163,337 +229,341 @@ void MenuScene::Draw() {
 			box.Draw(Anchor::LU, true);
 		}
 	);
-	//â–¼ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¿ã‚¤ãƒˆãƒ«.
-	{
-		//åŸºæº–ä½ç½®.
-		const DBL_XY basePos = { WINDOW_WID / 2, 80 };
+}
 
-		//ä¸‰è§’å½¢æ¼”å‡º1.
+//[•`‰æ] ƒgƒbƒvƒeƒLƒXƒg.
+void MenuScene::DrawTopText() {
+
+	//Šî€ˆÊ’u.
+	const DBL_XY basePos = { WINDOW_WID / 2, 80 };
+
+	//OŠpŒ`‰‰o.
+	for (const auto& a : mCursor.arrow) {
 		DrawMode::Exe(
-			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim4),
+			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * a.alpha), 
 			[&]() {
 				Line lines[4] = {
-					//ã€Œ<ã€.
-					{ basePos + DBL_XY(-55 - 100 * anim3, 30), basePos + DBL_XY(-85 - 100 * anim3,   0), 0x00FFFF, 2.0f },
-					{ basePos + DBL_XY(-85 - 100 * anim3,  0), basePos + DBL_XY(-55 - 100 * anim3, -30), 0x00FFFF, 2.0f },
-					//ã€Œ>ã€.
-					{ basePos + DBL_XY(+55 + 100 * anim3, 30), basePos + DBL_XY(+85 + 100 * anim3,   0), 0x00FFFF, 2.0f },
-					{ basePos + DBL_XY(+85 + 100 * anim3,  0), basePos + DBL_XY(+55 + 100 * anim3, -30), 0x00FFFF, 2.0f }
+					//u<v.
+					{ basePos + DBL_XY(-55 - 100 * a.move, 30), basePos + DBL_XY(-85 - 100 * a.move,   0), 0x00FFFF, 2.0f },
+					{ basePos + DBL_XY(-85 - 100 * a.move,  0), basePos + DBL_XY(-55 - 100 * a.move, -30), 0x00FFFF, 2.0f },
+					//u>v.
+					{ basePos + DBL_XY(+55 + 100 * a.move, 30), basePos + DBL_XY(+85 + 100 * a.move,   0), 0x00FFFF, 2.0f },
+					{ basePos + DBL_XY(+85 + 100 * a.move,  0), basePos + DBL_XY(+55 + 100 * a.move, -30), 0x00FFFF, 2.0f }
 				};
-				//ç·šæç”».
+				//ü•`‰æ.
 				for (auto& i : lines) {
 					i.Draw(true);
 				}
 			}
 		);
-		//ä¸‰è§’å½¢æ¼”å‡º2.
-		DrawMode::Exe(
-			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim6),
-			[&]() {
-				Line lines[4] = {
-					//ã€Œ<ã€.
-					{ basePos + DBL_XY(-55 - 100 * anim5, 30), basePos + DBL_XY(-85 - 100 * anim5,   0), 0x00FFFF, 2.0f },
-					{ basePos + DBL_XY(-85 - 100 * anim5,  0), basePos + DBL_XY(-55 - 100 * anim5, -30), 0x00FFFF, 2.0f },
-					//ã€Œ>ã€.
-					{ basePos + DBL_XY(+55 + 100 * anim5, 30), basePos + DBL_XY(+85 + 100 * anim5,   0), 0x00FFFF, 2.0f },
-					{ basePos + DBL_XY(+85 + 100 * anim5,  0), basePos + DBL_XY(+55 + 100 * anim5, -30), 0x00FFFF, 2.0f }
-				};
-				//ç·šæç”».
-				for (auto& i : lines) {
-					i.Draw(true);
-				}
-			}
-		);
-
-		const INT_XY offset = { 0, -1 };
-
-		//ãƒ†ã‚­ã‚¹ãƒˆæç”».
-		DrawStr str(_T("ãƒ¢ãƒ¼ãƒ‰é¸æŠ"), basePos.ToInt() + offset, 0x00FFFF);
-		str.Draw(Anchor::Mid, gameData->fonts.at("jp-size4").GetFont());
 	}
 
-	//â–¼å„é¸æŠè‚¢.
-	{
-		const INT_XY offset = {0, -1};
+	const INT_XY offset = { 0, -1 };
 
-		//ãƒ†ã‚­ã‚¹ãƒˆ & æ ç·šç”¨.
-		Box     box = { mLayout.menuPos, mLayout.menuSize, mColor.select1, 1.0f };
-		DrawStr str = { _T(""), mLayout.menuPos.ToInt() + offset, {}};
-		//é¸æŠè‚¢ãƒ†ã‚­ã‚¹ãƒˆ.
-		MY_STRING texts[] = {
-			_T("ã‚²ãƒ¼ãƒ é–‹å§‹"), 
-			_T("ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«"), 
-			_T("ã‚¿ã‚¤ãƒˆãƒ«ã«æˆ»ã‚‹")
-		};
-		//ãƒ†ã‚­ã‚¹ãƒˆè‰².
-		unsigned int colors[] = {
-			(cursorIdx == 0) ? mColor.select1 : mColor.normal,
-			(cursorIdx == 1) ? mColor.select1 : mColor.normal,
-			(cursorIdx == 2) ? mColor.select1 : mColor.normal
-		};
+	//ƒeƒLƒXƒg•`‰æ.
+	DrawStr str(_T("ƒ‚[ƒh‘I‘ğ"), basePos.ToInt() + offset, 0x00FFFF);
+	str.Draw(Anchor::Mid, gameData->fonts.at("jp-size4").GetFont());
+}
 
-		INT_XY savePos; //ä¿å­˜ç”¨.
+//[•`‰æ] ‘I‘ğˆ.
+void MenuScene::DrawOptions() {
 
-		//å…¨é¸æŠè‚¢ãƒ«ãƒ¼ãƒ—.
-		for (int i = 0; i < 3; i++) {
+	const INT_XY offset = { 0, -1 };
 
-			str.text  = texts[i];
-			str.color = colors[i];
-			savePos   = str.pos;  //å‰ã®åº§æ¨™ã‚’ä¿å­˜.
-			//æ .
-			box.Draw(Anchor::Mid, false);
-			
-			int alpha = 255; //é€æ˜åº¦.
-			//ãƒ–ãƒ¬ã‚‹å‡¦ç†.
-			if (isBlink && cursorIdx == i) {
-				const int add = Calc::RandNum(-5, 5); //ãšã‚‰ã™é‡.
-				str.pos += add;						  //ä½ç½®ã‚’ãšã‚‰ã™.
-				alpha = 128;
-			}
-			//ãƒ†ã‚­ã‚¹ãƒˆ.
-			DrawMode::Exe(
-				DrawModeID::None, DrawBlendModeID::Alpha, alpha,
-				[&]() {
-					str.Draw(Anchor::Mid, gameData->fonts.at("jp-size4").GetFont());
-				}
-			);
+	//ƒeƒLƒXƒg & ˜gü—p.
+	Box     box = { mLayout.menuPos, mLayout.menuSize, mColor.select1, 1.0f };
+	DrawStr str = { _T(""), mLayout.menuPos.ToInt() + offset, {} };
+	//‘I‘ğˆƒeƒLƒXƒg.
+	MY_STRING texts[] = {
+		_T("ƒQ[ƒ€ŠJn"),
+		_T("ƒ`ƒ…[ƒgƒŠƒAƒ‹"),
+		_T("ƒ^ƒCƒgƒ‹‚É–ß‚é")
+	};
+	//ƒeƒLƒXƒgF.
+	unsigned int colors[] = {
+		(mCursor.cursorIdx == 0) ? mColor.select1 : mColor.normal,
+		(mCursor.cursorIdx == 1) ? mColor.select1 : mColor.normal,
+		(mCursor.cursorIdx == 2) ? mColor.select1 : mColor.normal
+	};
 
-			//ãƒªã‚»ãƒƒãƒˆ.
-			str.pos = savePos;
-			//ã‚¹ãƒšãƒ¼ã‚¹ã‚’ç©ºã‘ã‚‹.
-			box.pos.y += mLayout.menuSpace;
-			str.pos.y += mLayout.menuSpace;
+	INT_XY savePos; //•Û‘¶—p.
+
+	//‘S‘I‘ğˆƒ‹[ƒv.
+	for (int i = 0; i < 3; i++) {
+
+		str.text  = texts[i];
+		str.color = colors[i];
+		savePos   = str.pos;  //‘O‚ÌÀ•W‚ğ•Û‘¶.
+		//˜g.
+		box.Draw(Anchor::Mid, false);
+
+		int alpha = 255; //“§–¾“x.
+		//ƒuƒŒ‚éˆ—.
+		if (isBlink && mCursor.cursorIdx == i) {
+			const int add = Calc::RandNum(-5, 5); //‚¸‚ç‚·—Ê.
+			str.pos += add;						  //ˆÊ’u‚ğ‚¸‚ç‚·.
+			alpha = 128;
 		}
-	}
-
-	//â–¼ã‚«ãƒ¼ã‚½ãƒ«ã®ä¸‰è§’.
-	{
-		//åŸºæº–åº§æ¨™.
-		DBL_XY base = mLayout.menuPos + DBL_XY(
-			-mLayout.menuSize.x/2 - 20,		//æ¨ªã«ãšã‚‰ã™.
-			+mLayout.menuSpace * cursorIdx	//ç¸¦ã«ãšã‚‰ã™.
-		);
-		//ã‚«ãƒ¼ã‚½ãƒ«.
-		Triangle tri = { 
-			base, 
-			base + DBL_XY(-20, 10 * anim1), 
-			base + DBL_XY(-20, -10 * anim1), 
-			{}, {} 
-		};
-		tri.color = (anim1 >= 0) ? mColor.select1 : mColor.select2; //è¡¨ã‹è£ã‹ã§è‰²ã‚’å¤‰ãˆã‚‹.
-		tri.Draw();
-	}
-
-	//ç”»åƒã‚µã‚¤ã‚ºä¿å­˜ç”¨.
-	DBL_XY imgSize;
-
-	//â–¼ã‚µãƒ ãƒ.
-	{
-		const double extend = 0.7; //ç”»åƒæç”»å€ç‡.
-		const int    margin = 10;  //æ ã‚’ç”»åƒã‚ˆã‚Šã©ã‚Œã ã‘å¤§ããã™ã‚‹ã‹.
-	
-		//ç”»åƒã‚’å–å¾—ã§ããŸã‚‰.
-		if (auto i = GetPlayMovie()) {
-
-			//ç”»åƒæç”».
-			DrawMode::Exe(
-				DrawModeID::Bilinear, DrawBlendModeID::None, 255,
-				[&]() {
-					i->DrawExtend(mLayout.imgPos, { extend , extend });
-				}
-			);
-			//ç”»åƒã®æç”»ã‚µã‚¤ã‚ºã‚’è¨ˆç®—.
-			imgSize = i->GetSize().ToDbl() * extend + margin;
-			//æ ç·šæç”»(ç”»åƒã«ã´ã£ãŸã‚Šåˆã†ã‚ˆã†ã«)
-			Box box = { mLayout.imgPos, imgSize, mColor.frame, 1.0f };
-			box.Draw(Anchor::Mid, false);
-		}
-	}
-
-	//â–¼èª¬æ˜æ–‡ã®æ ï¼ˆå³ä¸‹ï¼‰- ç”»åƒã®å¹…ã«åˆã‚ã›ã‚‹
-	int textBoxWidth  = _int_r(imgSize.x);
-	int textBoxHeight = 260;
-	int textBoxX      = _int_r(mLayout.imgPos.x - textBoxWidth/2);  // ç”»åƒã¨åŒã˜ä¸­å¿ƒä½ç½®
-	int textBoxY      = WINDOW_HEI - 300;
-
-	//â–¼é¸æŠé …ç›®ã‹ã‚‰ç”»åƒã€èª¬æ˜æ–‡ã‚¨ãƒªã‚¢ã¾ã§ã®ç·šã‚’æç”»
-	{
-		int imgBottomY = (int)(mLayout.imgPos.y + imgSize.y/2); //ç”»åƒã®ä¸‹ç«¯åº§æ¨™.
-
-		//ç·šã®é€æ˜åº¦(155ï½255)
-		const int alpha = _int_r(155 + 100 * (anim2 + 1.0) / 2.0);
-		//æç”».
+		//ƒeƒLƒXƒg.
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 			[&]() {
-
-				//1.ãƒ¡ãƒ‹ãƒ¥ãƒ¼é …ç›®ã‹ã‚‰ç”»åƒã¸ã®ç·šï¼ˆãƒ¡ãƒ‹ãƒ¥ãƒ¼é …ç›®å³ç«¯ã‹ã‚‰ç”»åƒå·¦ç«¯ã¾ã§ï¼‰
-				{
-					//ç·šãƒ‡ãƒ¼ã‚¿.
-					Line line = {
-						mLayout.menuPos + DBL_XY(mLayout.menuSize.x/2, 0),       //å§‹ç‚¹.
-						DBL_XY(mLayout.imgPos.x-imgSize.x/2, mLayout.menuPos.y), //çµ‚ç‚¹.
-						mColor.line,                                             //è‰².
-						3.0f
-					};
-					//é¸æŠã—ã¦ã‚‹æ‰€ã«ãšã‚‰ã™.
-					line.stPos.y += mLayout.menuSpace * cursorIdx;
-					line.edPos.y += mLayout.menuSpace * cursorIdx;
-					//ç·šæç”».
-					line.Draw(false);
-				}
-
-				//2.ç”»åƒã‹ã‚‰èª¬æ˜æ–‡ã‚¨ãƒªã‚¢ã¸ã®ç·šï¼ˆç”»åƒä¸‹ç«¯ã‹ã‚‰èª¬æ˜æ–‡ä¸Šç«¯ã¾ã§ï¼‰
-				{
-					Line line = {
-						DBL_XY(mLayout.imgPos.x-30, imgBottomY),	//å§‹ç‚¹.
-						DBL_XY(mLayout.imgPos.x-30, textBoxY),		//çµ‚ç‚¹.
-						mColor.line,								//è‰².
-						3.0f
-					};
-					//ç·š1.
-					line.Draw(false);
-					//ç·š2.
-					line.stPos.x += 60;
-					line.edPos.x += 60;
-					line.Draw(false);
-				}
+				str.Draw(Anchor::Mid, gameData->fonts.at("jp-size4").GetFont());
 			}
 		);
-	}
 
-	//â–¼æ“ä½œèª¬æ˜ï¼ˆå·¦ä¸‹ï¼‰
-	{
-		int infoWidth = 500;
-		int infoHeight = textBoxHeight;
-		int infoX = _int_r(mLayout.menuPos.x - _dbl(infoWidth)/2);
-		int infoY = textBoxY;
-
-		//æ ç·š.
-		Box box = { DBL_XY(infoX, infoY), DBL_XY(infoWidth, infoHeight), mColor.select1, 1.0f };
-		box.Draw(Anchor::LU, false);
-
-		DrawStr str2(_T("æ“ä½œ"), { infoX + 10, infoY - 10 }, 0x00FFFF);
-		str2.Draw(Anchor::LD, gameData->fonts.at("jp-size2").GetFont());
-
-		//ãƒ†ã‚­ã‚¹ãƒˆ.
-		DrawStr str = { _T(""), INT_XY(infoX, infoY) + mLayout.loreInner, mColor.normal };
-
-		MY_STRING texts[2] = { _T("null"), _T("null") };
-
-		//[æ“ä½œè¡¨ç¤º] æ“ä½œã«ã‚ˆã£ã¦è¡¨ç¤ºã™ã‚‹ãƒ†ã‚­ã‚¹ãƒˆã‚’å¤‰ãˆã‚‹.
-#if defined INPUT_CHANGE_ARCADE
-		texts[0] = _T("é¸æŠ: ãƒ¬ãƒãƒ¼");
-		texts[1] = _T("æ±ºå®š: å·¦ä¸Šãƒœã‚¿ãƒ³");
-#else
-		//æœ€å¾Œã®æ“ä½œç«¯æœ«ã‚’å–å¾—.
-		switch (gameMng->GetLastInputDevice())
-		{
-			case InputDevice::Key:
-				texts[0] = _T("é¸æŠ: â†‘/â†“/W/S");
-				texts[1] = _T("æ±ºå®š: SPACE");
-				break;
-
-			case InputDevice::PadXbox:
-				texts[0] = _T("é¸æŠ: å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯");
-				texts[1] = _T("æ±ºå®š: Aãƒœã‚¿ãƒ³");
-				break;
-
-			//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã¨ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ä»¥å¤–ã®æ“ä½œã«ãªã‚‹ã®ã¯ãŠã‹ã—ã„.
-			default: assert(false); break;
-		}
-#endif
-
-		//1è¡Œãšã¤è¡¨ç¤º.
-		for (auto& i : texts) {
-			str.text = i;
-			str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
-			str.pos.y += mLayout.loreLineSpace; //æ¬¡ã®è¡Œã¸.
-		}
-	}
-
-	//â–¼ãƒ¢ãƒ¼ãƒ‰èª¬æ˜ã‚¿ã‚¤ãƒˆãƒ«ï¼ˆèª¬æ˜æ–‡æ ã®ä¸Šã«è¡¨ç¤ºï¼‰
-	{
-		DrawStr str2(_T("ãƒ¢ãƒ¼ãƒ‰èª¬æ˜"), { textBoxX+10, textBoxY-10 }, 0x00FFFF);
-		str2.Draw(Anchor::LD, gameData->fonts.at("jp-size2").GetFont());
-
-		// èª¬æ˜æ–‡æ ã®æ ç·šï¼ˆæ°´è‰²ï¼‰	
-		Box box = { DBL_XY(textBoxX, textBoxY), DBL_XY(textBoxWidth, textBoxHeight), mColor.frame, 1.0f };
-		box.Draw(Anchor::LU, false);
-
-		//èª¬æ˜æ–‡ç”¨.
-		DrawStr str(_T(""), INT_XY(textBoxX, textBoxY)+mLayout.loreInner, mColor.normal);
-
-		switch (cursorIdx)
-		{
-			case 0:
-			{
-				MY_STRING texts[] = {
-					_T("ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼ã«ãªã‚‹ã¾ã§ç¶šãã‚¨ãƒ³ãƒ‰ãƒ¬ã‚¹ãƒ¢ãƒ¼ãƒ‰ã§ã™ã€‚"),
-					_T("ãƒã‚¤ã‚¹ã‚³ã‚¢ã‚’ç›®æŒ‡ã—ã¾ã—ã‚‡ã†ï¼"),
-					_T(""),
-					_T("[ã‚¹ã‚³ã‚¢]"),
-					_T("éš•çŸ³ã‚’ç ´å£Šã€€ã€€: +500"),
-					_T("ã‚¢ã‚¤ãƒ†ãƒ ã‚’å–ã‚‹: +100"),
-					_T("ã‚¿ã‚¤ãƒ ãƒœãƒ¼ãƒŠã‚¹: 1ç§’ã”ã¨ã«+10")
-				};
-				//1è¡Œãšã¤è¡¨ç¤º.
-				for (auto& i : texts) {
-					str.text = i;
-					str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
-					str.pos.y += mLayout.loreLineSpace; //æ¬¡ã®è¡Œã¸.
-				}
-			}
-			break;
-
-			case 1:
-			{
-				MY_STRING texts[] = {
-					_T("åŸºæœ¬æ“ä½œã‚„ãƒ«ãƒ¼ãƒ«ã‚’ç¢ºèªã§ãã¾ã™ã€‚"),
-					_T("åˆã‚ã¦éŠã¶æ–¹ã«ãŠã™ã™ã‚ã§ã™ã€‚"),
-					_T(""),
-					_T("STEP1: åŸºæœ¬æ“ä½œ"),
-					_T("STEP2: ã‚¢ã‚¤ãƒ†ãƒ "),
-					_T("STEP3: åå°„"),
-					_T("STEP4: ã‚¹ã‚³ã‚¢")
-				};
-				//1è¡Œãšã¤è¡¨ç¤º.
-				for (auto& i : texts) {
-					str.text = i;
-					str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
-					str.pos.y += mLayout.loreLineSpace; //æ¬¡ã®è¡Œã¸.
-				}
-			}
-			break;
-
-		case 2:
-			str.text = _T("ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ã«æˆ»ã‚Šã¾ã™ã€‚");
-			str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
-			break;
-		}
+		//ƒŠƒZƒbƒg.
+		str.pos = savePos;
+		//ƒXƒy[ƒX‚ğ‹ó‚¯‚é.
+		box.pos.y += mLayout.menuSpace;
+		str.pos.y += mLayout.menuSpace;
 	}
 }
 
-//ã‚«ãƒ¼ã‚½ãƒ«ç§»å‹•æ™‚ã®å‡¦ç†.
+//[•`‰æ] ƒJ[ƒ\ƒ‹.
+void MenuScene::DrawCursor() {
+
+	//Šî€À•W.
+	const DBL_XY base = mLayout.menuPos + DBL_XY(
+		-mLayout.menuSize.x / 2 - 20,	//‰¡‚É‚¸‚ç‚·.
+		+mLayout.menuSpace * mCursor.cursorIdx	//c‚É‚¸‚ç‚·.
+	);
+
+	const double wave = 10.0 * mCursor.cursorWave;
+
+	//ƒJ[ƒ\ƒ‹.
+	Triangle tri = {
+		base,
+		base + DBL_XY(-20.0, +wave),
+		base + DBL_XY(-20.0, -wave),
+		{}, {}
+	};
+	tri.color = (mCursor.cursorWave >= 0) ? mColor.select1 : mColor.select2; //•\‚©— ‚©‚ÅF‚ğ•Ï‚¦‚é.
+	tri.Draw();
+}
+
+//[•`‰æ] ƒTƒ€ƒlƒCƒ‹.
+void MenuScene::DrawThumbnail() {
+
+	if (auto i = GetPlayMovie()) {
+		//‰æ‘œ•`‰æ.
+		DrawMode::Exe(
+			DrawModeID::Bilinear, DrawBlendModeID::None, 255,
+			[&]() { 
+				i->DrawExtend(mLayout.imgPos, { THUMB_EXTEND, THUMB_EXTEND }); 
+			}
+		);
+		//˜gü•`‰æ(‰æ‘œ‚É‚Ò‚Á‚½‚è‡‚¤‚æ‚¤‚É).
+		Box box = { mLayout.imgPos, mRect.imgSize, mColor.frame, 1.0f };
+		box.Draw(Anchor::Mid, false);
+	}
+}
+
+//[•`‰æ] ‘•üü.
+void MenuScene::DrawGuideLines() {
+	
+	//‰æ‘œ‚Ì‰º’[À•W.
+	const int imgBottomY = (int)(mLayout.imgPos.y + mRect.imgSize.y / 2);
+	//ü‚Ì“§–¾“x(155`255)
+	const int alpha = _int_r(155 + 100 * (mCursor.linePulse + 1.0) / 2.0);
+
+	//•`‰æ.
+	DrawMode::Exe(
+		DrawModeID::None, DrawBlendModeID::Alpha, alpha,
+		[&]() {
+
+			//1.ƒƒjƒ…[€–Ú‚©‚ç‰æ‘œ‚Ö‚Ìüiƒƒjƒ…[€–Ú‰E’[‚©‚ç‰æ‘œ¶’[‚Ü‚Åj
+			{
+				//üƒf[ƒ^.
+				Line line = {
+					mLayout.menuPos + DBL_XY(mLayout.menuSize.x / 2, 0),				//n“_.
+					DBL_XY(mLayout.imgPos.x - mRect.imgSize.x / 2, mLayout.menuPos.y),	//I“_.
+					mColor.line,														//F.
+					3.0f
+				};
+				//‘I‘ğ‚µ‚Ä‚éŠ‚É‚¸‚ç‚·.
+				line.stPos.y += mLayout.menuSpace * mCursor.cursorIdx;
+				line.edPos.y += mLayout.menuSpace * mCursor.cursorIdx;
+				//ü•`‰æ.
+				line.Draw(false);
+			}
+
+			//2.‰æ‘œ‚©‚çà–¾•¶ƒGƒŠƒA‚Ö‚Ìüi‰æ‘œ‰º’[‚©‚çà–¾•¶ã’[‚Ü‚Åj
+			{
+				Line line = {
+					DBL_XY(mLayout.imgPos.x - 30, imgBottomY),		//n“_.
+					DBL_XY(mLayout.imgPos.x - 30, mRect.descPos.y),	//I“_.
+					mColor.line,									//F.
+					3.0f
+				};
+				//ü1.
+				line.Draw(false);
+				//ü2.
+				line.stPos.x += 60;
+				line.edPos.x += 60;
+				line.Draw(false);
+			}
+		}
+	);
+}
+
+//[•`‰æ] ‘€ìà–¾ƒpƒlƒ‹.
+void MenuScene::DrawPanelDescOperate() {
+
+	//˜gü.
+	Box box = { mRect.infoPos.ToDbl(), mRect.infoSize.ToDbl(), mColor.frame, 1.0f};
+	box.Draw(Anchor::LU, false);
+
+	//Œ©o‚µ.
+	DrawStr str2(_T("‘€ì"), mRect.descPos + INT_XY(10, -10), 0x00FFFF);
+	str2.Draw(Anchor::LD, gameData->fonts.at("jp-size2").GetFont());
+
+	//ƒeƒLƒXƒg.
+	MY_STRING texts[2] = { _T("null"), _T("null") };
+
+	//[‘€ì•\¦] ‘€ì‚É‚æ‚Á‚Ä•\¦‚·‚éƒeƒLƒXƒg‚ğ•Ï‚¦‚é.
+#if defined INPUT_CHANGE_ARCADE
+	texts[0] = _T("‘I‘ğ: ƒŒƒo[");
+	texts[1] = _T("Œˆ’è: ¶ãƒ{ƒ^ƒ“");
+#else
+	//ÅŒã‚Ì‘€ì’[––‚ğæ“¾.
+	switch (gameMng->GetLastInputDevice())
+	{
+		case InputDevice::Key:
+			texts[0] = _T("‘I‘ğ: ª/«/W/S");
+			texts[1] = _T("Œˆ’è: SPACE");
+			break;
+
+		case InputDevice::PadXbox:
+			texts[0] = _T("‘I‘ğ: ¶ƒXƒeƒBƒbƒN");
+			texts[1] = _T("Œˆ’è: Aƒ{ƒ^ƒ“");
+			break;
+
+		//ƒL[ƒ{[ƒh‚ÆƒRƒ“ƒgƒ[ƒ‰ˆÈŠO‚Ì‘€ì‚É‚È‚é‚Ì‚Í‚¨‚©‚µ‚¢.
+		default: assert(false); break;
+	}
+#endif
+
+	DrawStr str = { _T(""), mRect.infoPos + mLayout.loreInner, mColor.normal };
+
+	//1s‚¸‚Â•\¦.
+	for (auto& i : texts) {
+		str.text = i;
+		str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
+		str.pos.y += mLayout.loreLineSpace; //Ÿ‚Ìs‚Ö.
+	}
+}
+
+//[•`‰æ] ƒ‚[ƒhà–¾ƒpƒlƒ‹.
+void MenuScene::DrawPanelDescMode() {
+
+	//˜gü.
+	Box box = { mRect.descPos.ToDbl(), mRect.descSize.ToDbl(), mColor.frame, 1.0f};
+	box.Draw(Anchor::LU, false);
+
+	//Œ©o‚µ.
+	DrawStr str2(_T("ƒ‚[ƒhà–¾"), mRect.descPos + INT_XY(10, -10), 0x00FFFF);
+	str2.Draw(Anchor::LD, gameData->fonts.at("jp-size2").GetFont());
+
+	//ƒeƒLƒXƒg.
+	DrawStr str(_T(""), mRect.descPos + mLayout.loreInner, mColor.normal);
+
+	switch (mCursor.cursorIdx)
+	{
+		case 0:
+		{
+			MY_STRING texts[] = {
+				_T("ƒQ[ƒ€ƒI[ƒo[‚É‚È‚é‚Ü‚Å‘±‚­ƒGƒ“ƒhƒŒƒXƒ‚[ƒh‚Å‚·B"),
+				_T("ƒnƒCƒXƒRƒA‚ğ–Úw‚µ‚Ü‚µ‚å‚¤I"),
+				_T(""),
+				_T("[ƒXƒRƒA]"),
+				_T("è¦Î‚ğ”j‰ó@@: +500"),
+				_T("ƒAƒCƒeƒ€‚ğæ‚é: +100"),
+				_T("ƒ^ƒCƒ€ƒ{[ƒiƒX: 1•b‚²‚Æ‚É+10")
+			};
+			//1s‚¸‚Â•\¦.
+			for (auto& i : texts) {
+				str.text = i;
+				str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
+				str.pos.y += mLayout.loreLineSpace; //Ÿ‚Ìs‚Ö.
+			}
+		}
+		break;
+
+		case 1:
+		{
+			MY_STRING texts[] = {
+				_T("Šî–{‘€ì‚âƒ‹[ƒ‹‚ğŠm”F‚Å‚«‚Ü‚·B"),
+				_T("‰‚ß‚Ä—V‚Ô•û‚É‚¨‚·‚·‚ß‚Å‚·B"),
+				_T(""),
+				_T("STEP1: Šî–{‘€ì"),
+				_T("STEP2: ƒAƒCƒeƒ€"),
+				_T("STEP3: ”½Ë"),
+				_T("STEP4: ƒXƒRƒA")
+			};
+			//1s‚¸‚Â•\¦.
+			for (auto& i : texts) {
+				str.text = i;
+				str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
+				str.pos.y += mLayout.loreLineSpace; //Ÿ‚Ìs‚Ö.
+			}
+		}
+		break;
+
+		case 2:
+		{
+			str.text = _T("ƒ^ƒCƒgƒ‹‰æ–Ê‚É–ß‚è‚Ü‚·B");
+			str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
+		}
+		break;
+	}
+}
+
+//‹¤—L‚·‚éƒŒƒCƒAƒEƒg’l‚ğŒvZ.
+void MenuScene::CalcMenuRect() {
+
+	//ƒTƒ€ƒl˜g‚ÌƒTƒCƒY(“®‰æ‚ª‚È‚¯‚ê‚Î0).
+	mRect.imgSize = DBL_XY(0, 0);
+	if (auto i = GetPlayMovie()) {
+		mRect.imgSize = i->GetSize().ToDbl() * THUMB_EXTEND + THUMB_MARGIN;
+	}
+
+	//[à–¾•¶ƒpƒlƒ‹] ƒTƒ€ƒl‚Ì•‚É‡‚í‚¹‚é.
+	const int descWid = _int_r(mRect.imgSize.x);
+	const int descHei = 260;
+	mRect.descSize = INT_XY(descWid, descHei);
+	mRect.descPos  = INT_XY(_int_r(mLayout.imgPos.x - descWid / 2), WINDOW_HEI - 300);
+
+	//[‘€ìƒpƒlƒ‹] à–¾•¶ƒpƒlƒ‹‚Æ“¯‚¶‚‚³E“¯‚¶cˆÊ’u.
+	const int infoWid = 500;
+	mRect.infoSize = INT_XY(infoWid, descHei);
+	mRect.infoPos  = INT_XY(_int_r(mLayout.menuPos.x - _dbl(infoWid) / 2), mRect.descPos.y);
+}
+
+//ƒJ[ƒ\ƒ‹ˆÚ“®‚Ìˆ—.
 void MenuScene::OnCursorMove() {
 
-	isBlink = true;  //ç‚¹æ»…ã•ã›ã‚‹.
-	tmBlink.Start(); //ç‚¹æ»…æ™‚é–“è¨ˆæ¸¬.
+	isBlink = true;  //“_–Å‚³‚¹‚é.
+	tmBlink.Start(); //“_–ÅŠÔŒv‘ª.
 
-	//å…¨å‹•ç”»åœæ­¢.
+	mCursor.SetCursorRotSpeed(MENU_CURSOR_MOVE_ROT_SPEED);
+
+	//ƒŒƒCƒAƒEƒg‚ÌŒvZ.
+	CalcMenuRect();
+	//‘S“®‰æ’â~.
 	StopAllMovie();
-	//å‹•ç”»å†ç”Ÿ.
+	//“®‰æÄ¶.
 	GetPlayMovie()->PlayMovie(PlayTypeID::Loop, true);
 
-	//ã‚µã‚¦ãƒ³ãƒ‰.
+	//ƒTƒEƒ“ƒh.
 	if (auto i = soundMng->Get(_T("MenuCursor"))) {
 		i->Play(false, 70);
 	}
 }
 
-//å…¨ã¦ã®å‹•ç”»ã‚’åœæ­¢.
+//‘S‚Ä‚Ì“®‰æ‚ğ’â~.
 void MenuScene::StopAllMovie() {
-	//ç™»éŒ²ã•ã‚ŒãŸå‹•ç”»ã‚’ãƒ«ãƒ¼ãƒ—.
+	//“o˜^‚³‚ê‚½“®‰æ‚ğƒ‹[ƒv.
 	for (auto& i : grMenuMovie) {
 		if (i) {
 			i->StopMovie();

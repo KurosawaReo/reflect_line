@@ -7,7 +7,6 @@
 //背景タイル.
 class BG1_Tile
 {
-	friend class BG1; //アクセス許可.
 private:
 	INT_XY pos{};
 
@@ -22,6 +21,11 @@ private:
 	Graph* grBgTileRef{};
 
 public:
+	//set.
+	void SetPos(int x, int y) { pos = {x, y}; }
+	//get.
+	Timer* GetShineTimer() { return &shineTimer; }
+
 	void Init   ();                 //初期化.
 	void Reset  ();                 //リセット.
 	void Update ();                 //更新.

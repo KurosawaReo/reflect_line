@@ -28,6 +28,25 @@ private:
 	Graph* grDashReflect{};
 
 //▼ ===== 関数 ===== ▼.
+private:
+	//Update分割.
+	void UpdateStep0();
+	void UpdateStep1();
+	void UpdateStep2();
+	void UpdateStep3();
+	void UpdateStep4();
+	//Draw分割.
+	void DrawStep1();
+	void DrawStep2();
+	void DrawStep3();
+	void DrawStep4();
+
+	void DrawTopText(int line, double alpha, MY_STRING text);
+	bool IsEnd();
+
+	void ResetSignFlag();
+	void StepInnerEnd();
+
 public:
 	//コンストラクタ.
 	TutorialStage(){}
@@ -46,23 +65,6 @@ public:
 	void Reset()  override;
 	void Update() override;
 	void Draw()   override;
-	//Update分割.
-	void UpdateStep0();
-	void UpdateStep1();
-	void UpdateStep2();
-	void UpdateStep3();
-	void UpdateStep4();
-	//Draw分割.
-	void DrawStep1();
-	void DrawStep2();
-	void DrawStep3();
-	void DrawStep4();
-
-	void DrawTopText(int line, double alpha, MY_STRING text);
-	bool IsEnd();
-
-	void ResetSignFlag();
-	void StepInnerEnd();
 	
 	//使用禁止.
 	TutorialStage(const TutorialStage&) = delete;

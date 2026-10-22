@@ -8,7 +8,7 @@
 //背景2.
 class BG2 : public BGBase
 {
-	//▼ ===== 変数 ===== ▼.
+//▼ ===== 変数 ===== ▼.
 private:
 	//疑似3Dオブジェクト.
 	struct WarpPoint
@@ -45,18 +45,19 @@ private:
 	Graph* grBgStarRef{};
 	Graph* grBgStarNor{};
 
-	//▼ ===== 関数 ===== ▼.
+//▼ ===== 関数 ===== ▼.
+private:
+	//パーツ別描画.
+	void DrawPoints  (double modeAlpha, MY_COLOR color);
+	void DrawHexagons(double modeAlpha, MY_COLOR color);
+	void DrawStars   (double modeAlpha, bool isReflect);
+
 public:
-	void Init()                 override; //初期化.
-	void Reset()                 override; //リセット.
-	void Update()                 override; //更新.
+	void Init()                    override; //初期化.
+	void Reset()                   override; //リセット.
+	void Update()                  override; //更新.
 	void DrawNor(double modeAlpha) override; //描画(通常時)
 	void DrawRef(double modeAlpha) override; //描画(反射モード)
-
-	//パーツ別描画.
-	void DrawPoints(double modeAlpha, MY_COLOR color);
-	void DrawHexagons(double modeAlpha, MY_COLOR color);
-	void DrawStars(double modeAlpha, bool isReflect);
 
 	//ポーズ用.
 	void Pause()    override;

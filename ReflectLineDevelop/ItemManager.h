@@ -1,3 +1,7 @@
+/*
+   - ItemManager.h -
+   アイテム管理.
+*/
 #pragma once
 #include "Global.h"
 
@@ -23,7 +27,7 @@ class ItemManager final : public ManagerBase
 private:
 	vector<ItemData> items;
 
-	float counter{}; //経過時間.
+	float spawnCounter{}; //召喚カウンター.
 
 	//画像.
 	Graph* grItem{};
@@ -31,6 +35,14 @@ private:
 	Graph* grItemSuperLight{};
 
 //▼ ===== 関数 ===== ▼.
+private:
+	void ItemUpdate();	//アイテム更新.
+	void ItemSpawn();	//アイテム召喚.
+	void ItemReset();	//アイテムリセット.
+
+	void ItemUse       (vector<ItemData>::iterator&, bool isSuper);	//アイテム発動.
+	bool CheckHitPlayer(vector<ItemData>::iterator&, ItemType*);	//アイテム取得判定.
+
 public:
 	//コンストラクタ.
 	ItemManager(){}
@@ -40,13 +52,7 @@ public:
 	void Update() override;
 	void Draw()   override;
 
-	void ItemSpawn(); //アイテム召喚.
-	void ItemReset(); //全てリセット.
-
-	void ItemUse(vector<ItemData>::iterator&, bool isSuper);     //アイテム発動.
-
-	void SpawnNow();                                           //今すぐアイテムを出現させる.
-	bool CheckHitPlayer(vector<ItemData>::iterator&, ItemType*); //アイテム取得判定.
+	void SpawnNow(); //今すぐアイテムを出現させる.
 
 	//使用禁止.
 	ItemManager(const ItemManager&) = delete;

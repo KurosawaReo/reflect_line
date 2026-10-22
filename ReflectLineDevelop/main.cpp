@@ -6,7 +6,7 @@
 #include "GameManager.h"
 #include "BGManager.h"
 #include "EffectManager.h"
-#include "Item.h"
+#include "ItemManager.h"
 #include "LaserManager.h"
 #include "Obst_Fireworks.h"
 #include "Obst_MeteorManager.h"

@@ -46,12 +46,12 @@ void GameData::Init() {
 //ƒŠƒZƒbƒg.
 void GameData::Reset() {
 
-	scoreNoTime   = 0;
-	level         = 1;     //Å‰‚ÍLv1
-	speedRate     = 1.0;   //’Êí‚Í100%
-	spawnRate     = 1.0;   //Å‰‚Í100%
+	scoreNoTime   = 0;		//score‚Í0‚É‚·‚é.
+	level         = 0;		//ˆê’ULevel0‚É‚·‚é.
+	speedRate     = 1.0;	//’Êí‚Í100%
+	spawnRate     = 1.0;	//Å‰‚Í100%
 	counter       = 0;
 	slowBufCntr   = 0;
 	isPause       = false;
-	isReflectMode = false; //Å‰‚ÍLv1
+	isReflectMode = false;
 }

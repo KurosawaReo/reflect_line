@@ -10,7 +10,7 @@
 #include "Obst_MeteorManager.h"
 #include "Obst_Ripples.h"
 #include "Obst_Fireworks.h"
-#include "Item.h"
+#include "ItemManager.h"
 #include "Player.h"
 #include "EffectManager.h"
 #include "UIManager.h"
@@ -146,10 +146,10 @@ void TutorialStage::UpdateStep0() {
 		i->Play(false, 100); //再生.
 	}
 	//エフェクト.
-	EffectData data{};
-	data.type = EffectType::Tutorial_Step1;
-	data.pos  = { WINDOW_WID/2, WINDOW_HEI/2 };
-	effectMng->SpawnEffect(&data);
+	effectMng->SpawnEffect({
+		.type = EffectType::Tutorial_Step1,
+		.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+	});
 
 	//オブジェクト.
 	ManagerInsts::Get<LaserManager>()->SetAutoExeMode(MngAutoExe::Active);
@@ -187,7 +187,7 @@ void TutorialStage::UpdateStep1() {
 			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
 				
 				//オブジェクト.
-				ManagerInsts::Get<NormalLaser>()->UseLaserPointCnt(1); //レーザー数 = 1.
+				ManagerInsts::Get<NormalLaser>()->EnableCount(1); //レーザー数 = 1.
 				//オブジェクト(遅延実行)
 				timerMng->ReservExe(
 					1.0f, []() {
@@ -213,10 +213,10 @@ void TutorialStage::UpdateStep1() {
 				}
 
 				//エフェクト.
-				EffectData data{};
-				data.type = EffectType::Tutorial_Step2;
-				data.pos  = {WINDOW_WID/2, WINDOW_HEI/2};
-				effectMng->SpawnEffect(&data);
+				effectMng->SpawnEffect({
+					.type = EffectType::Tutorial_Step2,
+					.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+				});
 
 				//オブジェクト.
 				ManagerInsts::Get<NormalLaser>()->SetAutoExeMode(MngAutoExe::Stop);
@@ -272,10 +272,10 @@ void TutorialStage::UpdateStep2() {
 				}
 
 				//エフェクト.
-				EffectData data{};
-				data.type = EffectType::Tutorial_Step3;
-				data.pos  = {WINDOW_WID/2, WINDOW_HEI/2};
-				effectMng->SpawnEffect(&data);
+				effectMng->SpawnEffect({
+					.type = EffectType::Tutorial_Step3,
+					.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+				});
 
 				//オブジェクト.
 				ManagerInsts::Get<ItemManager>()->SpawnNow();
@@ -311,7 +311,7 @@ void TutorialStage::UpdateStep3() {
 
 				//オブジェクト.
 				ManagerInsts::Get<NormalLaser>()->Reset();             //リセットしておく.
-				ManagerInsts::Get<NormalLaser>()->UseLaserPointCnt(1); //レーザー数 = 1.
+				ManagerInsts::Get<NormalLaser>()->EnableCount(1); //レーザー数 = 1.
 				//オブジェクト(遅延実行)
 				timerMng->ReservExe(
 					1.0f, []() {
@@ -406,10 +406,10 @@ void TutorialStage::UpdateStep3() {
 				}
 
 				//エフェクト.
-				EffectData data{};
-				data.type = EffectType::Tutorial_Step4;
-				data.pos  = {WINDOW_WID/2, WINDOW_HEI/2};
-				effectMng->SpawnEffect(&data);
+				effectMng->SpawnEffect({
+					.type = EffectType::Tutorial_Step4,
+					.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+				});
 
 				//スコア表示.
 				gameData->ResetScore();

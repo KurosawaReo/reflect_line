@@ -202,8 +202,8 @@ void GameScene::DrawReflectMode() {
 
 		//画面中央に数字を表示.
 		{
-			double dec  = Calc::GetDecimal(tmReflectMode.GetPassTime()); //小数だけ取り出す.
-			double anim = Calc::AnimEase(EaseType::OutQuad, dec);
+			const double dec  = Calc::GetDecimal(tmReflectMode.GetPassTime()); //小数だけ取り出す.
+			const double anim = Calc::AnimEase(EaseType::OutQuad, dec);
 
 			//描画.
 			DrawMode::Exe(
@@ -233,11 +233,13 @@ void GameScene::ReflectModeEnd() {
 
 	tmReflectMode.Reset();
 
-	gameData->isReflectMode = false; //反射モード解除.
-	gameData->speedRate = 1.0;		 //速度倍率を100%に戻す.
-	gameData->slowBufCntr = 0;		 //カウンターを0に.
+	player->SetMode(PlayerMode::Normal);	//通常状態に戻す.
+
+	gameData->isReflectMode = false;		//反射モード解除.
+	gameData->speedRate = 1.0;				//速度倍率を100%に戻す.
+	gameData->slowBufCntr = 0;				//カウンターを0に.
+	
 	itemSoundCnt = 0;
-	player->SetMode(PlayerMode::Normal);  //通常状態に戻す.
 
 	//効果終了音.
 	if (auto i = soundMng->Get(_T("PowerDown"))) {
@@ -249,7 +251,7 @@ void GameScene::ReflectModeEnd() {
 	}
 }
 
-//アイテム使用.
+//アイテム発動.
 void GameScene::ItemUsed() {
 	tmReflectMode.Start(); //反射タイマー開始.
 	itemSoundCnt = 0;

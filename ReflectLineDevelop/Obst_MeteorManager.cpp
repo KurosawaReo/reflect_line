@@ -125,8 +125,7 @@ void MeteorManager::Draw() {
 }
 
 //隕石生成.
-void MeteorManager::SpawnMeteor(){
-	
+void MeteorManager::SpawnMeteor() {
 	Meteor tmp;
 	tmp.Init(); //初期化.
 	meteors.push_back(tmp);
@@ -137,9 +136,11 @@ void MeteorManager::BreakMeteor(DBL_XY pos, bool isScore, double scale) {
 	
 	//破片エフェクト.
 	{
-		EffectData data{};
-		data.type = EffectType::MeteorFragment;
-		data.pos  = pos;
+		EffectData data{
+			.type = EffectType::MeteorFragment,
+			.pos  = pos
+		};
+
 		//いくつか出す.
 		for (int i = 0; i < METEOR_BREAK_ANIM_CNT; i++) {
 
@@ -149,22 +150,24 @@ void MeteorManager::BreakMeteor(DBL_XY pos, bool isScore, double scale) {
 			data.speed = _flt(Calc::RandNum(50, 200) / 10 * scale);		//速度抽選.
 			data.len   = _flt(Calc::RandNum(30, 120) / 10 * scale);		//長さ抽選.
 			data.ang   = _flt(Calc::RandNum(0, 3599) / 10);				//角度抽選.
-			effectMng->SpawnEffect(&data);								//エフェクト出現.
+			effectMng->SpawnEffect(data);								//エフェクト出現.
 		}
 	}
+
 	//破壊エフェクト.
 	{
-		EffectData data{};
-		data.type = EffectType::MeteorCrash;
-		data.pos  = pos;
-		effectMng->SpawnEffect(&data); //エフェクト出現.
+		effectMng->SpawnEffect({
+			.type = EffectType::MeteorCrash,
+			.pos = pos
+		});
 	}
+
 	//スコアエフェクト.
 	if (isScore) {
-		EffectData data{};
-		data.type = EffectType::Score500;
-		data.pos  = pos;
-		effectMng->SpawnEffect(&data); //エフェクト出現.
+		effectMng->SpawnEffect({
+			.type = EffectType::Score500,
+			.pos = pos
+		});
 	}
 
 	//サウンド.
