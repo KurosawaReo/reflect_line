@@ -13,7 +13,7 @@
 #include "Obst_MeteorManager.h"
 #include "Obst_Ripples.h"
 #include "Obst_Fireworks.h"
-#include "Item.h"
+#include "ItemManager.h"
 #include "UIManager.h"
 #include "EffectManager.h"
 #include "Stage_Tutorial.h"
@@ -359,11 +359,11 @@ void GameManager::GameOver() {
 
 }
 
-//アイテムを使用した時.
+//アイテム発動.
 void GameManager::ItemUsed() {
 
 	gameData->isReflectMode = true; //反射モードにする.
-	gameScene.ItemUsed();           //アイテム使用処理.
+	gameScene.ItemUsed();           //アイテム発動.
 	
 	//チュートリアルなら指示送信.
 	if (gameData->stage == StageType::Tutorial) {

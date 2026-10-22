@@ -125,8 +125,7 @@ void MeteorManager::Draw() {
 }
 
 //è¦Î¶¬.
-void MeteorManager::SpawnMeteor(){
-	
+void MeteorManager::SpawnMeteor() {
 	Meteor tmp;
 	tmp.Init(); //‰Šú‰».
 	meteors.push_back(tmp);

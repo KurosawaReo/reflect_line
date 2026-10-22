@@ -1,6 +1,6 @@
 /*
    - KR_Calc.h - (C++)
-   ver.2026/07/02
+   ver.2026/10/22
 
    C++だけでできる計算機能。
 */
@@ -38,7 +38,7 @@ namespace KR
 		bool		IsOutInArea	(DBL_XY  pos, INT_XY size, DBL_RECT rect, bool isCompOut, Surface* surface = nullptr);
 		double		FixAngle360	(double ang);
 
-		//角度,ベクトル.
+		//角度, ベクトル.
 		double		Dist		(INT_XY pos1, INT_XY pos2);
 		double		Dist		(DBL_XY pos1, DBL_XY pos2);
 		DBL_XY		MidPos		(DBL_XY pos1, DBL_XY pos2);
@@ -52,9 +52,10 @@ namespace KR
 		//物理系.
 		void        PhysicsVel	(DBL_XY* vel, DBL_XY maxVel, bool isGround, double gravity, double friction, double airDrag);
 
-		//値の曲線変動(アニメーション用)
+		//アニメーション値(0.0～1.0)
 		double      AnimEase	(EaseType type, double time);
 		double      AnimWave	(WaveType type, double time);
+		double      AnimLoopRate(double now, double loopMax);
 
 		//値の操作.
 		vector<int> RandNums	(int st, int ed, int count);

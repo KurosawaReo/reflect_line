@@ -107,9 +107,9 @@ void Player::Update()
 		//画像回転.
 		imgRot += (1.0 + velocity.Dist()*0.5) * gameData->speedRate;
 
+		UpdateMove();  //プレイヤー移動.
 		UpdateDash();  //ダッシュ更新.
 		UpdateAfter(); //残像更新.
-		Move();		   //プレイヤー移動.
 	}
 }
 
@@ -405,7 +405,7 @@ void Player::DrawPlayer() {
 }
 
 //移動処理(斜め対応)
-void Player::Move()
+void Player::UpdateMove()
 {
 	float speed = PLAYER_MOVE_SPEED;
 

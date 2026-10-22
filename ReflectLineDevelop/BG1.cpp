@@ -89,10 +89,8 @@ void BG1::Init() {
 	for (int x = 0; x < WINDOW_WID + size.x; x += size.x) {
 		for (int y = -size.y; y < WINDOW_HEI; y += size.y) {
 
-			BG1_Tile tile; //タイルを作成.
-
-			tile.pos.x = x;
-			tile.pos.y = y;
+			BG1_Tile tile;	//タイルを作成.
+			tile.SetPos(x, y);
 			tile.Init();
 			tiles.push_back(tile); //配列に追加.
 		}
@@ -148,7 +146,7 @@ void BG1::DrawRef(double modeAlpha) {
 void BG1::Pause() {
 
 	for (auto& i : tiles) {
-		i.shineTimer.Pause();
+		i.GetShineTimer()->Pause();
 	}
 }
 
@@ -157,8 +155,8 @@ void BG1::PauseEnd() {
 
 	for (auto& i : tiles) {
 		//稼働中だったならリスタート.
-		if (i.shineTimer.GetState() == TimerState::Pause) {
-			i.shineTimer.Start();
+		if (i.GetShineTimer()->GetState() == TimerState::Pause) {
+			i.GetShineTimer()->Start();
 		}
 	}
 }

@@ -327,8 +327,8 @@ void NormalLaser::CreateFlashEffect(double fx, double fy)
 	}
 }
 
-//‰½ŒÂ”­Ë‘ä‚ğg‚¤‚©.
-void NormalLaser::UseLaserPointCnt(int count) {
+//”­Ë‘ä‚ğ—LŒø‚É‚·‚é”‚Ìİ’è.
+void NormalLaser::EnableCount(int count) {
 	
 	int tmp = count;
 

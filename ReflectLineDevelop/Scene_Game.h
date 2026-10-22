@@ -26,6 +26,12 @@ private:
 	Graph* grReflectText{};
 
 //▼ ===== 関数 ===== ▼.
+private:
+	//反射モード関係.
+	void UpdateReflectMode();
+	void DrawReflectMode();
+	void ReflectModeEnd();
+
 public:
 	//get.
 	float GetSceneTime()       const { return timer.GetPassTime(); }
@@ -42,11 +48,7 @@ public:
 	//ポーズ用.
 	void Pause();
 	void PauseEnd();
-	
-	//反射モード関係.
-	void UpdateReflectMode();
-	void DrawReflectMode();
-	void ReflectModeEnd();
 
+	//アイテム発動.
 	void ItemUsed();
 };

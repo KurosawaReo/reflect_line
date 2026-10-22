@@ -22,6 +22,7 @@ struct MeteorShape
 //隕石(単体)
 class Meteor
 {
+//▼ ===== 変数 ===== ▼.
 private:
 	MeteorState state{};		//隕石の状態.
 	MeteorShape shape{};		//隕石の形データ.
@@ -38,6 +39,11 @@ private:
 	//画像.
 	Graph* grTarget{};
 
+//▼ ===== 関数 ===== ▼.
+private:
+	void Spawn();           //隕石出現処理. 
+	void UpdateMeteoLine();	//隕石構成線の更新.
+
 public:
 	//get.
 	DBL_XY      GetPos()		 const { return pos; }
@@ -53,10 +59,7 @@ public:
 	void Update();
 	void Draw();
 
-	void Spawn();						//隕石出現処理. 
 	void Destroy();						//隕石破壊.
 	bool IsHitMeteor(Line   hit) const;	//隕石の当たり判定.
 	bool IsHitMeteor(Circle hit) const;	//隕石の当たり判定.
-
-	void UpdateMeteoLine();				//隕石を構成する線の更新.
 };

@@ -171,7 +171,7 @@ namespace KR
 			*vel = v;
 		}
 
-		//値の曲線変動(アニメーション用)
+		//アニメーション用のイージング曲線を計算.
 		double AnimEase(EaseType type, double time) {
 
 			//タイプ別.
@@ -192,7 +192,7 @@ namespace KR
 				case EaseType::InOutQuad:
 				{
 					NumLimRange(&time, 0.0, 1.0); //0.0～1.0の範囲.
-					return time < 0.5 ? 2 * time * time : 1 - pow(-2 * time + 2, 2) / 2;
+					return (time < 0.5) ? (2 * time * time) : (1 - pow(-2 * time + 2, 2) / 2);
 				}
 				//OutInQuad: 減速して加速.
 				case EaseType::OutInQuad:
@@ -210,7 +210,8 @@ namespace KR
 			}
 			return 0; //未対応のタイプ.
 		}
-
+		
+		//アニメーション用の波形曲線を計算.
 		double AnimWave(WaveType type, double time) {
 			//タイプ別.
 			switch (type) {
@@ -221,6 +222,11 @@ namespace KR
 				}
 			}
 			return 0; //未対応のタイプ.
+		}
+
+		//timeを周期内で循環させ、アニメーションの進行率(0.0～1.0)に変換.
+		double AnimLoopRate(double now, double loopMax) {
+			return fmod(fmod(now, loopMax) + loopMax, loopMax) / loopMax;
 		}
 
 		//値の抽選(重複なし複数)

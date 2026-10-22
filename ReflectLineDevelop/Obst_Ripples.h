@@ -25,15 +25,7 @@ private:
 	float flashTimer{}; //出現タイマー.
 
 //▼ ===== 関数 ===== ▼.
-public:
-	//コンストラクタ.
-	Ripples(){}
-
-	void Init()   override;
-	void Reset()  override;
-	void Update() override;
-	void Draw()   override;
-
+private:
 	void HitJudgment();
 	void UpdateFlashGeneration();
 	void DrawObstFlash();
@@ -46,6 +38,15 @@ public:
 	int  GetEffectState   (vector<RipplesData>::iterator it);
 	void DrawWarningEffect(vector<RipplesData>::iterator it);
 	void DrawActiveEffect (vector<RipplesData>::iterator it);
+
+public:
+	//コンストラクタ.
+	Ripples(){}
+
+	void Init()   override;
+	void Reset()  override;
+	void Update() override;
+	void Draw()   override;
 
 	//使用禁止.
 	Ripples(const Ripples&) = delete;

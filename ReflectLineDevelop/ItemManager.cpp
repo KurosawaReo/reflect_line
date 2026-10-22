@@ -1,8 +1,8 @@
 /*
-   - Item.cpp -
-   Item管理.
+   - ItemManager.cpp -
+   アイテム管理.
 */
-#include "Item.h"
+#include "ItemManager.h"
 
 //依存関係.
 #include "Player.h"
@@ -162,13 +162,18 @@ void ItemManager::ItemSpawn() {
 	items.push_back(item); //配列に追加.
 }
 
-//全てリセット.
+//アイテムリセット.
 void ItemManager::ItemReset() {
 	
 	//全てのアイテムを消去.
 	items.clear();
 	//カウンターリセット.
 	spawnCounter = ITEM_SPAWN_TIME;
+}
+
+//今すぐアイテムを出現させる.
+void ItemManager::SpawnNow() {
+	spawnCounter = 0;
 }
 
 //アイテム発動.
@@ -200,13 +205,8 @@ void ItemManager::ItemUse(vector<ItemData>::iterator& it, bool isSuper)
 
 	//アイテムリセット.
 	ItemReset();
-	//アイテムを使用.
+	//アイテム発動.
 	gameMng->ItemUsed();
-}
-
-//今すぐアイテムを出現させる.
-void ItemManager::SpawnNow() {
-	spawnCounter = 0;
 }
 
 //プレイヤーとの当たり判定.

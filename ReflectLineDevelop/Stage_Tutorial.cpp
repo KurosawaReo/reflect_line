@@ -10,7 +10,7 @@
 #include "Obst_MeteorManager.h"
 #include "Obst_Ripples.h"
 #include "Obst_Fireworks.h"
-#include "Item.h"
+#include "ItemManager.h"
 #include "Player.h"
 #include "EffectManager.h"
 #include "UIManager.h"
@@ -187,7 +187,7 @@ void TutorialStage::UpdateStep1() {
 			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
 				
 				//オブジェクト.
-				ManagerInsts::Get<NormalLaser>()->UseLaserPointCnt(1); //レーザー数 = 1.
+				ManagerInsts::Get<NormalLaser>()->EnableCount(1); //レーザー数 = 1.
 				//オブジェクト(遅延実行)
 				timerMng->ReservExe(
 					1.0f, []() {
@@ -311,7 +311,7 @@ void TutorialStage::UpdateStep3() {
 
 				//オブジェクト.
 				ManagerInsts::Get<NormalLaser>()->Reset();             //リセットしておく.
-				ManagerInsts::Get<NormalLaser>()->UseLaserPointCnt(1); //レーザー数 = 1.
+				ManagerInsts::Get<NormalLaser>()->EnableCount(1); //レーザー数 = 1.
 				//オブジェクト(遅延実行)
 				timerMng->ReservExe(
 					1.0f, []() {

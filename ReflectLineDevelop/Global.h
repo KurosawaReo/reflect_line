@@ -76,6 +76,7 @@
 
 //メニュー.
 #define MENU_OPTION_COUNT				(3)				//選択肢の数.
+#define MENU_CURSOR_MOVE_ROT_SPEED		(5.0)			//カーソル移動時の回転速度(1.0が通常)
 
 //プレイヤー.
 #define PLAYER_SIZE						(18)			//プレイヤーサイズ(半径)

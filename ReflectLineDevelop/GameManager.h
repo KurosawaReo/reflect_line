@@ -31,6 +31,10 @@ private:
 #endif
 
 //▼ ===== 関数 ===== ▼.
+private:
+	//ポーズ画面.
+	void DrawPause();
+
 public:
 	//コンストラクタ.
 	GameManager(){}
@@ -41,16 +45,15 @@ public:
 	MY_STRING	GetGameSceneBgm()	 const { return gameSceneBgm;  }
 	InputDevice	GetLastInputDevice() const { return lastInputDevice; }
 
-	//メイン処理.
+	//基本処理.
 	void Init()   override;
 	void Reset()  override;
 	void Update() override;
 	void Draw()   override;
 
-	//ポーズ画面.
+	//ポーズ.
 	void GamePause();
 	void GamePauseEnd();
-	void DrawPause();
 
 	//その他.
 	void GameOver();

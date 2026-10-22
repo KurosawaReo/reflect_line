@@ -251,7 +251,7 @@ void GameScene::ReflectModeEnd() {
 	}
 }
 
-//アイテム使用.
+//アイテム発動.
 void GameScene::ItemUsed() {
 	tmReflectMode.Start(); //反射タイマー開始.
 	itemSoundCnt = 0;

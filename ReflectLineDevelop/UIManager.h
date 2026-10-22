@@ -20,6 +20,11 @@ private:
 	Graph* grUiBackTime{};
 
 //▼ ===== 関数 ===== ▼.
+private:
+	//Draw系.
+	void DrawTutorial(float time, int offset);
+	void DrawEndless (float time, int offset);
+
 public:
 	//コンストラクタ.
 	UIManager(){}
@@ -32,9 +37,6 @@ public:
 	void Reset()  override;
 	void Update() override;
 	void Draw()   override;
-
-	void DrawTutorial(float time, int offset);
-	void DrawEndless(float time, int offset);
 
 	//使用禁止.
 	UIManager(const UIManager&) = delete;

@@ -10,6 +10,14 @@ class EndlessStage final : public ManagerBase
 private:
 	
 //▼ ===== 関数 ===== ▼.
+private:
+	//レベルアップ処理.
+	void UpLevel1();
+	void UpLevel2();
+	void UpLevel3();
+	void UpLevel4();
+	void UpLevel5();
+
 public:
 	//コンストラクタ.
 	EndlessStage(){}
@@ -18,13 +26,6 @@ public:
 	void Reset()  override;
 	void Update() override;
 	void Draw()   override;
-
-	//レベルアップ処理.
-	void UpLevel1();
-	void UpLevel2();
-	void UpLevel3();
-	void UpLevel4();
-	void UpLevel5();
 
 	//使用禁止.
 	EndlessStage(const EndlessStage&) = delete;

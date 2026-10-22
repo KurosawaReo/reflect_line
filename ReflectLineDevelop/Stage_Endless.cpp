@@ -10,7 +10,7 @@
 #include "Obst_MeteorManager.h"
 #include "Obst_Ripples.h"
 #include "Obst_Fireworks.h"
-#include "Item.h"
+#include "ItemManager.h"
 #include "EffectManager.h"
 #include "GameData.h"
 #include "GameManager.h"
@@ -120,7 +120,7 @@ void EndlessStage::UpLevel1() {
 #endif
 #if !defined INVALID_OBST_NOR_LASER
 		ManagerInsts::Get<NormalLaser>()->SetAutoExeMode(MngAutoExe::Active);
-		ManagerInsts::Get<NormalLaser>()->UseLaserPointCnt(2); //レーザーは2つ.
+		ManagerInsts::Get<NormalLaser>()->EnableCount(2); //レーザーは2つ.
 #endif
 	}
 
@@ -209,7 +209,7 @@ void EndlessStage::UpLevel5() {
 
 	//Lv5の出現設定.
 #if !defined INVALID_OBST_NOR_LASER
-	ManagerInsts::Get<NormalLaser>()->UseLaserPointCnt(4); //レーザーは4つ.
+	ManagerInsts::Get<NormalLaser>()->EnableCount(4); //レーザーは4つ.
 #endif
 
 	gameData->level = 5; //Lv5へ.
