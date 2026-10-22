@@ -27,8 +27,10 @@ void BG2::Init()
 	//参照取得.
 	gameData = ManagerInsts::Get<GameData>();
 	//画像取得.
-	grBgStarRef = GraphMng::Get(_T("bg_star_ref"));
-	grBgStarNor = GraphMng::Get(_T("bg_star_nor"));
+	grBgStarNor    = GraphMng::Get(_T("bg_star_nor"));
+	grBgStarRef    = GraphMng::Get(_T("bg_star_ref"));
+	grBgSpace3DNor = GraphMng::Get(_T("bg_space3d_nor"));
+	grBgSpace3DRef = GraphMng::Get(_T("bg_space3d_ref"));
 }
 
 //リセット.
@@ -104,6 +106,7 @@ void BG2::Update()
 //描画(通常時)
 void BG2::DrawNor(double modeAlpha)
 {
+	DrawAtmosphere(modeAlpha, false);
 	DrawHexagons(modeAlpha, COLOR_MODE_NOR);
 	DrawPoints(modeAlpha, COLOR_MODE_NOR);
 	DrawStars(modeAlpha, false);
@@ -112,9 +115,28 @@ void BG2::DrawNor(double modeAlpha)
 //描画(反射モード)
 void BG2::DrawRef(double modeAlpha)
 {
+	DrawAtmosphere(modeAlpha, true);
 	DrawHexagons(modeAlpha, COLOR_MODE_REF);
 	DrawPoints(modeAlpha, COLOR_MODE_REF);
 	DrawStars(modeAlpha, true);
+}
+
+//描画(光のグラデーション)
+void BG2::DrawAtmosphere(double modeAlpha, bool isReflect)
+{
+	DrawMode::Exe(
+		DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * modeAlpha),
+		[&]()
+		{
+			//反射モードかどうか.
+			if (isReflect) {
+				grBgSpace3DRef->Draw(App::GetWindowRect().GetMid().ToDbl()); //反射モード.
+			}
+			else {
+				grBgSpace3DNor->Draw(App::GetWindowRect().GetMid().ToDbl()); //通常モード.
+			}
+		}
+	);
 }
 
 //描画(線)
@@ -259,8 +281,11 @@ void BG2::DrawStars(double modeAlpha, bool isReflect)
 
 	for (auto& i : star)
 	{
+		//奥行きに応じた拡大率.
 		const double scale = FOV / i.z;
-		const double size = 0.3 * (1.0 - i.z / Z_MAX);
+		//奥ほど小さく、手前ほど大きくする.
+		const double size = 0.3 * scale;
+		//奥ほど透明にする.
 		const double alpha = 128 * (1.0 - i.z / Z_MAX) * modeAlpha;
 
 		//座標.
@@ -268,6 +293,8 @@ void BG2::DrawStars(double modeAlpha, bool isReflect)
 			center.x + i.x * scale,
 			center.y + i.y * scale
 		};
+
+		//画面外なら描画しない.
 		if (pos.x < -100 || pos.x > WINDOW_WID + 100) { continue; }
 		if (pos.y < -100 || pos.y > WINDOW_HEI + 100) { continue; }
 
@@ -277,10 +304,14 @@ void BG2::DrawStars(double modeAlpha, bool isReflect)
 			{
 				//反射モードになったら変色.
 				if (isReflect) {
-					grBgStarRef->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
+					grBgStarRef->DrawExtend(
+						pos, { size, size }, Anchor::Mid, true, true
+					);
 				}
 				else {
-					grBgStarNor->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
+					grBgStarNor->DrawExtend(
+						pos, { size, size }, Anchor::Mid, true, true
+					);
 				}
 			}
 		);

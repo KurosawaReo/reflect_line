@@ -44,13 +44,16 @@ private:
 	//âÊëú.
 	Graph* grBgStarRef{};
 	Graph* grBgStarNor{};
+	Graph* grBgSpace3DNor{};
+	Graph* grBgSpace3DRef{};
 
 //Å• ===== ä÷êî ===== Å•.
 private:
 	//ÉpÅ[Écï ï`âÊ.
-	void DrawPoints  (double modeAlpha, MY_COLOR color);
-	void DrawHexagons(double modeAlpha, MY_COLOR color);
-	void DrawStars   (double modeAlpha, bool isReflect);
+	void DrawAtmosphere(double modeAlpha, bool isReflect);
+	void DrawPoints    (double modeAlpha, MY_COLOR color);
+	void DrawHexagons  (double modeAlpha, MY_COLOR color);
+	void DrawStars     (double modeAlpha, bool isReflect);
 
 public:
 	void Init()                    override; //èâä˙âª.

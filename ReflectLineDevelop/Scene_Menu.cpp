@@ -37,9 +37,9 @@ void MenuCursor::Reset() {
 void MenuCursor::Update(double counter) {
 
 	//回転角度を速度に応じて進める.
-	cursorRotAngle += cursorRotSpeed / 50.0 * M_PI;
+	cursorRotAngle += cursorRotSpeed * MENU_CURSOR_BASE_SPEED * M_PI;
 	//回転速度を標準速度(1.0)へ滑らかに戻す.
-	cursorRotSpeed += (1.0 - cursorRotSpeed) * 0.03;
+	cursorRotSpeed += (1.0 - cursorRotSpeed) * MENU_CURSOR_RETURN_SPEED;
 	//カーソル裏表値.
 	cursorWave = sin(cursorRotAngle);
 	//装飾線の明滅.

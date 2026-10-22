@@ -78,6 +78,8 @@ void GameManager::Init() {
 		GraphMng::LoadImg(_T("bg_star_nor.png"),			_T("bg_star_nor"));
 		GraphMng::LoadImg(_T("bg_star_ref.png"),			_T("bg_star_ref"));
 		GraphMng::LoadImg(_T("reflect_effect.png"),			_T("reflect_effect"));
+		GraphMng::LoadImg(_T("bg_space3d_nor.png"),			_T("bg_space3d_nor"));
+		GraphMng::LoadImg(_T("bg_space3d_ref.png"),			_T("bg_space3d_ref"));
 
 		//[KrLib] 動画.
 		GraphMng::SetPath(_T("Resources/Movies/"));	//共通パスの設定.
