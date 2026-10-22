@@ -11,6 +11,10 @@ class BG2 : public BGBase
 //▼ ===== 変数 ===== ▼.
 private:
 	//疑似3Dオブジェクト.
+	struct WarpHex
+	{
+		double z;
+	};
 	struct WarpPoint
 	{
 		double x;
@@ -19,10 +23,6 @@ private:
 
 		double oldZ;
 	};
-	struct WarpHex
-	{
-		double z;
-	};
 	struct WarpStar
 	{
 		double x;
@@ -30,11 +30,11 @@ private:
 		double z;
 	};
 
-	static constexpr int POINT_NUM = 220;
-	WarpPoint point[POINT_NUM]{};
-
 	static constexpr int HEX_NUM = 20;
 	WarpHex hex[HEX_NUM]{};
+
+	static constexpr int POINT_NUM = 220;
+	WarpPoint point[POINT_NUM]{};
 
 	static constexpr int STAR_NUM = 80;
 	WarpStar star[STAR_NUM]{};

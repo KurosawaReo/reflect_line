@@ -10,16 +10,44 @@
 //参照.
 static GameData* gameData;
 
-/* ===== 定数 ===== */
-constexpr double MOVE_SPEED = 4.0;     //前に移動する速度.
-constexpr double ROT_SPEED = 0.002;   //回転する速度.
-constexpr double POINT_LEN = 18.0;    //飛んでくる線の長さ.
-constexpr double Z_MIN = 50.0;    //一番手前のz座標.
-constexpr double Z_MAX = 3000.0;  //一番奥のz座標.
-constexpr double HEX_INTERVAL = 180.0;
-constexpr double FOV = 500.0;
-constexpr double FOV_HEX = 5000.0;
-/* ================ */
+/* ============================================================================== */
+// ▼*--=<[ 定数 ]>=--*▼ //
+
+//出現範囲(画面中心に向かう軸からの距離)
+constexpr double SPAWN_R_MAX	= 2000.0;	//一番外側(線・星 共通).
+constexpr double POINT_R_MIN	= 0.0;		//線: 0なら今と同じく中心にも出る.
+constexpr double STAR_R_MIN		= 600.0;	//星: 中心を避ける距離.
+
+constexpr double MOVE_SPEED		= 4.0;		//前に移動する速度.
+constexpr double ROT_SPEED		= 0.001;	//回転する速度.
+constexpr double POINT_LEN		= 18.0;		//飛んでくる線の長さ.
+constexpr double Z_MIN			= 50.0;		//一番手前のz座標.
+constexpr double Z_MAX			= 3000.0;	//一番奥のz座標.
+constexpr double HEX_INTERVAL	= 180.0;
+constexpr double FOV			= 500.0;
+constexpr double FOV_HEX		= 5000.0;
+
+/* ============================================================================== */
+// ▼*--=<[ 関数 ]>=--*▼ //
+
+//出現位置を「向き」と「半径」で決める(rMin未満には出さない).
+static void RandSpawnXY(double& x, double& y, double rMin) {
+	const double ang = Calc::RandNum(0.0, M_PI * 2); //向き.
+	//2乗の範囲で乱数を取り平方根にすると、面積あたりの密度が均等になる.
+	const double r = sqrt(Calc::RandNum(rMin * rMin, SPAWN_R_MAX * SPAWN_R_MAX));
+	x = cos(ang) * r;
+	y = sin(ang) * r;
+}
+
+//線・星の共通処理.
+//x,y,zを決め直す(型が違っても使えるようにtemplateにしている).
+template<class T>
+static void Respawn(T& obj, double rMin, double z) {
+	RandSpawnXY(obj.x, obj.y, rMin);
+	obj.z = z;
+}
+
+/* ============================================================================== */
 
 //初期化.
 void BG2::Init()
@@ -38,24 +66,21 @@ void BG2::Reset()
 {
 	angle = 0.0;
 
-	//初期位置.
-	for (auto& i : point)
-	{
-		i.x = Calc::RandNum(-2000.0, 2000.0);
-		i.y = Calc::RandNum(-2000.0, 2000.0);
-		i.z = Calc::RandNum(Z_MIN, Z_MAX);
-
-		i.oldZ = i.z;
-	}
+	//六角形.
 	for (int i = 0; i < HEX_NUM; i++)
 	{
 		hex[i].z = Z_MIN + i * HEX_INTERVAL;
 	}
+	//線: 初期はz全域にばらまく.
+	for (auto& i : point)
+	{
+		Respawn(i, POINT_R_MIN, Calc::RandNum(Z_MIN, Z_MAX));
+		i.oldZ = i.z;
+	}
+	//星: 初期はz全域にばらまく.
 	for (auto& i : star)
 	{
-		i.x = Calc::RandNum(-2000.0, 2000.0);
-		i.y = Calc::RandNum(-2000.0, 2000.0);
-		i.z = Calc::RandNum(Z_MIN, Z_MAX);
+		Respawn(i, STAR_R_MIN, Calc::RandNum(Z_MIN, Z_MAX));
 	}
 }
 
@@ -64,22 +89,6 @@ void BG2::Update()
 {
 	angle += ROT_SPEED * gameData->speedRate;
 
-	for (auto& i : point)
-	{
-		//移動.
-		i.z -= MOVE_SPEED * gameData->speedRate;
-		i.oldZ = i.z + POINT_LEN;
-
-		//手前へ来たら奥へ戻す.
-		if (i.z < Z_MIN)
-		{
-			i.x = Calc::RandNum(-2000.0, 2000.0);
-			i.y = Calc::RandNum(-2000.0, 2000.0);
-			i.z = Z_MAX;
-
-			i.oldZ = i.z;
-		}
-	}
 	for (auto& i : hex)
 	{
 		//移動.
@@ -90,15 +99,27 @@ void BG2::Update()
 			i.z += HEX_NUM * HEX_INTERVAL;
 		}
 	}
+	for (auto& i : point)
+	{
+		//移動.
+		i.z -= MOVE_SPEED * gameData->speedRate;
+		i.oldZ = i.z + POINT_LEN;
+
+		//手前へ来たら奥へ戻す.
+		if (i.z < Z_MIN)
+		{
+			Respawn(i, POINT_R_MIN, Z_MAX);
+			i.oldZ = i.z;
+		}
+	}
 	for (auto& i : star)
 	{
 		i.z -= MOVE_SPEED * gameData->speedRate;
 
+		//手前へ来たら奥へ戻す.
 		if (i.z < Z_MIN)
 		{
-			i.x = Calc::RandNum(-2000.0, 2000.0);
-			i.y = Calc::RandNum(-2000.0, 2000.0);
-			i.z = Z_MAX;
+			Respawn(i, STAR_R_MIN, Z_MAX);
 		}
 	}
 }
