@@ -41,8 +41,8 @@ void EndlessStage::Update() {
 
 	//カウンター増加.
 	gameData->counter += gameData->speedRate;
-	//出現間隔.
-	gameData->spawnRate = 1.0f/(1.0f+(gameData->counter/8000.0f)); //100%から少しずつ減少.
+	//出現間隔(100%から少しずつ減少)
+	gameData->spawnRate = 1.0f/(1.0f+(gameData->counter/SPAWN_RATE_HALF_COUNT));
 
 	Debug::Log(_T("gameData->spawnRate"), gameData->spawnRate);
 
@@ -61,25 +61,25 @@ void EndlessStage::Update() {
 			break;
 
 		case 1:
-			if (gameData->counter >= LEVEL_2_COUNTER) {
+			if (gameData->counter >= LEVEL_2_COUNT) {
 				UpLevel2(); //Lv2にする.
 			}
 			break;
 
 		case 2:
-			if (gameData->counter >= LEVEL_3_COUNTER) {
+			if (gameData->counter >= LEVEL_3_COUNT) {
 				UpLevel3(); //Lv3にする.
 			}
 			break;
 
 		case 3:
-			if (gameData->counter >= LEVEL_4_COUNTER) {
+			if (gameData->counter >= LEVEL_4_COUNT) {
 				UpLevel4(); //Lv4にする.
 			}
 			break;
 
 		case 4:
-			if (gameData->counter >= LEVEL_5_COUNTER) {
+			if (gameData->counter >= LEVEL_5_COUNT) {
 				UpLevel5(); //Lv5にする.
 			}
 			break;

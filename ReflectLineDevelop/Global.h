@@ -64,10 +64,11 @@
 #define MIDDLE_ANIM_TIME				(120)			//レベルアップアニメーション時間.
 
 //レベル.
-#define LEVEL_2_COUNTER					(1500)			//Lv2に上がるcount値.
-#define LEVEL_3_COUNTER					(3500)			//Lv3に上がるcount値.
-#define LEVEL_4_COUNTER					(6000)			//Lv4に上がるcount値.
-#define LEVEL_5_COUNTER					(9000)			//Lv5に上がるcount値.
+#define SPAWN_RATE_HALF_COUNT			(8000.0f)		//spawn rate減少速度(spawn rate値が半分(0.5f)になるcount値)
+#define LEVEL_2_COUNT					(1500.0f)		//Lv2に上がるcount値.
+#define LEVEL_3_COUNT					(3500.0f)		//Lv3に上がるcount値.
+#define LEVEL_4_COUNT					(6000.0f)		//Lv4に上がるcount値.
+#define LEVEL_5_COUNT					(9000.0f)		//Lv5に上がるcount値.
 
 //スコア.
 #define SCORE_TAKE_ITEM					(100)			//アイテムを取った時のスコア.
