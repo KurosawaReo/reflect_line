@@ -44,8 +44,6 @@ void EndlessStage::Update() {
 	//出現間隔(100%から少しずつ減少)
 	gameData->spawnRate = 1.0f/(1.0f+(gameData->counter/SPAWN_RATE_HALF_COUNT));
 
-	Debug::Log(_T("gameData->spawnRate"), gameData->spawnRate);
-
 #if defined _DEBUG //Releaseでは入れない.
 	//タイマー加速(デバッグ用)
 	if (inputMng->IsPushKey(KeyID::L) == 1) {

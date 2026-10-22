@@ -137,9 +137,10 @@ void MeteorManager::BreakMeteor(DBL_XY pos, bool isScore, double scale) {
 	
 	//破片エフェクト.
 	{
-		EffectData data{};
-		data.type = EffectType::MeteorFragment;
-		data.pos  = pos;
+		EffectData data{
+			.type = EffectType::MeteorFragment,
+			.pos  = pos
+		};
 
 		//いくつか出す.
 		for (int i = 0; i < METEOR_BREAK_ANIM_CNT; i++) {

@@ -353,7 +353,7 @@ void GameManager::GameOver() {
 			}
 			break;
 
-			default: assert(0); break;
+			default: assert(false); break;
 		}
 	}
 

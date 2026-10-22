@@ -19,7 +19,6 @@ enum class LaserType
 struct LaserData
 {
 	LaserType type;       //レーザータイプ.
-
 	Line      hit;        //当たり判定用.
 
 	DBL_XY    nowPos;     //現在の座標.

@@ -54,8 +54,7 @@
 
 #define REFLECT_MODE_TIME				(8)             //反射モード制限時間.
 #define SLOW_MODE_SPEED					(0.20f)			//スロー速度倍率.
-#define SLOW_MODE_DIS_LEN				(50)			//スローになるプレイヤーとレーザーの距離範囲.
-#define SLOW_MODE_BUF_F                 (30)            //スローが継続するフレーム数.
+#define SLOW_MODE_BUF_F                 (30)            //スロー継続時間(フレーム)
 
 #define BGM_VOLUME_MENU					(90)			//メニューBGMの音量.
 #define BGM_VOLUME_ENDLESS				(65)			//エンドレスモードBGMの音量.
@@ -64,7 +63,7 @@
 #define MIDDLE_ANIM_TIME				(120)			//レベルアップアニメーション時間.
 
 //レベル.
-#define SPAWN_RATE_HALF_COUNT			(8000.0f)		//spawn rate減少速度(spawn rate値が半分(0.5f)になるcount値)
+#define SPAWN_RATE_HALF_COUNT			(8000.0f)		//召喚間隔減少速度調整値(spawn rate値が半分(0.5f)になるcount値)
 #define LEVEL_2_COUNT					(1500.0f)		//Lv2に上がるcount値.
 #define LEVEL_3_COUNT					(3500.0f)		//Lv3に上がるcount値.
 #define LEVEL_4_COUNT					(6000.0f)		//Lv4に上がるcount値.
@@ -86,7 +85,7 @@
 #define PLAYER_MOVE_SPEED				(8)				//プレイヤー移動速度.
 #define PLAYER_AFT_IMG_NUM				(9)             //残像データの数.
 #define PLAYER_DEATH_ANIM_TIME			(10)			//プレイヤー死亡アニメ時間.
-#define PLAYER_MOVE_LERP_SPEED          (0.2)           //プレイヤーの慣性スピードの調整.
+#define PLAYER_MOVE_LERP_SPEED          (0.2)           //プレイヤーの慣性スピードの調整値.
 //プレイヤー > ダッシュ.
 #define PLAYER_DASH_SPEED               (1.8)			//ダッシュ速度.
 #define PLAYER_DASH_DURATION            (20)            //ダッシュ持続時間(フレーム)
@@ -94,10 +93,10 @@
 #define PLAYER_DASH_EFFECT_MAX          (5)             //最大エフェクト数.
 #define PLAYER_DASH_EFFECT_TIME			(10)			//エフェクト時間.
 #define PLAYER_DASH_SPARK_ANIM_TIME     (20)            //反射スパークの寿命(フレーム).
-#define PLAYER_DASH_REFLECT_TIME		(10)			//ダッシュ反射の継続時間.
+#define PLAYER_DASH_REFLECT_TIME		(10)			//ダッシュ反射の継続時間(フレーム)
 
 //アイテム.
-#define ITEM_SPAWN_TIME					(600)			//アイテムの出現時間.
+#define ITEM_SPAWN_TIME					(600)			//アイテム出現時間.
 #define ITEM_SIZE						(50)			//アイテムサイズ.
 #define ITEM_SPEED						(3)				//アイテム移動スピード.  
 #define ITEM_RESPAWN_TIME				(400)           //アイテム復活時間.
@@ -132,8 +131,8 @@
 #define LASER_STR_PREDICTION_TIME		(60)			//直線レーザーの予測線の出る時間.
 
 //[障害物] 落下レーザー(花火用)
-#define LASER_FAL_DEL_TIME				(100)			//消えるまでの時間.
-#define LASER_FAL_HIT_ABLE				(60)			//↑のうち、当たり判定を持たせる時間.
+#define LASER_FAL_DELETE_TIME			(100)			//消えるまでの時間.
+#define LASER_FAL_HIT_TIME				(60)			//↑のうち、当たり判定を持たせる時間.
 
 //[障害物] 隕石.
 #define METEOR_SPAWN_SPAN				(200)			//隕石の出現時間間隔.

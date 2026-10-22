@@ -161,12 +161,12 @@ void LaserManager::UpdateLaser() {
 			case LaserType::Falling:
 			{
 				//ある程度薄くなるまで.
-				if (i->counter <= LASER_FAL_HIT_ABLE) {
+				if (i->counter <= LASER_FAL_HIT_TIME) {
 					//レーザーの当たり判定.
 					HitLaser(i);
 				}
 				//時間を超えたら.
-				if (i->counter >= LASER_FAL_DEL_TIME) {
+				if (i->counter >= LASER_FAL_DELETE_TIME) {
 					isErase = true; //消去する.
 				}
 
@@ -438,7 +438,7 @@ void LaserManager::GenerateLaserLine(vector<LaserData>::iterator& it) {
 		if (tmp.type == LaserType::Falling) {
 			//レーザーの経過時間を反映.
 			//落下レーザー消滅時間が、レーザー描画線消滅時間に合わさるよう計算.
-			tmp.counter = it->counter * LASER_LINE_DEL_TIME / LASER_FAL_DEL_TIME;
+			tmp.counter = it->counter * LASER_LINE_DEL_TIME / LASER_FAL_DELETE_TIME;
 			//アニメーション曲線の調整.
 			const double anim = AnimEase(EaseType::OutQuad, tmp.counter / LASER_LINE_DEL_TIME);
 			tmp.counter *= _flt(anim);
