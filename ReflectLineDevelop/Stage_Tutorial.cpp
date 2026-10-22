@@ -146,10 +146,10 @@ void TutorialStage::UpdateStep0() {
 		i->Play(false, 100); //再生.
 	}
 	//エフェクト.
-	EffectData data{};
-	data.type = EffectType::Tutorial_Step1;
-	data.pos  = { WINDOW_WID/2, WINDOW_HEI/2 };
-	effectMng->SpawnEffect(&data);
+	effectMng->SpawnEffect({
+		.type = EffectType::Tutorial_Step1,
+		.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+	});
 
 	//オブジェクト.
 	ManagerInsts::Get<LaserManager>()->SetAutoExeMode(MngAutoExe::Active);
@@ -213,10 +213,10 @@ void TutorialStage::UpdateStep1() {
 				}
 
 				//エフェクト.
-				EffectData data{};
-				data.type = EffectType::Tutorial_Step2;
-				data.pos  = {WINDOW_WID/2, WINDOW_HEI/2};
-				effectMng->SpawnEffect(&data);
+				effectMng->SpawnEffect({
+					.type = EffectType::Tutorial_Step2,
+					.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+				});
 
 				//オブジェクト.
 				ManagerInsts::Get<NormalLaser>()->SetAutoExeMode(MngAutoExe::Stop);
@@ -272,10 +272,10 @@ void TutorialStage::UpdateStep2() {
 				}
 
 				//エフェクト.
-				EffectData data{};
-				data.type = EffectType::Tutorial_Step3;
-				data.pos  = {WINDOW_WID/2, WINDOW_HEI/2};
-				effectMng->SpawnEffect(&data);
+				effectMng->SpawnEffect({
+					.type = EffectType::Tutorial_Step3,
+					.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+				});
 
 				//オブジェクト.
 				ManagerInsts::Get<ItemManager>()->SpawnNow();
@@ -406,10 +406,10 @@ void TutorialStage::UpdateStep3() {
 				}
 
 				//エフェクト.
-				EffectData data{};
-				data.type = EffectType::Tutorial_Step4;
-				data.pos  = {WINDOW_WID/2, WINDOW_HEI/2};
-				effectMng->SpawnEffect(&data);
+				effectMng->SpawnEffect({
+					.type = EffectType::Tutorial_Step4,
+					.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+				});
 
 				//スコア表示.
 				gameData->ResetScore();

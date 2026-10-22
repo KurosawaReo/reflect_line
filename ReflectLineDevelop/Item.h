@@ -23,7 +23,7 @@ class ItemManager final : public ManagerBase
 private:
 	vector<ItemData> items;
 
-	float counter{}; //経過時間.
+	float spawnCounter{}; //召喚カウンター.
 
 	//画像.
 	Graph* grItem{};
@@ -40,8 +40,9 @@ public:
 	void Update() override;
 	void Draw()   override;
 
-	void ItemSpawn(); //アイテム召喚.
-	void ItemReset(); //全てリセット.
+	void ItemUpdate();	//アイテム更新.
+	void ItemSpawn();	//アイテム召喚.
+	void ItemReset();	//全てリセット.
 
 	void ItemUse(vector<ItemData>::iterator&, bool isSuper);     //アイテム発動.
 

@@ -61,7 +61,7 @@ public:
 	void Update() override;
 	void Draw()	  override;
 
-	void SpawnEffect(const EffectData* data); //エフェクト出現.
+	void SpawnEffect(const EffectData& data); //エフェクト出現.
 
 	//使用禁止.
 	EffectManager(const EffectManager&) = delete;

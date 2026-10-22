@@ -79,7 +79,7 @@ void Fireworks::UpdateFireworksGeneration() {
 		int spawnCount = 1 + (rand() % FIREWORKS_RND_MAX);
 
 		for (int i = 0; i < spawnCount; i++) {
-			float x, y;
+			float x = 0, y = 0;
 			bool validPosition = false;
 			int attempts = 0;
 

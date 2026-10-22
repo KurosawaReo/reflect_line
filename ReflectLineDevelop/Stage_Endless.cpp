@@ -42,7 +42,9 @@ void EndlessStage::Update() {
 	//カウンター増加.
 	gameData->counter += gameData->speedRate;
 	//出現間隔.
-	gameData->spawnRate = 1.0f/(1+(gameData->counter/8000)); //100%から少しずつ減少.
+	gameData->spawnRate = 1.0f/(1.0f+(gameData->counter/8000.0f)); //100%から少しずつ減少.
+
+	Debug::Log(_T("gameData->spawnRate"), gameData->spawnRate);
 
 #if defined _DEBUG //Releaseでは入れない.
 	//タイマー加速(デバッグ用)
@@ -102,10 +104,11 @@ void EndlessStage::UpLevel1() {
 	}
 
 	//エフェクト.
-	EffectData data{};
-	data.type = EffectType::Endless_Level1;
-	data.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 };
-	effectMng->SpawnEffect(&data);
+	//指示付き初期化でclassのメンバ変数を初期化.
+	effectMng->SpawnEffect({
+		.type = EffectType::Endless_Level1,
+		.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+	});
 
 	//出現設定.
 	{
@@ -135,10 +138,10 @@ void EndlessStage::UpLevel2() {
 	}
 
 	//エフェクト.
-	EffectData data{};
-	data.type = EffectType::Endless_Level2;
-	data.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 };
-	effectMng->SpawnEffect(&data);
+	effectMng->SpawnEffect({
+		.type = EffectType::Endless_Level2,
+		.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+	});
 
 	//Lv2の出現設定.
 #if !defined INVALID_OBST_STR_LASER
@@ -157,10 +160,10 @@ void EndlessStage::UpLevel3() {
 	}
 
 	//エフェクト.
-	EffectData data{};
-	data.type = EffectType::Endless_Level3;
-	data.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 };
-	effectMng->SpawnEffect(&data);
+	effectMng->SpawnEffect({
+		.type = EffectType::Endless_Level3,
+		.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+	});
 
 	//Lv3の出現設定.
 #if !defined INVALID_OBST_RIPPLES
@@ -179,10 +182,10 @@ void EndlessStage::UpLevel4() {
 	}
 
 	//エフェクト.
-	EffectData data{};
-	data.type = EffectType::Endless_Level4;
-	data.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 };
-	effectMng->SpawnEffect(&data);
+	effectMng->SpawnEffect({
+		.type = EffectType::Endless_Level4,
+		.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+	});
 
 	//Lv4の出現設定.
 #if !defined INVALID_OBST_FIREWORKS
@@ -201,10 +204,10 @@ void EndlessStage::UpLevel5() {
 	}
 
 	//エフェクト.
-	EffectData data{};
-	data.type = EffectType::Endless_Level5;
-	data.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 };
-	effectMng->SpawnEffect(&data);
+	effectMng->SpawnEffect({
+		.type = EffectType::Endless_Level5,
+		.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+	});
 
 	//Lv5の出現設定.
 #if !defined INVALID_OBST_NOR_LASER

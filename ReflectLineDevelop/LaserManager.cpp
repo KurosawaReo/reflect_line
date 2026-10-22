@@ -393,10 +393,10 @@ void LaserManager::ReflectLaser(vector<LaserData>::iterator& it)
 	}
 
 	//エフェクト.
-	EffectData data{};
-	data.type = EffectType::Reflect;
-	data.pos  = it->nowPos;
-	effectMng->SpawnEffect(&data);
+	effectMng->SpawnEffect({
+		.type = EffectType::Reflect,
+		.pos = it->nowPos
+	});
 	//サウンド.
 	if (auto i = soundMng->Get(_T("Laser3"))) {
 		i->Play(false, 58);
