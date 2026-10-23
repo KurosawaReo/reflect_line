@@ -69,7 +69,7 @@ void TitleScene::Update() {
 void TitleScene::Draw() {
 
 	//画面左下の操作方法表記.
-	DrawStr howPlay(_T(""), { 30, WINDOW_HEI - 30 }, 0x00FFFF);
+	DrawStr howPlay(_T(""), { 30, Config::WINDOW_HEI - 30 }, 0x00FFFF);
 	{
 		const int font = gameData->fonts.at("jp-size1").GetFont();
 
@@ -104,7 +104,7 @@ void TitleScene::Draw() {
 
 	//画像の表示.
 	{
-		const int    logoY = WINDOW_HEI / 2 - 80;
+		const int    logoY = Config::WINDOW_HEI / 2 - 80;
 		const DBL_XY imgSize = { 0.7, 0.7 };
 
 		//切り替え前.
@@ -116,7 +116,7 @@ void TitleScene::Draw() {
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim),
 				[&]() {
 					grLogo->DrawExtend(
-						DBL_XY{ WINDOW_WID / 2, _dbl(logoY) }, imgSize, Anchor::Mid, true, true
+						DBL_XY{ Config::WINDOW_WID / 2, _dbl(logoY) }, imgSize, Anchor::Mid, true, true
 					);
 				}
 			);
@@ -131,14 +131,14 @@ void TitleScene::Draw() {
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * (1 - anim2)),
 				[&]() {
-					grLogo->DrawExtend({ WINDOW_WID / 2, logoY - anim1 * 80 }, imgSize, Anchor::Mid, true, true);
+					grLogo->DrawExtend({ Config::WINDOW_WID / 2, logoY - anim1 * 80 }, imgSize, Anchor::Mid, true, true);
 				}
 			);
 			//ロゴ2枚目.
 			DrawMode::Exe(
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim1),
 				[&]() {
-					grLogoAll->DrawExtend({ WINDOW_WID / 2, logoY - anim1 * 80 }, imgSize, Anchor::Mid, true, true);
+					grLogoAll->DrawExtend({ Config::WINDOW_WID / 2, logoY - anim1 * 80 }, imgSize, Anchor::Mid, true, true);
 				}
 			);
 		}
@@ -147,7 +147,7 @@ void TitleScene::Draw() {
 	//best score.
 	if (timer.GetPassTime() >= delay2) {
 
-		const int drawY = WINDOW_HEI / 2 + 130;
+		const int drawY = Config::WINDOW_HEI / 2 + 130;
 
 		//アニメーション値.
 		double anim1 = Calc::AnimEase(EaseType::InOutQuad, (timer.GetPassTime() - delay3) / 1.5);
@@ -155,7 +155,7 @@ void TitleScene::Draw() {
 		//テキスト.
 		TCHAR text[256];
 		_stprintf(text, _T("BEST SCORE: %d"), gameData->bestScore); //ベストスコア.
-		DrawStr str(text, { WINDOW_WID / 2, drawY-2 }, COLOR_BEST_SCORE);
+		DrawStr str(text, { Config::WINDOW_WID / 2, drawY-2 }, Config::COLOR_BEST_SCORE);
 
 		//描画(スコア)
 		DrawMode::Exe(
@@ -169,21 +169,21 @@ void TitleScene::Draw() {
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim2),
 			[&]() {
 				grUiBackBestScore->
-					DrawExtend({ WINDOW_WID / 2, drawY + (10 + 18 * anim2) }, { 0.45, 0.4 }, Anchor::Mid, true, true);
+					DrawExtend({ Config::WINDOW_WID / 2, drawY + (10 + 18 * anim2) }, { 0.45, 0.4 }, Anchor::Mid, true, true);
 				grUiBackBestScore->
-					DrawExtend({ WINDOW_WID / 2, drawY - (10 + 18 * anim2) }, { 0.45, 0.4 }, Anchor::Mid, true, true);
+					DrawExtend({ Config::WINDOW_WID / 2, drawY - (10 + 18 * anim2) }, { 0.45, 0.4 }, Anchor::Mid, true, true);
 			}
 		);
 	}
 	//PUSH SPACE.
 	if (timer.GetPassTime() >= delay4) {
 
-		const int drawY = WINDOW_HEI / 2 + 310;
+		const int drawY = Config::WINDOW_HEI / 2 + 310;
 
 		//アニメーション値.
 		double anim = Calc::AnimWave(WaveType::CosLoop, timer.GetPassTime() - delay4);
 		//テキスト.
-		DrawStr str(_T(""), { WINDOW_WID / 2, drawY }, 0xFFFFFF);
+		DrawStr str(_T(""), { Config::WINDOW_WID / 2, drawY }, 0xFFFFFF);
 
 		//[操作表示] 操作によって表示するテキストを変える.
 #if defined INPUT_CHANGE_ARCADE

@@ -33,8 +33,8 @@ void Ripples::Reset()
 void Ripples::GenerateRandomPosition(double& x, double& y)
 {
 	//画面サイズ
-	int screenWidth  = WINDOW_WID;
-	int screenHeight = WINDOW_HEI;
+	int screenWidth  = Config::WINDOW_WID;
+	int screenHeight = Config::WINDOW_HEI;
 	int margin = 100;//画面端からのマージン大き目.
 	x = margin + (rand() % (screenWidth  - margin * 2));
 	y = margin + (rand() % (screenHeight - margin * 2));
@@ -46,7 +46,7 @@ bool Ripples::CheckDistance(double x, double y)
 		double dx = x - i.x;
 		double dy = y - i.y;
 		double distance = dx*dx + dy*dy;
-		if (distance < pow(RIPPLES_MIN_DISTANCE, 2))
+		if (distance < pow(Config::RIPPLES_MIN_DISTANCE, 2))
 		{
 			return false;
 		}
@@ -60,7 +60,7 @@ void Ripples::SpawnRipples(double x, double y)
 
 	tmp.x = x;
 	tmp.y = y;
-	tmp.duration = RIPPLES_WARNING_DURATION + RIPPLES_ACTIVE_DURATION;
+	tmp.duration = Config::RIPPLES_WARNING_DURATION + Config::RIPPLES_ACTIVE_DURATION;
 	tmp.counter  = tmp.duration;	// 持続時間から開始（カウントダウン）
 	tmp.baseSize = 20;				// 適切な基本サイズに調整
 	tmp.alreadyHit = false;         // 最初はまだ当たっていない.
@@ -70,7 +70,7 @@ void Ripples::SpawnRipples(double x, double y)
 void Ripples::SpawnObstacleGroup()
 {
 	//同時出現をランダムに決定.
-	const int spawnCount = (rand() % RIPPLES_MAX_SIMULTANEOUS) + 1;
+	const int spawnCount = (rand() % Config::RIPPLES_MAX_SIMULTANEOUS) + 1;
 	for (int i = 0; i < spawnCount; i++)
 	{
 		double x{}, y{};
@@ -92,11 +92,11 @@ void Ripples::SpawnObstacleGroup()
 int Ripples::GetEffectState(vector<RipplesData>::iterator it)
 {
 	// 残り時間がアクティブ時間より大きければ警告状態
-	if (it->counter > RIPPLES_ACTIVE_DURATION) {
-		return RIPPLES_STATE_WARNING;
+	if (it->counter > Config::RIPPLES_ACTIVE_DURATION) {
+		return Config::RIPPLES_STATE_WARNING;
 	}
 	else{
-		return RIPPLES_STATE_ACTIVE;
+		return Config::RIPPLES_STATE_ACTIVE;
 	}
 }
 
@@ -111,7 +111,7 @@ void Ripples::UpdateFlashGeneration()
 		//フラッシュエフェクト生成.
 		SpawnObstacleGroup();
 		//GameDataのspawnRateを使用してインターバルを調整.
-		flashTimer = RIPPLES_SPAWN_SPAN * gameData->spawnRate;
+		flashTimer = Config::RIPPLES_SPAWN_SPAN * gameData->spawnRate;
 	}
 
 	//全波紋.
@@ -153,20 +153,20 @@ void Ripples::HitJudgment()
 		}
 
 		int effectState = GetEffectState(i);
-		if (effectState == RIPPLES_STATE_WARNING) {
+		if (effectState == Config::RIPPLES_STATE_WARNING) {
 			continue;
 		}
 
 		//波紋が広がった瞬間のみダメージ判定.
-		if (effectState == RIPPLES_STATE_ACTIVE && !i->alreadyHit) {
+		if (effectState == Config::RIPPLES_STATE_ACTIVE && !i->alreadyHit) {
 
 			//エフェクトの当たり判定(半径)
-			int effectSize = _int_r(i->baseSize * RIPPLES_FLASH_SIZE_INIT);
+			int effectSize = _int_r(i->baseSize * Config::RIPPLES_FLASH_SIZE_INIT);
 			//距離.
 			DBL_XY dist = player->GetPos() - DBL_XY{i->x, i->y};
 
 			//プレイヤーに当たっていれば.
-			if (dist.Dist() <= effectSize + PLAYER_SIZE) {
+			if (dist.Dist() <= effectSize + Config::PLAYER_SIZE) {
 				player->Death(); //死亡.
 			}
 
@@ -190,7 +190,7 @@ void Ripples::DrawObstFlash()
 	for (auto i = ripples.begin(); i != ripples.end(); i++)
 	{
 		int effetState = GetEffectState(i);
-		if (effetState == RIPPLES_STATE_WARNING)
+		if (effetState == Config::RIPPLES_STATE_WARNING)
 		{
 			// 予告状態の描画（赤い点滅エフェクト）
 			DrawWarningEffect(i);
@@ -212,8 +212,8 @@ void Ripples::DrawWarningEffect(vector<RipplesData>::iterator it)
 	int alphaValue;
 	//攻撃前になるまで点滅.
 	if (elapsedTime < 90) {
-		double blinkPhase = fmod(elapsedTime, RIPPLES_FLASH_BLINK_TM);
-		double blinkAlpha = sin(blinkPhase * M_PI/RIPPLES_FLASH_BLINK_TM); //0.0～1.0を往復するっぽい.
+		double blinkPhase = fmod(elapsedTime, Config::RIPPLES_FLASH_BLINK_TM);
+		double blinkAlpha = sin(blinkPhase * M_PI / Config::RIPPLES_FLASH_BLINK_TM); //0.0～1.0を往復するっぽい.
 		alphaValue = _int(255 - 200*blinkAlpha);
 	}
 	else {
@@ -251,17 +251,17 @@ void Ripples::DrawActiveEffect(vector<RipplesData>::iterator it)
 {
 	// 残り時間から経過時間を計算
 	float elapsedTime = it->duration - it->counter;
-	float activeElapsedTime = elapsedTime - RIPPLES_WARNING_DURATION;
+	float activeElapsedTime = elapsedTime - Config::RIPPLES_WARNING_DURATION;
 
 	// アクティブ状態での進行度
-	float activeProgress = activeElapsedTime / RIPPLES_ACTIVE_DURATION;
+	float activeProgress = activeElapsedTime / Config::RIPPLES_ACTIVE_DURATION;
 
 	// 透明度を時間に応じて計算
-	float alpha = 1.0f - (activeProgress * RIPPLES_FLASH_ALPHA_TM);
+	float alpha = 1.0f - (activeProgress * Config::RIPPLES_FLASH_ALPHA_TM);
 	int alphaValue = _int(255 * max(alpha, 0.0f));
 
 	// エフェクトのサイズを時間に応じて拡大
-	float sizeMultiplier = RIPPLES_FLASH_SIZE_INIT + (activeProgress * RIPPLES_FLASH_SIZE_SPREAD);
+	float sizeMultiplier = Config::RIPPLES_FLASH_SIZE_INIT + (activeProgress * Config::RIPPLES_FLASH_SIZE_SPREAD);
 	int effectSize = _int(it->baseSize * sizeMultiplier);
 	int innerSize = effectSize / 2;
 

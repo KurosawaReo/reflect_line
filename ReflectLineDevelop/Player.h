@@ -4,7 +4,7 @@
 */
 #pragma once
 #include "EffectManager.h"
-#include "Configs/Config_Main.h"
+#include "Config_Main.h"
 
 //エフェクトデータ.
 struct AfterEffect
@@ -48,8 +48,8 @@ private:
 	bool			isDebug{};				//デバッグ用.
 
 	//残像.
-	float			afterCntr{};	 				//残像用時間カウンター.
-	AfterEffect		after[PLAYER_AFT_IMG_NUM]{};	//残像位置の履歴.
+	float			afterCntr{};	 						//残像用時間カウンター.
+	AfterEffect		after[Config::PLAYER_AFT_IMG_NUM]{};	//残像位置の履歴.
 
 	//ダッシュ.
 	float			dashTimer{};			//ダッシュの残り時間.

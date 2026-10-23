@@ -55,7 +55,7 @@ int WINAPI WinMain(
 	ManagerInsts::NewManager<UIManager>();
 
 	//‰Šú‰»ˆ—.
-	App::InitDx(WINDOW_WID, WINDOW_HEI, IS_WINDOW_MODE, FPS, false);
+	App::InitDx(Config::WINDOW_WID, Config::WINDOW_HEI, Config::IS_WINDOW_MODE, Config::FPS, false);
 	//ƒ‹[ƒvˆ—.
 	App::LoopDx();
 

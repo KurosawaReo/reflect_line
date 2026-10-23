@@ -33,7 +33,7 @@ bool Player::IsMoved() const {
 //ダッシュ反射可能か.
 bool Player::IsDashReflect() const {
 	//継続時間内であれば.
-	if (dashTimer > PLAYER_DASH_DURATION - PLAYER_DASH_REFLECT_TIME) {
+	if (dashTimer > Config::PLAYER_DASH_DURATION - Config::PLAYER_DASH_REFLECT_TIME) {
 		return true; //可能.
 	}
 	return false; //不可能.
@@ -62,7 +62,7 @@ void Player::Init()
 //リセット(何回でも行う)
 void Player::Reset()
 {
-	hit       = { { WINDOW_WID / 2, WINDOW_HEI / 2 + 200 }, PLAYER_SIZE, {}, {} };
+	hit       = { App::GetWindowRect().GetMid().ToDbl() + DBL_XY(0, 200), Config::PLAYER_SIZE, {}, {}};
 	mode      = PlayerMode::Normal;
 	afterCntr = 1;
 	active    = true;
@@ -174,8 +174,8 @@ void Player::UpdateDash()
 				if (auto i = soundMng->Get(_T("PlayerDash"))) {
 					i->Play(false, 50); //再生.
 				}
-				dashTimer    = PLAYER_DASH_DURATION;
-				dashCooldown = PLAYER_DASH_COOLDOWN;
+				dashTimer    = Config::PLAYER_DASH_DURATION;
+				dashCooldown = Config::PLAYER_DASH_COOLDOWN;
 				isDashing    = true;
 
 				//ダッシュ反射開始.
@@ -203,7 +203,7 @@ void Player::UpdateAfter()
 		afterCntr = 1;
 
 		//残像データを後ろにずらす.
-		for (int i = PLAYER_AFT_IMG_NUM - 1; i > 0; i--)
+		for (int i = Config::PLAYER_AFT_IMG_NUM - 1; i > 0; i--)
 		{
 			after[i] = after[i - 1];
 		}
@@ -228,14 +228,14 @@ void Player::UpdateAfter()
 void Player::DrawAfter()
 {
 	//残像処理.
-	for (int i = 0; i < PLAYER_AFT_IMG_NUM; i++)
+	for (int i = 0; i < Config::PLAYER_AFT_IMG_NUM; i++)
 	{
 		if (!after[i].isActive) { continue; }
 
 		if (hit.pos.x != after[i].pos.x || hit.pos.y != after[i].pos.y) {
 
 			//アニメーション値.
-			const double anim1 = _dbl(i) / PLAYER_AFT_IMG_NUM;
+			const double anim1 = _dbl(i) / Config::PLAYER_AFT_IMG_NUM;
 			const double anim2 = Calc::AnimEase(EaseType::OutQuad, anim1); //遅めに変化する版.
 
 			//描画.
@@ -266,15 +266,15 @@ void Player::DrawAfterNor(int idx) {
 	if (mode == PlayerMode::ItemReflect ||
 		mode == PlayerMode::ItemReflectSuper
 	){
-		color = COLOR_PLY_AFT_REF;
+		color = Config::COLOR_PLY_AFT_REF;
 	}
 	//通常カラー.
 	else
 	{
-		color = COLOR_PLY_AFT_NOR;
+		color = Config::COLOR_PLY_AFT_NOR;
 	}
 	//円描画.
-	Circle cir = { after[idx].pos, PLAYER_SIZE, color, 1.0f };
+	Circle cir = { after[idx].pos, Config::PLAYER_SIZE, color, 1.0f };
 	cir.Draw(Anchor::Mid, false, true);
 }
 
@@ -337,7 +337,7 @@ void Player::DrawAfterDash(int idx, double anim1, double anim2) {
 void Player::DrawPlayer() {
 
 	//透明度計算.
-	const double alpha  = Calc::AnimEase(EaseType::OutQuad, dashTimer / PLAYER_DASH_DURATION);
+	const double alpha  = Calc::AnimEase(EaseType::OutQuad, dashTimer / Config::PLAYER_DASH_DURATION);
 	const double alpha2 = Calc::AnimWave(WaveType::CosLoop, gameMng->GetGameScene()->GetReflectModeTime() * 2);
 
 	//使用する画像名.
@@ -371,7 +371,7 @@ void Player::DrawPlayer() {
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha),
 			[&]() {
 				grDash->DrawExtend(
-					hit.pos, { PLAYER_LIGHT_DRAW_SIZE, PLAYER_LIGHT_DRAW_SIZE }, Anchor::Mid, true, true
+					hit.pos, { Config::PLAYER_LIGHT_DRAW_SIZE, Config::PLAYER_LIGHT_DRAW_SIZE }, Anchor::Mid, true, true
 				);
 			}
 		);
@@ -386,7 +386,7 @@ void Player::DrawPlayer() {
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(80 + 128 * alpha2),
 			[&]() {
 				grPlayerRefBarrier->DrawExtend(
-					hit.pos, { PLAYER_DRAW_SIZE, PLAYER_DRAW_SIZE }, Anchor::Mid, true, true
+					hit.pos, { Config::PLAYER_DRAW_SIZE, Config::PLAYER_DRAW_SIZE }, Anchor::Mid, true, true
 				);
 			}
 		);
@@ -394,7 +394,7 @@ void Player::DrawPlayer() {
 
 	//プレイヤー本体.
 	grPlayer->DrawRota(
-		hit.pos, PLAYER_DRAW_SIZE, imgRot, { 0, 0 }, true, true
+		hit.pos, Config::PLAYER_DRAW_SIZE, imgRot, { 0, 0 }, true, true
 	);
 
 	//チュートリアル用.
@@ -407,7 +407,7 @@ void Player::DrawPlayer() {
 //移動処理(斜め対応)
 void Player::UpdateMove()
 {
-	float speed = PLAYER_MOVE_SPEED;
+	float speed = Config::PLAYER_MOVE_SPEED;
 
 	//目標速度.
 	DBL_XY targetVel{};
@@ -421,9 +421,9 @@ void Player::UpdateMove()
 	//ダッシュ中なら.
 	if (isDashing) {
 		//段々減速.
-		const double rate = Calc::AnimEase(EaseType::OutQuad, dashTimer / PLAYER_DASH_DURATION);
+		const double rate = Calc::AnimEase(EaseType::OutQuad, dashTimer / Config::PLAYER_DASH_DURATION);
 		//速度変化.
-		speed *= _flt(1.0 + PLAYER_DASH_SPEED * rate);
+		speed *= _flt(1.0 + Config::PLAYER_DASH_SPEED * rate);
 		//目標速度変更.
 		targetVel = lastInputVec * speed;
 	}
@@ -433,7 +433,7 @@ void Player::UpdateMove()
 	}
 
 	//Lerp速度.
-	const double moveLerp = PLAYER_MOVE_LERP_SPEED;
+	const double moveLerp = Config::PLAYER_MOVE_LERP_SPEED;
 	//Lerpで目標速度に近づける.
 	velocity.x += (targetVel.x - velocity.x) * moveLerp;
 	velocity.y += (targetVel.y - velocity.y) * moveLerp;
@@ -444,7 +444,7 @@ void Player::UpdateMove()
 	//移動.
 	hit.pos += velocity * gameData->speedRate;
 	//移動限界.
-	Calc::FixPosInArea(&hit.pos, { PLAYER_SIZE * 2, PLAYER_SIZE * 2 }, { 0, 0, WINDOW_WID - 1, WINDOW_HEI - 1 });
+	Calc::FixPosInArea(&hit.pos, { Config::PLAYER_SIZE * 2,Config::PLAYER_SIZE * 2 }, { 0, 0, Config::WINDOW_WID - 1, Config::WINDOW_HEI - 1 });
 }
 
 //死亡処理.
@@ -479,7 +479,7 @@ void Player::Death() {
 void Player::Revival()
 {
 	//位置・速度リセット.
-	hit.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 };
+	hit.pos = App::GetWindowRect().GetMid().ToDbl();
 	velocity = { 0, 0 };
 	active = true;
 

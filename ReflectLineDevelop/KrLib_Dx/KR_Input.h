@@ -1,6 +1,6 @@
 /*
    - KR_Input.h - (DxLib)
-   ver.2026/10/09
+   ver.2026/10/24
 
    入力操作機能。
    (オブジェクト指向ver → KR_Object)
@@ -159,9 +159,9 @@ namespace KR
 	};
 
 	//キーやボタンの種類の最大数(変更禁止)
-	constexpr int KEY_MAX     = 256;
-	constexpr int MOUSE_MAX   = 3;
-	constexpr int PAD_BTN_MAX = 32;
+	static constexpr int KEY_MAX     = 256;
+	static constexpr int MOUSE_MAX   = 3;
+	static constexpr int PAD_BTN_MAX = 32;
 
 	//入力管理クラス.
 	class InputMng final : public ManagerBase

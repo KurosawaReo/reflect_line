@@ -80,10 +80,10 @@ void NormalLaserPoint::DrawPrediction(float count) {
 		int   blinkAlpha    = _int_r(128 + 127 * sin(blinkProgress * M_PI * 8));
 
 		//サイズを徐々に大きく.
-		float dotSize  = (float)(3 + AnimEase(EaseType::OutQuad, blinkProgress) * LASER_NOR_PRE_LASER1_SIZE);
-		float dotSize2 = (float)(3 + AnimEase(EaseType::OutQuad, blinkProgress) * LASER_NOR_PRE_LASER2_SIZE);
+		float dotSize  = (float)(3 + AnimEase(EaseType::OutQuad, blinkProgress) * Config::LASER_NOR_PRE_LASER1_SIZE);
+		float dotSize2 = (float)(3 + AnimEase(EaseType::OutQuad, blinkProgress) * Config::LASER_NOR_PRE_LASER2_SIZE);
 		//円情報.
-		Circle cir = { pos, 0, COLOR_PRE_EFFECT, 1.0f };
+		Circle cir = { pos, 0, Config::COLOR_PRE_EFFECT, 1.0f };
 
 		//描画.
 		DrawMode::Exe(
@@ -129,19 +129,19 @@ void NormalLaserPoint::MoveRand()
 	{
 	case MoveDir::Left: //左.
 		pos.x = 0;
-		pos.y = _dbl(Calc::RandNum(0, WINDOW_HEI - 1));
+		pos.y = _dbl(Calc::RandNum(0, Config::WINDOW_HEI - 1));
 		break;
 	case MoveDir::Up: //上.
-		pos.x = _dbl(Calc::RandNum(0, WINDOW_WID - 1));
+		pos.x = _dbl(Calc::RandNum(0, Config::WINDOW_WID - 1));
 		pos.y = 0;
 		break;
 	case MoveDir::Right: //右.
-		pos.x = WINDOW_WID;
-		pos.y = _dbl(Calc::RandNum(0, WINDOW_HEI - 1));
+		pos.x = Config::WINDOW_WID;
+		pos.y = _dbl(Calc::RandNum(0, Config::WINDOW_HEI - 1));
 		break;
 	case MoveDir::Down: //下.
-		pos.x = _dbl(Calc::RandNum(0, WINDOW_WID - 1));
-		pos.y = WINDOW_HEI;
+		pos.x = _dbl(Calc::RandNum(0, Config::WINDOW_WID - 1));
+		pos.y = Config::WINDOW_HEI;
 		break;
 	}
 }
@@ -163,15 +163,15 @@ void NormalLaser::Init(){
 //リセット.
 void NormalLaser::Reset()
 {
-	counter   = LASER_NOR_SHOT_START + 100;
-	counterTm = LASER_NOR_SHOT_START;
+	counter   = Config::LASER_NOR_SHOT_START + 100;
+	counterTm = Config::LASER_NOR_SHOT_START;
 
 	//発射台.
 	for (auto& i : points) {
 		i.Reset();
 	}
 	//フラッシュ.
-	for (int i = 0; i < LASER_NOR_FLASH_MAX; i++) {
+	for (int i = 0; i < Config::LASER_NOR_FLASH_MAX; i++) {
 		flash[i].validFlag = false; //全て無効に.
 	}
 }
@@ -197,15 +197,15 @@ void NormalLaser::Update()
 			i->Play(false, 60);
 		}
 		//次のレーザーを発射するタイミング.
-		counterTm -= LASER_NOR_SHOT_SPAN;
+		counterTm -= Config::LASER_NOR_SHOT_SPAN;
 	}
 
 	//0を下回ったらタイマー再開.
 	if (counter <= 0) {
 		//発射開始時間 + 待機時間(待機時間は徐々に短くなる)
-		counter = LASER_NOR_SHOT_START + LASER_NOR_SHOT_RESET * gameData->spawnRate;
+		counter = Config::LASER_NOR_SHOT_START + Config::LASER_NOR_SHOT_RESET * gameData->spawnRate;
 		//発射開始時間.
-		counterTm = LASER_NOR_SHOT_START;
+		counterTm = Config::LASER_NOR_SHOT_START;
 		//レーザー移動抽選.
 		for (auto& i : points) {
 			i.MoveRand();
@@ -213,7 +213,7 @@ void NormalLaser::Update()
 	}
 
 	//エフェクト.
-	for (int i = 0; i < LASER_NOR_FLASH_MAX; i++) {
+	for (int i = 0; i < Config::LASER_NOR_FLASH_MAX; i++) {
 		//有効なら.
 		if (flash[i].validFlag) {
 			flash[i].counter += gameData->speedRate;
@@ -238,7 +238,7 @@ void NormalLaser::Draw()
 //発射エフェクトの描画.
 void NormalLaser::DrawObstFlash() {
 
-	for (int i = 0; i < LASER_NOR_FLASH_MAX; i++)
+	for (int i = 0; i < Config::LASER_NOR_FLASH_MAX; i++)
 	{
 		//無効ならスキップ.
 		if (!flash[i].validFlag) {
@@ -247,14 +247,14 @@ void NormalLaser::DrawObstFlash() {
 
 		//エフェクトの透明度を時間に応じて計算.
 		float alpha = 1.0f - (
-			flash[i].counter * LASER_NOR_FLASH_ALPHA_TM / flash[i].Duration
+			flash[i].counter * Config::LASER_NOR_FLASH_ALPHA_TM / flash[i].Duration
 		);
 		int alphaValue = _int_r(255 * alpha);
 		alphaValue = max(alphaValue, 0); //下限は0.
 
 		//エフェクトのサイズを時間に応じて拡大.
-		float sizeMultiplier = LASER_NOR_FLASH_SIZE_INIT + (
-			flash[i].counter * LASER_NOR_FLASH_SIZE_SPREAD / flash[i].Duration
+		float sizeMultiplier = Config::LASER_NOR_FLASH_SIZE_INIT + (
+			flash[i].counter * Config::LASER_NOR_FLASH_SIZE_SPREAD / flash[i].Duration
 		);
 		int effectSize = _int_r(flash[i].BaseSize * sizeMultiplier);
 
@@ -306,7 +306,7 @@ void NormalLaser::CreateFlashEffect(double fx, double fy)
 	DBL_XY pPos = player->GetPos(); //プレイヤー座標取得.
 
 	//未使用のエフェクトスロットを探す.
-	for (int i = 0; i < LASER_NOR_FLASH_MAX; i++)
+	for (int i = 0; i < Config::LASER_NOR_FLASH_MAX; i++)
 	{
 		if (!flash[i].validFlag)
 		{
@@ -319,7 +319,7 @@ void NormalLaser::CreateFlashEffect(double fx, double fy)
 			flash[i].y = fy;
 			flash[i].angle = angle; // プレイヤーへの角度を保存
 			flash[i].counter = 0;
-			flash[i].Duration = LASER_NOR_FLASH_VALID_TM; //一定フレーム光る.
+			flash[i].Duration = Config::LASER_NOR_FLASH_VALID_TM; //一定フレーム光る.
 			flash[i].BaseSize = 20; //基本サイズ
 			flash[i].validFlag = 1;
 			break;

@@ -42,7 +42,7 @@ void EndlessStage::Update() {
 	//カウンター増加.
 	gameData->counter += gameData->speedRate;
 	//出現間隔(100%から少しずつ減少)
-	gameData->spawnRate = 1.0f/(1.0f+(gameData->counter/SPAWN_RATE_HALF_COUNT));
+	gameData->spawnRate = 1.0f/(1.0f+(gameData->counter/Config::SPAWN_RATE_HALF_COUNT));
 
 #if defined _DEBUG //Releaseでは入れない.
 	//タイマー加速(デバッグ用)
@@ -59,25 +59,25 @@ void EndlessStage::Update() {
 			break;
 
 		case 1:
-			if (gameData->counter >= LEVEL_2_COUNT) {
+			if (gameData->counter >= Config::LEVEL_2_COUNT) {
 				UpLevel2(); //Lv2にする.
 			}
 			break;
 
 		case 2:
-			if (gameData->counter >= LEVEL_3_COUNT) {
+			if (gameData->counter >= Config::LEVEL_3_COUNT) {
 				UpLevel3(); //Lv3にする.
 			}
 			break;
 
 		case 3:
-			if (gameData->counter >= LEVEL_4_COUNT) {
+			if (gameData->counter >= Config::LEVEL_4_COUNT) {
 				UpLevel4(); //Lv4にする.
 			}
 			break;
 
 		case 4:
-			if (gameData->counter >= LEVEL_5_COUNT) {
+			if (gameData->counter >= Config::LEVEL_5_COUNT) {
 				UpLevel5(); //Lv5にする.
 			}
 			break;
@@ -105,7 +105,7 @@ void EndlessStage::UpLevel1() {
 	//指示付き初期化でclassのメンバ変数を初期化.
 	effectMng->SpawnEffect({
 		.type = EffectType::Endless_Level1,
-		.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+		.pos = { Config::WINDOW_WID / 2, Config::WINDOW_HEI / 2 }
 	});
 
 	//出現設定.
@@ -138,7 +138,7 @@ void EndlessStage::UpLevel2() {
 	//エフェクト.
 	effectMng->SpawnEffect({
 		.type = EffectType::Endless_Level2,
-		.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+		.pos = { Config::WINDOW_WID / 2, Config::WINDOW_HEI / 2 }
 	});
 
 	//Lv2の出現設定.
@@ -160,7 +160,7 @@ void EndlessStage::UpLevel3() {
 	//エフェクト.
 	effectMng->SpawnEffect({
 		.type = EffectType::Endless_Level3,
-		.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+		.pos = { Config::WINDOW_WID / 2, Config::WINDOW_HEI / 2 }
 	});
 
 	//Lv3の出現設定.
@@ -182,7 +182,7 @@ void EndlessStage::UpLevel4() {
 	//エフェクト.
 	effectMng->SpawnEffect({
 		.type = EffectType::Endless_Level4,
-		.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+		.pos = App::GetWindowSize().ToDbl() / 2
 	});
 
 	//Lv4の出現設定.
@@ -204,7 +204,7 @@ void EndlessStage::UpLevel5() {
 	//エフェクト.
 	effectMng->SpawnEffect({
 		.type = EffectType::Endless_Level5,
-		.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+		.pos = App::GetWindowSize().ToDbl() / 2
 	});
 
 	//Lv5の出現設定.

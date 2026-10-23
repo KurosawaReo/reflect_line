@@ -34,8 +34,8 @@ void Fireworks::Reset() {
 void Fireworks::GenerateRandomPosition(float& x, float& y) {
 
 	int margin = 80;
-	x = (float)(margin + (rand() % (WINDOW_WID - margin * 2)));
-	y = (float)(margin + (rand() % (WINDOW_HEI - margin * 2 - FIREWORKS_LAUNCH_HEIGHT)));
+	x = (float)(margin + (rand() % (Config::WINDOW_WID - margin * 2)));
+	y = (float)(margin + (rand() % (Config::WINDOW_HEI - margin * 2 - Config::FIREWORKS_LAUNCH_HEIGHT)));
 }
 
 // 距離チェック(近すぎる花火がなければtrue)
@@ -48,7 +48,7 @@ bool Fireworks::CheckDistance(float x, float y) {
 		float dy = y - i.targetY;
 		float distance = dx*dx + dy*dy;
 		//最小距離内なら.
-		if (distance < pow(FIREWORKS_MIN_DISTANCE, 2)) {
+		if (distance < pow(Config::FIREWORKS_MIN_DISTANCE, 2)) {
 			return false;
 		}
 	}
@@ -64,8 +64,8 @@ void Fireworks::SpawnFireworks(float x, float y) {
 	tmp.targetY = y;
 	tmp.x = x;
 	tmp.y = y;
-	tmp.counter = FIREWORKS_WARNING_DURATION;
-	tmp.sparkCount = FIREWORKS_SPARKS_COUNT + (rand() % 8);
+	tmp.counter = Config::FIREWORKS_WARNING_DURATION;
+	tmp.sparkCount = Config::FIREWORKS_SPARKS_COUNT + (rand() % 8);
 
 	fireworks.push_back(tmp); //listに追加.
 }
@@ -76,7 +76,7 @@ void Fireworks::UpdateFireworksGeneration() {
 
 	if (spawnTimer <= 0) {
 		//1～3個の花火をランダム生成.
-		int spawnCount = 1 + (rand() % FIREWORKS_RND_MAX);
+		int spawnCount = 1 + (rand() % Config::FIREWORKS_RND_MAX);
 
 		for (int i = 0; i < spawnCount; i++) {
 			float x = 0, y = 0;
@@ -94,7 +94,7 @@ void Fireworks::UpdateFireworksGeneration() {
 			}
 		}
 		//出現カウンターリセット.
-		spawnTimer = FIREWORKS_SPAWN_SPAN * gameData->spawnRate;
+		spawnTimer = Config::FIREWORKS_SPAWN_SPAN * gameData->spawnRate;
 	}
 }
 

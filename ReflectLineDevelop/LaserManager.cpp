@@ -64,7 +64,7 @@ void LaserManager::Draw() {
 	for (const LaserLineData& i : line) 
 	{
 		//時間経過で徐々に薄くする.
-		int color = _int_r(255 * (1 - i.counter/LASER_LINE_DEL_TIME));
+		int color = _int_r(255 * (1 - i.counter / Config::LASER_LINE_DEL_TIME));
 		color = max(color, 0); //最低値を0にする.
 
 		//軌跡の線設定.
@@ -75,11 +75,11 @@ void LaserManager::Draw() {
 			case LaserType::Normal:
 			case LaserType::Straight:
 			case LaserType::Falling:
-				tmpLine.color = ColorLaserNormal(color); //通常カラー.
+				tmpLine.color = Config::ColorLaserNormal(color); //通常カラー.
 				break;
 			case LaserType::Reflect:
 			case LaserType::SuperReflect:
-				tmpLine.color = ColorLaserReflect(color); //反射カラー.
+				tmpLine.color = Config::ColorLaserReflect(color); //反射カラー.
 				break;
 
 			default: assert(FALSE); break;
@@ -140,7 +140,7 @@ void LaserManager::UpdateLaser() {
 				HitLaser(i);
 
 				//速度(時間経過で速くなる)
-				const double speed = i->counter * LASER_NOR_SPEED;
+				const double speed = i->counter * Config::LASER_NOR_SPEED;
 				//レーザー移動.
 				MoveLaser(i, speed);
 			}
@@ -152,7 +152,7 @@ void LaserManager::UpdateLaser() {
 				HitLaser(i);
 
 				//速度(直線レーザーなので一定速度)
-				const double speed = LASER_STR_SPEED;
+				const double speed = Config::LASER_STR_SPEED;
 				//レーザー移動.
 				MoveLaser(i, speed);
 			}
@@ -161,12 +161,12 @@ void LaserManager::UpdateLaser() {
 			case LaserType::Falling:
 			{
 				//ある程度薄くなるまで.
-				if (i->counter <= LASER_FAL_HIT_TIME) {
+				if (i->counter <= Config::LASER_FAL_HIT_TIME) {
 					//レーザーの当たり判定.
 					HitLaser(i);
 				}
 				//時間を超えたら.
-				if (i->counter >= LASER_FAL_DELETE_TIME) {
+				if (i->counter >= Config::LASER_FAL_DELETE_TIME) {
 					isErase = true; //消去する.
 				}
 
@@ -193,7 +193,7 @@ void LaserManager::UpdateLaser() {
 				//ターゲットが決まってなければ.
 				if (!i->target) {
 					//一定時間で目標地点を決める.
-					if (i->counter >= LASER_REF_TRACK_ST_TM) {
+					if (i->counter >= Config::LASER_REF_TRACK_ST_TM) {
 
 						//ターゲットできる隕石を取得.
 						Meteor* meteor = meteorMng->GetTargetMeteor(i->nowPos);
@@ -215,14 +215,14 @@ void LaserManager::UpdateLaser() {
 
 					const double ang = _deg(atan2(i->vec.y, i->vec.x)); //破片の飛ぶ方向.
 					meteorMng->BreakMeteor(i->nowPos, ang, true);		//破壊演出.
-					gameData->AddScore(SCORE_BREAK_METEOR);				//スコア加算.
+					gameData->AddScore(Config::SCORE_BREAK_METEOR);		//スコア加算.
 
 					//どっちのタイプかで切り替え.
 					if (i->type == LaserType::Reflect) {
 						isErase = true; //消去する.
 					}
 					else {
-						i->counter = LASER_REF_TRACK_ED_TM; //再反射後は追尾しない.
+						i->counter = Config::LASER_REF_TRACK_ED_TM; //再反射後は追尾しない.
 						ReflectLaser(i); //再反射.
 					}
 					//チュートリアルなら指示送信.
@@ -235,7 +235,7 @@ void LaserManager::UpdateLaser() {
 					LaserRefTracking(i);
 
 					//速度(時間経過で速くなる)
-					const double speed = i->counter * LASER_REF_SPEED * gameData->speedRate;
+					const double speed = i->counter * Config::LASER_REF_SPEED * gameData->speedRate;
 					//レーザー移動.
 					MoveLaser(i, speed);
 				}
@@ -247,8 +247,8 @@ void LaserManager::UpdateLaser() {
 		}
 
 		//画面外判定.
-		const bool isOutX = (i->nowPos.x < -100) || (i->nowPos.x > WINDOW_WID + 100);
-		const bool isOutY = (i->nowPos.y < -100) || (i->nowPos.y > WINDOW_HEI + 100);
+		const bool isOutX = (i->nowPos.x < -100) || (i->nowPos.x > Config::WINDOW_WID + 100);
+		const bool isOutY = (i->nowPos.y < -100) || (i->nowPos.y > Config::WINDOW_HEI + 100);
 		//画面外に出たレーザーを無効化.
 		if (isOutX || isOutY) {
 			isErase = true; //消去する.
@@ -269,7 +269,7 @@ void LaserManager::UpdateLaserLine() {
 
 	//消滅判定(一定フレーム経過した線を削除)
 	std::erase_if(line, [](const LaserLineData& i) {
-		return i.counter >= LASER_LINE_DEL_TIME;
+		return i.counter >= Config::LASER_LINE_DEL_TIME;
 	});
 }
 
@@ -323,11 +323,11 @@ void LaserManager::HitLaser(vector<LaserData>::iterator& it) {
 	if (player->GetMode() == PlayerMode::ItemReflect      ||
 		player->GetMode() == PlayerMode::ItemReflectSuper)
 	{
-		plyHit.r += PLAYER_REF_ADD_SIZE;
+		plyHit.r += Config::PLAYER_REF_ADD_SIZE;
 	}
 
 	//レーザーの当たり判定(円)
-	Circle laserHit = {it->nowPos, LASER_HIT_R, {}, {}};
+	Circle laserHit = {it->nowPos, Config::LASER_HIT_R, {}, {}};
 
 	//プレイヤーとレーザーの当たり判定.
 	if (HitCirCir(laserHit, plyHit)) {
@@ -425,7 +425,7 @@ void LaserManager::GenerateLaserLine(vector<LaserData>::iterator& it) {
 	const double dis = Dist(it->nowPos, it->befPos);
 
 	//長さが一定以上あれば描画線を出す(DrawLineAAの関係上)
-	if (dis >= LASER_LINE_DRAW_LEN) {
+	if (dis >= Config::LASER_LINE_DRAW_LEN) {
 		
 		LaserLineData tmp; //描画線作成.
 
@@ -438,9 +438,9 @@ void LaserManager::GenerateLaserLine(vector<LaserData>::iterator& it) {
 		if (tmp.type == LaserType::Falling) {
 			//レーザーの経過時間を反映.
 			//落下レーザー消滅時間が、レーザー描画線消滅時間に合わさるよう計算.
-			tmp.counter = it->counter * LASER_LINE_DEL_TIME / LASER_FAL_DELETE_TIME;
+			tmp.counter = it->counter * Config::LASER_LINE_DEL_TIME / Config::LASER_FAL_DELETE_TIME;
 			//アニメーション曲線の調整.
-			const double anim = AnimEase(EaseType::OutQuad, tmp.counter / LASER_LINE_DEL_TIME);
+			const double anim = AnimEase(EaseType::OutQuad, tmp.counter / Config::LASER_LINE_DEL_TIME);
 			tmp.counter *= _flt(anim);
 		}
 
@@ -460,8 +460,8 @@ void LaserManager::LaserRefTracking(vector<LaserData>::iterator& it)
 	if (!it->isGoTarget) { return; }
 
 	//一定時間のみ追尾.
-	if (it->counter > LASER_REF_TRACK_ST_TM &&
-		it->counter < LASER_REF_TRACK_ED_TM)
+	if (it->counter > Config::LASER_REF_TRACK_ST_TM &&
+		it->counter < Config::LASER_REF_TRACK_ED_TM)
 	{
 		//目標地点までの座標差と方角.
 		const double targetAngle = atan2(
@@ -484,7 +484,7 @@ void LaserManager::LaserRefTracking(vector<LaserData>::iterator& it)
 		}
 
 		// 反射レーザーの旋回角度（通常レーザーより少し速く）.
-		double maxTurn = _rad(LASER_REF_ROT_MAX) * gameData->speedRate;
+		double maxTurn = _rad(Config::LASER_REF_ROT_MAX) * gameData->speedRate;
 		if (angleDiff > +maxTurn) angleDiff = +maxTurn;
 		if (angleDiff < -maxTurn) angleDiff = -maxTurn;
 

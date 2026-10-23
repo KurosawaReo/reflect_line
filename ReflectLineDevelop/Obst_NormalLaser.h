@@ -4,7 +4,7 @@
    障害物「追尾レーザー」
 */
 #pragma once
-#include "Configs/Config_Main.h"
+#include "Config_Main.h"
 
 //移動方向(+1すれば右回転)
 enum class MoveDir
@@ -64,7 +64,7 @@ class NormalLaser final : public ManagerBase
 //▼ ===== 変数 ===== ▼.
 private:
 	NormalLaserPoint points[4]{}; //レーザー発射台.
-	FlashEffect flash[LASER_NOR_FLASH_MAX]{};
+	FlashEffect flash[Config::LASER_NOR_FLASH_MAX]{};
 
 	float counter{};   //経過カウンター.
 	float counterTm{}; //発射するタイミング.

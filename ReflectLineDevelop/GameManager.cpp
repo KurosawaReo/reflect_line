@@ -181,7 +181,7 @@ void GameManager::Init() {
 	//[score.data]
 	File file;
 	//ファイルがあれば開く.
-	if (file.Open(FILE_DATA_SCORE, FileOpenMode::Read)) {
+	if (file.Open(Config::FILE_DATA_SCORE, FileOpenMode::Read)) {
 		gameData->bestScore = file.ReadInt();		//数字を読み込んで登録.
 		uiMng->SetBestScore(gameData->bestScore);	//ベストスコア反映.
 	}
@@ -209,7 +209,7 @@ void GameManager::Reset() {
 #if !defined BGM_NONE
 	//メニューBGMを流す.
 	if (auto i = soundMng->Get(_T("BGM_Menu"))) {
-		i->Play(true, BGM_VOLUME_MENU);
+		i->Play(true, Config::BGM_VOLUME_MENU);
 	}
 #endif
 
@@ -247,7 +247,7 @@ void GameManager::Update() {
 	}
 
 	//特定の操作でゲーム終了
-	if (inputMng->IsPushActionTime(_T("GameQuit")) >= FPS * 1) {
+	if (inputMng->IsPushActionTime(_T("GameQuit")) >= Config::FPS * 1) {
 		App::Quit(); //ボタン長押しで終了.
 	}
 	else if (inputMng->IsPushKey(KeyID::Esc)) {
@@ -332,7 +332,7 @@ void GameManager::GameOver() {
 
 					File file;
 					//ファイルを開く.
-					if (file.Open(FILE_DATA_SCORE, FileOpenMode::Write)) {
+					if (file.Open(Config::FILE_DATA_SCORE, FileOpenMode::Write)) {
 						file.WriteInt(finalScore);			//スコアを保存.
 						gameData->bestScore = finalScore;	//スコア更新.
 						endScene.SignBestScore();			//ハイスコアのサイン送信.
@@ -378,9 +378,9 @@ void GameManager::ItemUsed() {
 void GameManager::SlowModeStart() {
 
 	//速度倍率を遅くする.
-	gameData->speedRate = SLOW_MODE_SPEED;
+	gameData->speedRate = Config::SLOW_MODE_SPEED;
 	//一定時間スローにする.
-	gameData->slowBufCntr = SLOW_MODE_BUF_F;
+	gameData->slowBufCntr = Config::SLOW_MODE_BUF_F;
 }
 
 //オブジェクト停止.
@@ -486,7 +486,7 @@ void GameManager::WritePlayLog(bool isTutorial) {
 
 	//ファイルを開く.
 	File file;
-	if (file.Open(FILE_DATA_PLAYLOG, FileOpenMode::Out | FileOpenMode::App)) {
+	if (file.Open(Config::FILE_DATA_PLAYLOG, FileOpenMode::Out | FileOpenMode::App)) {
 		//ファイルへ追記.
 		file.WriteString(dateStr);
 	}

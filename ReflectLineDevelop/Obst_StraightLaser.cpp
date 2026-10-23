@@ -46,7 +46,7 @@ void StraightLaserPoint::ShotLaser()
 		vel = { +1.0, 0.0 };
 		break;
 	case 1: //←.
-		startPos.x = WINDOW_WID + 50;
+		startPos.x = Config::WINDOW_WID + 50;
 		vel = { -1.0, 0.0 };
 		break;
 	case 2: //↓.
@@ -54,7 +54,7 @@ void StraightLaserPoint::ShotLaser()
 		vel = { 0.0, +1.0 };
 		break;
 	case 3: //↑.
-		startPos.y = WINDOW_HEI + 50;
+		startPos.y = Config::WINDOW_HEI + 50;
 		vel = { 0.0, -1.0 };
 		break;
 	}
@@ -90,11 +90,11 @@ void StraightLaserPoint::ShotRand() {
 	// 次の発射位置もランダムに決定
 	if (shotDir == 0 || shotDir == 1) // 水平発射
 	{
-		centerPos = 100 + rand() % (WINDOW_HEI - 200);
+		centerPos = 100 + rand() % (Config::WINDOW_HEI - 200);
 	}
 	else // 垂直発射
 	{
-		centerPos = 100 + rand() % (WINDOW_WID - 200);
+		centerPos = 100 + rand() % (Config::WINDOW_WID - 200);
 	}
 }
 
@@ -109,31 +109,31 @@ void StraightLaserPoint::DrawPreLine(float count)
 	switch (shotDir)
 	{
 	case 0: //→.
-		preLine.stPos = { -50,             centerPos };
-		preLine.edPos = { WINDOW_WID + 50, centerPos };
+		preLine.stPos = { -50,                     centerPos };
+		preLine.edPos = { Config::WINDOW_WID + 50, centerPos };
 		break;
 	case 1: //←.
-		preLine.stPos = { WINDOW_WID + 50, centerPos };
-		preLine.edPos = { -50,             centerPos };
+		preLine.stPos = { Config::WINDOW_WID + 50, centerPos };
+		preLine.edPos = { -50,					   centerPos };
 		break;
 	case 2: //↓.
-		preLine.stPos = { centerPos, -50 };
-		preLine.edPos = { centerPos, WINDOW_HEI + 50 };
+		preLine.stPos = { centerPos, -50                     };
+		preLine.edPos = { centerPos, Config::WINDOW_HEI + 50 };
 		break;
 	case 3: //↑.
-		preLine.stPos = { centerPos, WINDOW_HEI + 50 };
-		preLine.edPos = { centerPos, -50 };
+		preLine.stPos = { centerPos, Config::WINDOW_HEI + 50 };
+		preLine.edPos = { centerPos, -50                     };
 		break;
 	}
 
 	//予測線の透明度.
-	const double alpha = Calc::AnimEase(EaseType::InQuad, count / LASER_STR_PREDICTION_TIME);
+	const double alpha = Calc::AnimEase(EaseType::InQuad, count / Config::LASER_STR_PREDICTION_TIME);
 
 	//描画.
 	DrawMode::Exe(
 		DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * (1 - alpha)),
 		[&](){
-			preLine.color = COLOR_PRE_EFFECT;
+			preLine.color = Config::COLOR_PRE_EFFECT;
 			preLine.Draw(true);
 		}
 	);
@@ -159,7 +159,7 @@ void StraightLaser::Reset()
 	//自動実行設定.
 	SetAutoExeMode(MngAutoExe::Stop);
 
-	counter = LASER_STR_PREDICTION_TIME + 80; //予測線が出るタイミングから開始.
+	counter = Config::LASER_STR_PREDICTION_TIME + 80; //予測線が出るタイミングから開始.
 	counterPrediction = 0;
 	isShowPreLine = false;
 
@@ -177,7 +177,7 @@ void StraightLaser::Update()
 	counter -= gameData->speedRate;
 
 	//予測線更新.
-	if (counter <= LASER_STR_PREDICTION_TIME)
+	if (counter <= Config::LASER_STR_PREDICTION_TIME)
 	{
 		if (!isShowPreLine)
 		{
@@ -188,7 +188,7 @@ void StraightLaser::Update()
 
 			isShowPreLine = true;
 		}
-		counterPrediction = LASER_STR_PREDICTION_TIME - counter; // 予測線表示からの経過時間
+		counterPrediction = Config::LASER_STR_PREDICTION_TIME - counter; // 予測線表示からの経過時間
 	}
 	//直線レーザー発射.
 	if (counter <= 0)
@@ -204,7 +204,7 @@ void StraightLaser::Update()
 
 		//タイマー再開(徐々に短くなる)
 		//予測線の出る時間より短くならないよう設定.
-		counter = LASER_STR_PREDICTION_TIME + LASER_STR_SPAWN_SPAN * gameData->spawnRate;
+		counter = Config::LASER_STR_PREDICTION_TIME + Config::LASER_STR_SPAWN_SPAN * gameData->spawnRate;
 
 		isShowPreLine = false;
 		counterPrediction = 0;

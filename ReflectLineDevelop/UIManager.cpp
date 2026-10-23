@@ -69,8 +69,8 @@ void UIManager::DrawTutorial(float time, int offset) {
 	double alpha2  = Calc::AnimEase(EaseType::InOutQuad,  time - 0.2);
 	double animSin = sin(M_PI * (time - 0.2));
 	//テキスト設定.
-	DrawStr str1({}, { WINDOW_WID / 2,  70 + offset }, 0xFFFFFF);
-	DrawStr str2({}, { WINDOW_WID / 2, 150 }, COLOR_SCORE);
+	DrawStr str1({}, { Config::WINDOW_WID / 2,  70 + offset }, 0xFFFFFF);
+	DrawStr str2({}, { Config::WINDOW_WID / 2, 150 }, Config::COLOR_SCORE);
 
 	TCHAR text[256];
 	_stprintf(text, _T("STEP %d"), tutorialStg->GetStepNo());
@@ -80,7 +80,7 @@ void UIManager::DrawTutorial(float time, int offset) {
 
 	// ===== STEP =====
 	//背景画像.
-	grUiBackLevel->DrawExtend({ WINDOW_WID / 2, 70 }, { 0.4, 0.35 });
+	grUiBackLevel->DrawExtend({ Config::WINDOW_WID / 2, 70 }, { 0.4, 0.35 });
 	//描画.
 	DrawMode::Exe(
 		DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha),
@@ -124,10 +124,10 @@ void UIManager::DrawEndless(float time, int offset) {
 
 	//テキスト設定.
 	DrawStr str[4] = {
-		DrawStr({}, { WINDOW_WID / 2,      70 + offset }, 0xFFFFFF),
-		DrawStr({}, { WINDOW_WID / 2 - 350, 150        }, COLOR_BEST_SCORE),
-		DrawStr({}, { WINDOW_WID / 2,     150        }, COLOR_SCORE),
-		DrawStr({}, { WINDOW_WID / 2 + 350, 150        }, COLOR_TIME),
+		DrawStr({}, { Config::WINDOW_WID / 2,        70 + offset }, 0xFFFFFF),
+		DrawStr({}, { Config::WINDOW_WID / 2 - 350, 150          }, Config::COLOR_BEST_SCORE),
+		DrawStr({}, { Config::WINDOW_WID / 2,       150          }, Config::COLOR_SCORE),
+		DrawStr({}, { Config::WINDOW_WID / 2 + 350, 150          }, Config::COLOR_TIME),
 	};
 
 	//ゲーム時間.
@@ -154,7 +154,7 @@ void UIManager::DrawEndless(float time, int offset) {
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha4),
 			[&]() {
 				//画像.
-				grUiBackLevel->DrawExtend({ WINDOW_WID / 2, 70 }, { 0.4, 0.35 });
+				grUiBackLevel->DrawExtend({ Config::WINDOW_WID / 2, 70 }, { 0.4, 0.35 });
 				//テキスト.
 				str[0].Draw(Anchor::Mid, gameData->fonts.at("en-size5").GetFont());
 			}

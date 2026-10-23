@@ -37,7 +37,7 @@ void GameScene::Init() {
 
 	timer         = Timer(TimerMode::CountUp, 0);
 	tmGameTime    = Timer(TimerMode::CountUp, 0);
-	tmReflectMode = Timer(TimerMode::CountDown, REFLECT_MODE_TIME);
+	tmReflectMode = Timer(TimerMode::CountDown, Config::REFLECT_MODE_TIME);
 }
 
 //リセット.
@@ -88,7 +88,7 @@ void GameScene::Update() {
 		ManagerInsts::Get<UIManager>()->SetAutoExeMode(MngAutoExe::Active);
 
 		//一定時間経ったら.
-		if (timer.GetPassTime() >= GAME_START_TIME) {
+		if (timer.GetPassTime() >= Config::GAME_START_TIME) {
 			tmGameTime.Start(); //ゲーム時間計測開始.
 			isGameStart = true; //ゲーム開始.
 			//ステージ別.
@@ -198,7 +198,7 @@ void GameScene::DrawReflectMode() {
 	{
 		//テキストの設定.
 		MY_STRING text = NumToString((int)ceil(tmReflectMode.GetPassTime()));
-		DrawStr str(text, App::GetWindowRect().GetMid(), COLOR_ITEM);
+		DrawStr str(text, App::GetWindowRect().GetMid(), Config::COLOR_ITEM);
 
 		//画面中央に数字を表示.
 		{
@@ -210,7 +210,7 @@ void GameScene::DrawReflectMode() {
 				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * dec),
 				[&]() {
 					//最初の1秒.
-					if (tmReflectMode.GetPassTime() > REFLECT_MODE_TIME - 1) {
+					if (tmReflectMode.GetPassTime() > Config::REFLECT_MODE_TIME - 1) {
 						//画像描画.
 						grReflectText->DrawExtend(
 							App::GetWindowRect().GetMid().ToDbl(), 

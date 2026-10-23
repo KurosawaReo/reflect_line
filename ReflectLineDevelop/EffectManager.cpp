@@ -46,7 +46,7 @@ void EffectManager::Update() {
 				i->counter++;
 
 				//時間経過で消滅.
-				if (i->counter >= SCORE_ANIM_TIME) {
+				if (i->counter >= Config::SCORE_ANIM_TIME) {
 					isErase = true;
 				}
 			}
@@ -57,7 +57,7 @@ void EffectManager::Update() {
 				i->counter++;
 
 				//時間経過で消滅.
-				if (i->counter >= PLAYER_DEATH_ANIM_TIME) {
+				if (i->counter >= Config::PLAYER_DEATH_ANIM_TIME) {
 					isErase = true;
 				}
 			}
@@ -68,7 +68,7 @@ void EffectManager::Update() {
 				i->counter++;
 
 				//時間経過で消滅.
-				if (i->counter >= LASER_REF_ANIM_TIME) {
+				if (i->counter >= Config::LASER_REF_ANIM_TIME) {
 					isErase = true;
 				}
 			}
@@ -87,7 +87,7 @@ void EffectManager::Update() {
 				i->pos.y += i->vec.y * newSpeed * gameData->speedRate;
 
 				//時間経過で消滅.
-				if (i->counter >= PLAYER_DASH_SPARK_ANIM_TIME) {
+				if (i->counter >= Config::PLAYER_DASH_SPARK_ANIM_TIME) {
 					isErase = true;
 				}
 			}
@@ -98,7 +98,7 @@ void EffectManager::Update() {
 				//カウンター加算.
 				i->counter += gameData->speedRate;
 				//時間経過で消滅.
-				if (i->counter >= METEOR_BREAK_ANIM_TIME) {
+				if (i->counter >= Config::METEOR_BREAK_ANIM_TIME) {
 					isErase = true;
 				}
 			}
@@ -117,7 +117,7 @@ void EffectManager::Update() {
 				i->pos.y += i->vec.y * newSpeed * gameData->speedRate;
 
 				//時間経過で消滅.
-				if (i->counter >= METEOR_BREAK_ANIM_TIME) {
+				if (i->counter >= Config::METEOR_BREAK_ANIM_TIME) {
 					isErase = true;
 				}
 			}
@@ -136,7 +136,7 @@ void EffectManager::Update() {
 				i->counter++;
 
 				//時間経過で消滅.
-				if (i->counter >= MIDDLE_ANIM_TIME) {
+				if (i->counter >= Config::MIDDLE_ANIM_TIME) {
 					isErase = true;
 				}
 			}
@@ -167,9 +167,9 @@ void EffectManager::Draw() {
 			case EffectType::Score500:
 			{
 				//座標.
-				DBL_XY pos = {i.pos.x, i.pos.y - AnimEase(EaseType::OutQuad, i.counter/SCORE_ANIM_TIME)*30};
+				DBL_XY pos = {i.pos.x, i.pos.y - AnimEase(EaseType::OutQuad, i.counter/ Config::SCORE_ANIM_TIME)*30};
 				//透明度.
-				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/SCORE_ANIM_TIME));
+				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/ Config::SCORE_ANIM_TIME));
 
 				const double size = 0.6;
 
@@ -192,9 +192,9 @@ void EffectManager::Draw() {
 			case EffectType::PlayerDeath:
 			{
 				//透明度.
-				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/PLAYER_DEATH_ANIM_TIME));
+				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/ Config::PLAYER_DEATH_ANIM_TIME));
 
-				Circle cir = { i.pos, PLAYER_SIZE+i.counter/2, 0xFFFFFF, 1.0f };				
+				Circle cir = { i.pos, Config::PLAYER_SIZE+i.counter/2, 0xFFFFFF, 1.0f };
 				//描画.
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
@@ -208,7 +208,7 @@ void EffectManager::Draw() {
 			case EffectType::PlayerDashReflect:
 			{
 				//進行度(0→1).
-				const double time     = i.counter / PLAYER_DASH_SPARK_ANIM_TIME;
+				const double time     = i.counter / Config::PLAYER_DASH_SPARK_ANIM_TIME;
 				//線の長さ(徐々に短くなる)
 				const float  sparkLen = _flt(8 * (1 - time));
 				//透明度.
@@ -232,10 +232,10 @@ void EffectManager::Draw() {
 
 			case EffectType::Reflect:
 			{
-				const double size  = 0.2 + 0.4 * i.counter/LASER_REF_ANIM_TIME;
+				const double size  = 0.2 + 0.4 * i.counter/ Config::LASER_REF_ANIM_TIME;
 				const DBL_XY pos   = i.pos;
 				//透明度.
-				const int    alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/LASER_REF_ANIM_TIME));
+				const int    alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/ Config::LASER_REF_ANIM_TIME));
 
 				//描画.
 				DrawMode::Exe(
@@ -250,9 +250,9 @@ void EffectManager::Draw() {
 			case EffectType::MeteorCrash:
 			{
 				//透明度.
-				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/METEOR_BREAK_ANIM_TIME));
+				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/ Config::METEOR_BREAK_ANIM_TIME));
 
-				Circle cir = { i.pos, i.counter, ColorMeteor(i.pos), 1.0f };
+				Circle cir = { i.pos, i.counter, Config::ColorMeteor(i.pos), 1.0f };
 				//描画.
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
@@ -266,13 +266,13 @@ void EffectManager::Draw() {
 			case EffectType::MeteorFragment:
 			{
 				//透明度.
-				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/METEOR_BREAK_ANIM_TIME));
+				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/ Config::METEOR_BREAK_ANIM_TIME));
 
 				//飛ばす線のデータ.
 				Line line{};
 				line.stPos = ArcPos(i.pos, i.ang,     i.len);
 				line.edPos = ArcPos(i.pos, i.ang+180, i.len);
-			    line.color = ColorMeteor(i.pos);
+			    line.color = Config::ColorMeteor(i.pos);
 				line.thick = 1;
 
 				//描画.
@@ -296,7 +296,7 @@ void EffectManager::Draw() {
 			case EffectType::Tutorial_Step4:
 			{
 				//透明度.
-				const int alpha = _int_r(255 * AnimWave(WaveType::CosLoop, 1 - i.counter / MIDDLE_ANIM_TIME));
+				const int alpha = _int_r(255 * AnimWave(WaveType::CosLoop, 1 - i.counter / Config::MIDDLE_ANIM_TIME));
 
 				//共通設定.
 				DrawStr str = { _T("Unknown"), {_int_r(i.pos.x), _int_r(i.pos.y-20)}, 0xFFFFFF};

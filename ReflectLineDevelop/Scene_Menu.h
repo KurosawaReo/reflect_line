@@ -8,7 +8,7 @@
    ・End
 */
 #pragma once
-#include "Configs/Config_Main.h"
+#include "Config_Main.h"
 
 //メニューカーソル.
 struct MenuCursor
@@ -61,7 +61,7 @@ private:
 	bool       isBlink = false;                             //点滅させる用.
 
 	//動画.
-	Graph* grMenuMovie[MENU_OPTION_COUNT]{};
+	Graph* grMenuMovie[Config::MENU_OPTION_COUNT]{};
 
 //▼ ===== 関数 ===== ▼.
 private:

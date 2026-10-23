@@ -26,8 +26,8 @@ void Meteor::Reset() {
 void Meteor::Update() {
 
 	//移動.
-	pos.x += vel.x * METEOR_SPEED * gameData->speedRate;
-	pos.y += vel.y * METEOR_SPEED * gameData->speedRate;
+	pos.x += vel.x * Config::METEOR_SPEED * gameData->speedRate;
+	pos.y += vel.y * Config::METEOR_SPEED * gameData->speedRate;
 	//回転.
 	ang += gameData->speedRate;
 
@@ -37,8 +37,8 @@ void Meteor::Update() {
 		case MeteorState::Normal:
 		{
 			//サイズの設定.
-			const INT_XY   size = { _int(METEOR_LINE_DIS_MAX) * 2, _int(METEOR_LINE_DIS_MAX) * 2 };
-			const DBL_RECT rect = { 0, 0, WINDOW_WID, WINDOW_HEI };
+			const INT_XY   size = { _int(Config::METEOR_LINE_DIS_MAX) * 2, _int(Config::METEOR_LINE_DIS_MAX) * 2 };
+			const DBL_RECT rect = { 0, 0, Config::WINDOW_WID, Config::WINDOW_HEI };
 			//画面外で消去.
 			if (Calc::IsOutInArea(pos, size, rect, true)) {
 				isErase = true; //消去する.
@@ -51,7 +51,7 @@ void Meteor::Update() {
 			//破壊量の度合.
 			destroyCntr += gameData->speedRate;
 			//時間が終了したら.
-			if (destroyCntr >= METEOR_DEST_TIME) {
+			if (destroyCntr >= Config::METEOR_DEST_TIME) {
 				state   = MeteorState::Normal;	//元に戻す.
 				isErase = true;					//消去する.
 			}
@@ -70,7 +70,7 @@ void Meteor::Draw() {
 
 	//破壊中はだんだん薄くする.
 	if (state == MeteorState::Destroy) {
-		alpha = _int_r(255 * (1-destroyCntr/METEOR_DEST_TIME)); //少しずつ減少(255→0)
+		alpha = _int_r(255 * (1-destroyCntr / Config::METEOR_DEST_TIME)); //少しずつ減少(255→0)
 	}
 
 	//描画.
@@ -78,7 +78,7 @@ void Meteor::Draw() {
 		DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 		[&](){
 
-			MY_COLOR color = ColorMeteor(pos);
+			MY_COLOR color = Config::ColorMeteor(pos);
 
 			//全ての描画線.
 			for (auto& i : shape.line) {
@@ -114,19 +114,23 @@ void Meteor::Spawn() {
 
 	//50%:上下端から出現.
 	if (rnd1 < 50) {
-		pos.x = Calc::RandNum(0, WINDOW_WID);                                             //xの設定.
-		pos.y = (rnd2 < 50) ? 0 - METEOR_LINE_DIS_MAX : WINDOW_HEI + METEOR_LINE_DIS_MAX; //yの設定.
+		//xの設定.
+		pos.x = Calc::RandNum(0, Config::WINDOW_WID);
+		//yの設定.
+		pos.y = (rnd2 < 50) ? 0 - Config::METEOR_LINE_DIS_MAX : Config::WINDOW_HEI + Config::METEOR_LINE_DIS_MAX;
 	}
 	//50%:左右端から出現.
 	else {
-		pos.x = (rnd2 < 50) ? 0 - METEOR_LINE_DIS_MAX : WINDOW_WID + METEOR_LINE_DIS_MAX; //xの設定.
-		pos.y = Calc::RandNum(0, WINDOW_HEI);                                             //yの設定.
+		//xの設定.
+		pos.x = (rnd2 < 50) ? 0 - Config::METEOR_LINE_DIS_MAX : Config::WINDOW_WID + Config::METEOR_LINE_DIS_MAX;
+		//yの設定.
+		pos.y = Calc::RandNum(0, Config::WINDOW_HEI);
 	}
 
 	//目標地点の抽選.
 	{
-		goalPos.x = Calc::RandNum(WINDOW_WID/2 - METEOR_GOAL_RAND_RANGE, WINDOW_WID/2 + METEOR_GOAL_RAND_RANGE);
-		goalPos.y = Calc::RandNum(WINDOW_HEI/2 - METEOR_GOAL_RAND_RANGE, WINDOW_HEI/2 + METEOR_GOAL_RAND_RANGE);
+		goalPos.x = Calc::RandNum(Config::WINDOW_WID/2 - Config::METEOR_GOAL_RAND_RANGE, Config::WINDOW_WID/2 + Config::METEOR_GOAL_RAND_RANGE);
+		goalPos.y = Calc::RandNum(Config::WINDOW_HEI/2 - Config::METEOR_GOAL_RAND_RANGE, Config::WINDOW_HEI/2 + Config::METEOR_GOAL_RAND_RANGE);
 		//目標地点までの角度を求める.
 		const double goalAng = (goalPos.ToDbl() - pos).Angle();
 		//xとyのvectorに分解.
@@ -136,14 +140,14 @@ void Meteor::Spawn() {
 	//隕石の設定.
 	{
 		//①何角形にするか抽選.
-		const int lineCnt = Calc::RandNum(METEOR_LINE_CNT_MIN, METEOR_LINE_CNT_MAX);
+		const int lineCnt = Calc::RandNum(Config::METEOR_LINE_CNT_MIN, Config::METEOR_LINE_CNT_MAX);
 		shape.line.    resize(lineCnt);
 		shape.lineDist.resize(lineCnt);
 
 		//②頂点の位置を抽選.
 		for (auto& i : shape.lineDist) {
 			//小数第1位まで抽選.
-			i = _flt(Calc::RandNum(METEOR_LINE_DIS_MIN, METEOR_LINE_DIS_MAX));
+			i = _flt(Calc::RandNum(Config::METEOR_LINE_DIS_MIN, Config::METEOR_LINE_DIS_MAX));
 		}
 		
 		//線の設定.

@@ -56,7 +56,7 @@ void EndScene::Enter() {
 
 		//一定時間経過したら.
 		ManagerInsts::Get<TimerMng>()->ReservExe(
-			TUTORIAL_RESPAWN_TIME,
+			Config::TUTORIAL_RESPAWN_TIME,
 			[this]() {
 				sceneMng->SetScene(_T("Game")); //ゲームシーンへ戻る.
 			}
@@ -100,7 +100,7 @@ void EndScene::Draw() {
 	//黒フィルター.
 	{
 		double anim = Calc::AnimEase(EaseType::InOutQuad, timer.GetPassTime()); //アニメーション値.
-		Box box = { {0, 0}, {WINDOW_WID, WINDOW_HEI}, 0x000000, 1.0f };
+		Box box = { {0, 0}, App::GetWindowSize().ToDbl(), 0x000000, 1.0f};
 
 		//描画.
 		DrawMode::Exe(
@@ -118,14 +118,14 @@ void EndScene::Draw() {
 		//アニメーション値.
 		double anim = Calc::AnimEase(EaseType::OutQuad, timer.GetPassTime());
 		//テキスト.
-		DrawStr str(_T("チュートリアルではこの場で復活します..."), { WINDOW_WID / 2, WINDOW_HEI / 2 }, 0x00FFFF);
+		DrawStr str(_T("チュートリアルではこの場で復活します..."), App::GetWindowSize()/2, 0x00FFFF);
 
 		//描画.
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim),
 			[&]() {
 				//GAME OVER.
-				grGameover->DrawExtend({ WINDOW_WID / 2, 370 + 30 * anim }, { 0.5, 0.5 }, Anchor::Mid, true, true);
+				grGameover->DrawExtend({ Config::WINDOW_WID / 2, 370 + 30 * anim }, { 0.5, 0.5 }, Anchor::Mid, true, true);
 				//テキスト.
 				str.Draw(Anchor::Mid, gameData->fonts.at("jp-size3").GetFont());
 			}
@@ -158,7 +158,7 @@ void EndScene::Draw() {
 				),
 			};
 
-			DrawStr str = { _T(""), { WINDOW_WID / 2, WINDOW_HEI / 2 - 20 }, 0xFFFFFF };
+			DrawStr str = { _T(""), { Config::WINDOW_WID / 2, Config::WINDOW_HEI / 2 - 20 }, 0xFFFFFF };
 			//テキストサイズ.
 			const INT_XY textSize = GetTextSize(texts[1], font);
 			//背景用四角形.
@@ -180,7 +180,7 @@ void EndScene::Draw() {
 				[&]() {
 
 					//GAME OVER.
-					grGameover->DrawExtend({ WINDOW_WID / 2, 370 + 30 * anim }, { 0.5, 0.5 }, Anchor::Mid, true, true); //GAME OVER
+					grGameover->DrawExtend({ Config::WINDOW_WID / 2, 370 + 30 * anim }, { 0.5, 0.5 }, Anchor::Mid, true, true); //GAME OVER
 
 					//テキスト(1行ずつ表示)
 					for (auto& i : texts) {
@@ -208,7 +208,7 @@ void EndScene::Draw() {
 					[&]() {
 						//NEW RECORD
 						grNewRecord->DrawExtend(
-							{ WINDOW_WID / 2, WINDOW_HEI / 2 - 330 + anim * 20 }, { 0.4, 0.4 }, Anchor::Mid, true, true
+							{ Config::WINDOW_WID / 2, Config::WINDOW_HEI / 2 - 330 + anim * 20 }, { 0.4, 0.4 }, Anchor::Mid, true, true
 						);
 					}
 				);
@@ -228,7 +228,7 @@ void EndScene::Draw() {
 			//アニメーション値.
 			double anim = Calc::AnimWave(WaveType::CosLoop, timer.GetPassTime() - delay2);
 			//テキスト.
-			DrawStr str(_T(""), { WINDOW_WID / 2, WINDOW_HEI / 2 + 145 }, 0xFFFFFF);
+			DrawStr str(_T(""), { Config::WINDOW_WID / 2, Config::WINDOW_HEI / 2 + 145 }, 0xFFFFFF);
 
 			//[操作表示] 操作によって表示するテキストを変える.
 #if defined INPUT_CHANGE_ARCADE

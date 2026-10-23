@@ -74,8 +74,8 @@ void BGManager::Draw() {
 	//スローモード経過時間.
 	const float refTime = gameMng->GetGameScene()->GetReflectModeTime();
 	//透明度の計算.
-	double modeAlpha = 0.5 - (refTime - (REFLECT_MODE_TIME - 0.5)); //最初の0.5秒.
-	modeAlpha = Calc::AnimEase(EaseType::OutQuad, modeAlpha);       //0.0～1.0の範囲にする.
+	double modeAlpha = 0.5 - (refTime - (Config::REFLECT_MODE_TIME - 0.5)); //最初の0.5秒.
+	modeAlpha = Calc::AnimEase(EaseType::OutQuad, modeAlpha);				//0.0～1.0の範囲にする.
 
 	//描画(通常時)
 	if (modeAlpha < 1.0) {
@@ -120,9 +120,13 @@ void BGManager::Draw() {
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * modeAlpha * alpha3count),
 			[&]() {
 				//グラデーション
-				grReflectModeFrame->Draw({ WINDOW_WID / 2, WINDOW_HEI / 2 });
+				grReflectModeFrame->Draw(App::GetWindowRect().GetMid().ToDbl());
 				//枠線.
-				Box box = { {WINDOW_WID / 2, WINDOW_HEI / 2}, { WINDOW_WID * modeAlpha, WINDOW_HEI * modeAlpha }, COLOR_PLY_REFLECT, 1.0f };
+				Box box = { 
+					App::GetWindowRect().GetMid().ToDbl(), 
+					{ Config::WINDOW_WID * modeAlpha, Config::WINDOW_HEI * modeAlpha },
+					Config::COLOR_PLY_REFLECT, 1.0f
+				};
 				box.Draw(Anchor::Mid, false, true);
 			}
 		);

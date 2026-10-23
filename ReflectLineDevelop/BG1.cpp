@@ -4,7 +4,7 @@
 #include "BG1.h"
 
 //依存関係.
-#include "Configs/Config_Main.h"
+#include "Config_Main.h"
 #include "GameData.h"
 //参照.
 static GameData* gameData;
@@ -37,7 +37,7 @@ void BG1_Tile::Update() {
 
 	//透明度計算.
 	shine  = 70 + 80 * sin(M_PI * shineTimer.GetPassTime() / 3);
-	sinNum = (sin(M_PI * _dbl(pos.x - pos.y + counter * 2) / (WINDOW_WID / 4)) + 1) / 2;
+	sinNum = (sin(M_PI * _dbl(pos.x - pos.y + counter * 2) / (Config::WINDOW_WID / 4)) + 1) / 2;
 
 	//0になったら停止.
 	if (shineTimer.GetPassTime() <= 0) {
@@ -86,8 +86,8 @@ void BG1::Init() {
 	INT_XY size = { _int_r(imgSize.x * SIZE_RATE.x), _int_r(imgSize.y * SIZE_RATE.y) };
 
 	//タイルのように貼り付ける.
-	for (int x = 0; x < WINDOW_WID + size.x; x += size.x) {
-		for (int y = -size.y; y < WINDOW_HEI; y += size.y) {
+	for (int x = 0; x < Config::WINDOW_WID + size.x; x += size.x) {
+		for (int y = -size.y; y < Config::WINDOW_HEI; y += size.y) {
 
 			BG1_Tile tile;	//タイルを作成.
 			tile.SetPos(x, y);

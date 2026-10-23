@@ -89,7 +89,7 @@ void TutorialStage::Update() {
 	}
 
 	//step進行後一定時間が経過 & エンドタイマーが起動してない.
-	if (startTimer.GetPassTime() >= TUTORIAL_START_WAIT_TIME &&
+	if (startTimer.GetPassTime() >= Config::TUTORIAL_START_WAIT_TIME &&
 		endTimer.GetState() != TimerState::Active
 	){
 		//終了条件を満たしていれば.
@@ -102,7 +102,7 @@ void TutorialStage::Update() {
 			if (stepNo == 4 && stepInnerNo == 1) {
 				//BGMフェードアウト.
 				if (auto i = soundMng->Get(_T("BGM_Tutorial"))) {
-					i->FadeOutPlay(TUTORIAL_END_NEXT_TIME);
+					i->FadeOutPlay(Config::TUTORIAL_END_NEXT_TIME);
 				}
 			}
 #endif
@@ -148,7 +148,7 @@ void TutorialStage::UpdateStep0() {
 	//エフェクト.
 	effectMng->SpawnEffect({
 		.type = EffectType::Tutorial_Step1,
-		.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+		.pos = App::GetWindowSize().ToDbl() / 2
 	});
 
 	//オブジェクト.
@@ -173,7 +173,7 @@ void TutorialStage::UpdateStep1() {
 			}
 
 			//次に進行する時の処理.
-			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
+			if (endTimer.GetPassTime() >= Config::TUTORIAL_END_NEXT_TIME) {
 				//終了処理.
 				StepInnerEnd();
 				stepInnerNo++;
@@ -184,7 +184,7 @@ void TutorialStage::UpdateStep1() {
 		case 1:
 		{
 			//次に進行する時の処理.
-			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
+			if (endTimer.GetPassTime() >= Config::TUTORIAL_END_NEXT_TIME) {
 				
 				//オブジェクト.
 				ManagerInsts::Get<NormalLaser>()->EnableCount(1); //レーザー数 = 1.
@@ -205,7 +205,7 @@ void TutorialStage::UpdateStep1() {
 		case 2:
 		{
 			//次に進行する時の処理.
-			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
+			if (endTimer.GetPassTime() >= Config::TUTORIAL_END_NEXT_TIME) {
 
 				//サウンド.
 				if (auto i = soundMng->Get(_T("LevelUp"))) {
@@ -215,7 +215,7 @@ void TutorialStage::UpdateStep1() {
 				//エフェクト.
 				effectMng->SpawnEffect({
 					.type = EffectType::Tutorial_Step2,
-					.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+					.pos = App::GetWindowSize().ToDbl() / 2
 				});
 
 				//オブジェクト.
@@ -249,7 +249,7 @@ void TutorialStage::UpdateStep2() {
 		case 0:
 		{
 			//次に進行する時の処理.
-			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
+			if (endTimer.GetPassTime() >= Config::TUTORIAL_END_NEXT_TIME) {
 
 				//オブジェクト.
 				ManagerInsts::Get<ItemManager>()->SetAutoExeMode(MngAutoExe::Stop);
@@ -264,7 +264,7 @@ void TutorialStage::UpdateStep2() {
 		case 1:
 		{
 			//次に進行する時の処理.
-			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
+			if (endTimer.GetPassTime() >= Config::TUTORIAL_END_NEXT_TIME) {
 
 				//サウンド.
 				if (auto i = soundMng->Get(_T("LevelUp"))) {
@@ -274,7 +274,7 @@ void TutorialStage::UpdateStep2() {
 				//エフェクト.
 				effectMng->SpawnEffect({
 					.type = EffectType::Tutorial_Step3,
-					.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+					.pos = App::GetWindowSize().ToDbl() / 2
 				});
 
 				//オブジェクト.
@@ -307,7 +307,7 @@ void TutorialStage::UpdateStep3() {
 		case 0:
 		{
 			//次に進行する時の処理.
-			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
+			if (endTimer.GetPassTime() >= Config::TUTORIAL_END_NEXT_TIME) {
 
 				//オブジェクト.
 				ManagerInsts::Get<NormalLaser>()->Reset();             //リセットしておく.
@@ -329,7 +329,7 @@ void TutorialStage::UpdateStep3() {
 		case 1:
 		{
 			//次に進行する時の処理.
-			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
+			if (endTimer.GetPassTime() >= Config::TUTORIAL_END_NEXT_TIME) {
 
 				//オブジェクト.
 				ManagerInsts::Get<MeteorManager>()->SetAutoExeMode(MngAutoExe::Active);
@@ -350,7 +350,7 @@ void TutorialStage::UpdateStep3() {
 		case 2:
 		{
 			//次に進行する時の処理.
-			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
+			if (endTimer.GetPassTime() >= Config::TUTORIAL_END_NEXT_TIME) {
 
 				//動画用.
 				timerMng->ReservExe(
@@ -376,7 +376,7 @@ void TutorialStage::UpdateStep3() {
 		case 3:
 		{
 			//次に進行する時の処理.
-			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
+			if (endTimer.GetPassTime() >= Config::TUTORIAL_END_NEXT_TIME) {
 
 				//動画.
 				grReflectModeDeath->StopMovie();
@@ -398,7 +398,7 @@ void TutorialStage::UpdateStep3() {
 		case 4:
 		{
 			//次に進行する時の処理.
-			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
+			if (endTimer.GetPassTime() >= Config::TUTORIAL_END_NEXT_TIME) {
 
 				//サウンド.
 				if (auto i = soundMng->Get(_T("LevelUp"))) {
@@ -408,7 +408,7 @@ void TutorialStage::UpdateStep3() {
 				//エフェクト.
 				effectMng->SpawnEffect({
 					.type = EffectType::Tutorial_Step4,
-					.pos = { WINDOW_WID / 2, WINDOW_HEI / 2 }
+					.pos = App::GetWindowSize().ToDbl() / 2
 				});
 
 				//スコア表示.
@@ -441,7 +441,7 @@ void TutorialStage::UpdateStep4() {
 		case 0:
 		{
 			//次に進行する時の処理.
-			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
+			if (endTimer.GetPassTime() >= Config::TUTORIAL_END_NEXT_TIME) {
 
 				//オブジェクト.
 				ManagerInsts::Get<ItemManager>()->SetAutoExeMode(MngAutoExe::Stop);
@@ -462,7 +462,7 @@ void TutorialStage::UpdateStep4() {
 		case 1:
 		{
 			//チュートリアル終了.
-			if (endTimer.GetPassTime() >= TUTORIAL_END_NEXT_TIME) {
+			if (endTimer.GetPassTime() >= Config::TUTORIAL_END_NEXT_TIME) {
 
 				sceneMng->SetScene(_T("Title"));
 				App::Reset(); //全てリセット.
@@ -710,7 +710,7 @@ void TutorialStage::DrawStep4() {
 void TutorialStage::DrawTopText(int line, double alpha, MY_STRING text) {
 
 	//テキスト設定.
-	DrawStr str(text, {WINDOW_WID/2, 0}, {});
+	DrawStr str(text, { Config::WINDOW_WID / 2, 0}, {});
 	switch (line) {
 		case 1: 
 			str.pos.y = 155;

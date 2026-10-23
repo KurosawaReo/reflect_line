@@ -64,8 +64,8 @@ void ItemManager::Draw()
 		const int alpha = _int(155 + 100 * AnimWave(WaveType::CosLoop, i.counter / 30));
 
 		const DBL_XY size = {
-			ITEM_SIZE / grItem->GetSize().ToDbl().x,
-			ITEM_SIZE / grItem->GetSize().ToDbl().y
+			Config::ITEM_SIZE / grItem->GetSize().ToDbl().x,
+			Config::ITEM_SIZE / grItem->GetSize().ToDbl().y
 		};
 
 		//点滅描画.
@@ -88,7 +88,7 @@ void ItemManager::Draw()
 
 		//チュートリアル用.
 		if (gameData->stage == StageType::Tutorial) {
-			DrawStr str(_T("アイテム"), i.pos.ToInt() + INT_XY(0, -35), COLOR_ITEM);
+			DrawStr str(_T("アイテム"), i.pos.ToInt() + INT_XY(0, -35), Config::COLOR_ITEM);
 			str.Draw(Anchor::Mid, gameData->fonts.at("jp-size1").GetFont());
 		}
 	}
@@ -102,7 +102,7 @@ void ItemManager::ItemUpdate() {
 	//アイテム出現.
 	if (spawnCounter <= 0) {
 		ItemSpawn();
-		spawnCounter = ITEM_SPAWN_TIME;
+		spawnCounter = Config::ITEM_SPAWN_TIME;
 	}
 
 	//全アイテムループ.
@@ -111,7 +111,7 @@ void ItemManager::ItemUpdate() {
 		//カウンター.
 		i->counter += gameData->speedRate;
 		//落下.
-		i->pos.y += ITEM_SPEED * gameData->speedRate;
+		i->pos.y += Config::ITEM_SPEED * gameData->speedRate;
 
 		ItemType type;
 
@@ -133,7 +133,7 @@ void ItemManager::ItemUpdate() {
 		}
 
 		//次の要素へ, 画面下を超えたら消滅.
-		if (i->pos.y > WINDOW_HEI + ITEM_SIZE + 50) {
+		if (i->pos.y > Config::WINDOW_HEI + Config::ITEM_SIZE + 50) {
 			i = items.erase(i);
 		}
 		else {
@@ -148,8 +148,8 @@ void ItemManager::ItemSpawn() {
 	ItemData item; //新規アイテム.
 
 	//座標の設定.
-	item.pos.x = _dbl(Calc::RandNum(ITEM_SIZE, WINDOW_WID-ITEM_SIZE));
-	item.pos.y = -ITEM_SIZE;
+	item.pos.x = _dbl(Calc::RandNum(Config::ITEM_SIZE, Config::WINDOW_WID - Config::ITEM_SIZE));
+	item.pos.y = -Config::ITEM_SIZE;
 
 	//タイプの設定.
 	if (gameData->level < 5) {
@@ -168,7 +168,7 @@ void ItemManager::ItemReset() {
 	//全てのアイテムを消去.
 	items.clear();
 	//カウンターリセット.
-	spawnCounter = ITEM_SPAWN_TIME;
+	spawnCounter = Config::ITEM_SPAWN_TIME;
 }
 
 //今すぐアイテムを出現させる.
@@ -183,7 +183,7 @@ void ItemManager::ItemUse(vector<ItemData>::iterator& it, bool isSuper)
 	const DBL_XY pos = it->pos;
 
 	//スコア加算.
-	gameData->AddScore(SCORE_TAKE_ITEM);
+	gameData->AddScore(Config::SCORE_TAKE_ITEM);
 
 	//プレイヤーのモード設定.
 	if (isSuper) {
@@ -220,7 +220,7 @@ bool ItemManager::CheckHitPlayer(vector<ItemData>::iterator& it, ItemType* type)
 	//プレイヤーの判定を取得.
 	const Circle plyHit = player->GetHit();
 	//当たり判定.
-	const Box itemBox = { it->pos, {ITEM_SIZE, ITEM_SIZE}, {}, {} };
+	const Box itemBox = { it->pos, {Config::ITEM_SIZE, Config::ITEM_SIZE}, {}, {} };
 	
 	//当たったら.
 	if (Calc::HitBoxCir(itemBox, plyHit)) {

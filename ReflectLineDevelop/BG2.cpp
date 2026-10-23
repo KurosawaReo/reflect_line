@@ -4,28 +4,12 @@
 #include "BG2.h"
 
 //依存関係.
-#include "Configs/Config_Main.h"
+#include "Config_BG2.h"
+#include "Config_Main.h"
 #include "GameData.h"
 #include <cmath>
 //参照.
 static GameData* gameData;
-
-/* ============================================================================== */
-// ▼*--=<[ 定数 ]>=--*▼ //
-
-//出現範囲(画面中心に向かう軸からの距離)
-constexpr double SPAWN_R_MAX	= 2000.0;	//一番外側(線・星 共通).
-constexpr double POINT_R_MIN	= 0.0;		//線: 0なら今と同じく中心にも出る.
-constexpr double STAR_R_MIN		= 600.0;	//星: 中心を避ける距離.
-
-constexpr double MOVE_SPEED		= 4.0;		//前に移動する速度.
-constexpr double ROT_SPEED		= 0.001;	//回転する速度.
-constexpr double POINT_LEN		= 18.0;		//飛んでくる線の長さ.
-constexpr double Z_MIN			= 50.0;		//一番手前のz座標.
-constexpr double Z_MAX			= 3000.0;	//一番奥のz座標.
-constexpr double HEX_INTERVAL	= 180.0;
-constexpr double FOV			= 500.0;
-constexpr double FOV_HEX		= 5000.0;
 
 /* ============================================================================== */
 // ▼*--=<[ 関数 ]>=--*▼ //
@@ -34,7 +18,7 @@ constexpr double FOV_HEX		= 5000.0;
 static void RandSpawnXY(double& x, double& y, double rMin) {
 	const double ang = Calc::RandNum(0.0, M_PI * 2); //向き.
 	//2乗の範囲で乱数を取り平方根にすると、面積あたりの密度が均等になる.
-	const double r = sqrt(Calc::RandNum(rMin * rMin, SPAWN_R_MAX * SPAWN_R_MAX));
+	const double r = sqrt(Calc::RandNum(pow(rMin, 2), pow(Config::BG2::SPAWN_R_MAX, 2)));
 	x = cos(ang) * r;
 	y = sin(ang) * r;
 }
@@ -61,57 +45,57 @@ void BG2::Reset()
 	//六角形.
 	for (int i = 0; i < HEX_NUM; i++)
 	{
-		hex[i].z = Z_MIN + i * HEX_INTERVAL;
+		hex[i].z = Config::BG2::Z_MIN + i * Config::BG2::HEX_INTERVAL;
 	}
 	//線: 初期はz全域にばらまく.
 	for (auto& i : point)
 	{
-		Respawn(i, POINT_R_MIN, Calc::RandNum(Z_MIN, Z_MAX));
+		Respawn(i, Config::BG2::POINT_R_MIN, Calc::RandNum(Config::BG2::Z_MIN, Config::BG2::Z_MAX));
 		i.oldZ = i.z;
 	}
 	//星: 初期はz全域にばらまく.
 	for (auto& i : star)
 	{
-		Respawn(i, STAR_R_MIN, Calc::RandNum(Z_MIN, Z_MAX));
+		Respawn(i, Config::BG2::STAR_R_MIN, Calc::RandNum(Config::BG2::Z_MIN, Config::BG2::Z_MAX));
 	}
 }
 
 //更新.
 void BG2::Update()
 {
-	angle += ROT_SPEED * gameData->speedRate;
+	angle += Config::BG2::ROT_SPEED * gameData->speedRate;
 
 	for (auto& i : hex)
 	{
 		//移動.
-		i.z -= MOVE_SPEED * gameData->speedRate;
+		i.z -= Config::BG2::MOVE_SPEED * gameData->speedRate;
 
 		//手前へ来たら奥へ戻す.
-		if (i.z < Z_MIN) {
-			i.z += HEX_NUM * HEX_INTERVAL;
+		if (i.z < Config::BG2::Z_MIN) {
+			i.z += HEX_NUM * Config::BG2::HEX_INTERVAL;
 		}
 	}
 	for (auto& i : point)
 	{
 		//移動.
-		i.z -= MOVE_SPEED * gameData->speedRate;
-		i.oldZ = i.z + POINT_LEN;
+		i.z -= Config::BG2::MOVE_SPEED * gameData->speedRate;
+		i.oldZ = i.z + Config::BG2::POINT_LEN;
 
 		//手前へ来たら奥へ戻す.
-		if (i.z < Z_MIN)
+		if (i.z < Config::BG2::Z_MIN)
 		{
-			Respawn(i, POINT_R_MIN, Z_MAX);
+			Respawn(i, Config::BG2::POINT_R_MIN, Config::BG2::Z_MAX);
 			i.oldZ = i.z;
 		}
 	}
 	for (auto& i : star)
 	{
-		i.z -= MOVE_SPEED * gameData->speedRate;
+		i.z -= Config::BG2::MOVE_SPEED * gameData->speedRate;
 
 		//手前へ来たら奥へ戻す.
-		if (i.z < Z_MIN)
+		if (i.z < Config::BG2::Z_MIN)
 		{
-			Respawn(i, STAR_R_MIN, Z_MAX);
+			Respawn(i, Config::BG2::STAR_R_MIN, Config::BG2::Z_MAX);
 		}
 	}
 }
@@ -120,8 +104,8 @@ void BG2::Update()
 void BG2::DrawNor(double modeAlpha)
 {
 	DrawAtmosphere(modeAlpha, false);
-	DrawHexagons  (modeAlpha, COLOR_MODE_NOR);
-	DrawPoints    (modeAlpha, COLOR_MODE_NOR);
+	DrawHexagons  (modeAlpha, Config::COLOR_MODE_NOR);
+	DrawPoints    (modeAlpha, Config::COLOR_MODE_NOR);
 	DrawStars     (modeAlpha, false);
 }
 
@@ -129,8 +113,8 @@ void BG2::DrawNor(double modeAlpha)
 void BG2::DrawRef(double modeAlpha)
 {
 	DrawAtmosphere(modeAlpha, true);
-	DrawHexagons  (modeAlpha, COLOR_MODE_REF);
-	DrawPoints    (modeAlpha, COLOR_MODE_REF);
+	DrawHexagons  (modeAlpha, Config::COLOR_MODE_REF);
+	DrawPoints    (modeAlpha, Config::COLOR_MODE_REF);
 	DrawStars     (modeAlpha, true);
 }
 
@@ -181,7 +165,7 @@ void BG2::DrawPoints(double modeAlpha, MY_COLOR color)
 		//--------------------------------
 		// 現在座標
 		//--------------------------------
-		double scale = FOV / i.z;
+		double scale = Config::BG2::FOV / i.z;
 
 		DBL_XY now =
 		{
@@ -190,17 +174,17 @@ void BG2::DrawPoints(double modeAlpha, MY_COLOR color)
 		};
 
 		//画面外なら描画しない.
-		if (now.x < -100 || now.x > WINDOW_WID + 100) {
+		if (now.x < -100 || now.x > Config::WINDOW_WID + 100) {
 			continue;
 		}
-		if (now.y < -100 || now.y > WINDOW_HEI + 100) {
+		if (now.y < -100 || now.y > Config::WINDOW_HEI + 100) {
 			continue;
 		}
 
 		//--------------------------------
 		// 前フレーム座標
 		//--------------------------------
-		double oldScale = FOV / i.oldZ;
+		double oldScale = Config::BG2::FOV / i.oldZ;
 
 		DBL_XY old =
 		{
@@ -211,7 +195,7 @@ void BG2::DrawPoints(double modeAlpha, MY_COLOR color)
 		//--------------------------------
 		// 線の太さ
 		//--------------------------------
-		float thick = _flt(5.0 * (1.0 - i.z / Z_MAX));
+		float thick = _flt(5.0 * (1.0 - i.z / Config::BG2::Z_MAX));
 
 		//--------------------------------
 		// 描画
@@ -223,7 +207,7 @@ void BG2::DrawPoints(double modeAlpha, MY_COLOR color)
 		line.thick = thick;
 
 		//透明度を計算(奥ほど薄くする)
-		const double alpha = 128 * (1.0 - i.z / Z_MAX) * modeAlpha;
+		const double alpha = 128 * (1.0 - i.z / Config::BG2::Z_MAX) * modeAlpha;
 
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(alpha),
@@ -251,7 +235,7 @@ void BG2::DrawHexagons(double modeAlpha, MY_COLOR color)
 	//六角形を描画.
 	for (auto& h : hex)
 	{
-		const double scale = FOV_HEX / h.z;
+		const double scale = Config::BG2::FOV_HEX / h.z;
 		const double radius = scale * 80;
 
 		//小さすぎる六角形は描画しない.
@@ -274,7 +258,7 @@ void BG2::DrawHexagons(double modeAlpha, MY_COLOR color)
 		}
 
 		//奥ほど透明にする.
-		const double alpha = 80 * (1.0 - h.z / Z_MAX) * modeAlpha;
+		const double alpha = 80 * (1.0 - h.z / Config::BG2::Z_MAX) * modeAlpha;
 
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Alpha, _int(alpha),
@@ -295,11 +279,11 @@ void BG2::DrawStars(double modeAlpha, bool isReflect)
 	for (auto& i : star)
 	{
 		//奥行きに応じた拡大率.
-		const double scale = FOV / i.z;
+		const double scale = Config::BG2::FOV / i.z;
 		//奥ほど小さく、手前ほど大きくする.
 		const double size = 0.3 * scale;
 		//奥ほど透明にする.
-		const double alpha = 128 * (1.0 - i.z / Z_MAX) * modeAlpha;
+		const double alpha = 128 * (1.0 - i.z / Config::BG2::Z_MAX) * modeAlpha;
 
 		//座標.
 		const DBL_XY pos = {
@@ -308,8 +292,8 @@ void BG2::DrawStars(double modeAlpha, bool isReflect)
 		};
 
 		//画面外なら描画しない.
-		if (pos.x < -100 || pos.x > WINDOW_WID + 100) { continue; }
-		if (pos.y < -100 || pos.y > WINDOW_HEI + 100) { continue; }
+		if (pos.x < -100 || pos.x > Config::WINDOW_WID + 100) { continue; }
+		if (pos.y < -100 || pos.y > Config::WINDOW_HEI + 100) { continue; }
 
 		DrawMode::Exe(
 			DrawModeID::None, DrawBlendModeID::Add, _int(alpha),

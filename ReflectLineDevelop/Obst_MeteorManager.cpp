@@ -80,8 +80,8 @@ void MeteorManager::Init() {
 
 void MeteorManager::Reset() {
 
-	timer = METEOR_SPAWN_SPAN; //初期時間.
-	meteors.clear();           //隕石を全て消去.
+	timer = Config::METEOR_SPAWN_SPAN;	//初期時間.
+	meteors.clear();					//隕石を全て消去.
 }
 
 void MeteorManager::Update() {
@@ -95,7 +95,7 @@ void MeteorManager::Update() {
 		SpawnMeteor(); //隕石生成.
 
 		//次に出現するまでの時間(徐々に短くなる)
-		timer = METEOR_SPAWN_SPAN * gameData->spawnRate * gameData->spawnRate;
+		timer = Config::METEOR_SPAWN_SPAN * gameData->spawnRate * gameData->spawnRate;
 	}
 
 	//全隕石ループ.
@@ -142,7 +142,7 @@ void MeteorManager::BreakMeteor(DBL_XY pos, bool isScore, double scale) {
 		};
 
 		//いくつか出す.
-		for (int i = 0; i < METEOR_BREAK_ANIM_CNT; i++) {
+		for (int i = 0; i < Config::METEOR_BREAK_ANIM_CNT; i++) {
 
 			double newDig = _flt(Calc::RandNum(0, 3599) / 10);			//飛ぶ方向抽選.
 			data.vec   = Calc::AngToVector(newDig);						//ベクトルに反映.
