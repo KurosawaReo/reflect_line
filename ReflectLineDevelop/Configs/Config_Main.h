@@ -1,8 +1,6 @@
 /*
-   - Global.h -
-
-   REFLINE用のグローバル.
-   KR_Library用のグローバルは分類済み.
+   - Config_Main.h -
+   メインの設定ファイル.
 */
 #pragma once
 
@@ -13,7 +11,7 @@
 */
 
 /* ============================================================================== */
-// ▼*--=<[ 設定 ]>=--*▼ //
+// ▼*--=<[ 定義 ]>=--*▼ //
 
 /* デバッグ用 */
 //#define DEBUG_SHOW_FPS			//FPS表示.　
@@ -35,8 +33,8 @@
 // ▼*--=<[ 定数 ]>=--*▼ //
 
 //DxLib設定.
-#define FILE_DATA_SCORE					_T("Data/highscore.data")	//ハイスコア記録.
-#define FILE_DATA_PLAYLOG				_T("Data/playlog.data")		//プレイ歴記録.
+#define FILE_DATA_SCORE					_T("Datas/highscore.data")	//ハイスコア記録.
+#define FILE_DATA_PLAYLOG				_T("Datas/playlog.data")	//プレイ歴記録.
 
 #define IS_WINDOW_MODE					(false)			//ウィンドウモードにするか.
 
@@ -76,9 +74,6 @@
 
 //メニュー.
 #define MENU_OPTION_COUNT				(3)				//選択肢の数.
-#define MENU_CURSOR_BASE_SPEED			(0.02)			//カーソルの基本回転速度.
-#define MENU_CURSOR_RETURN_SPEED		(0.05)			//カーソルの減衰回転速度.
-#define MENU_CURSOR_MOVE_ROT_SPEED		(5.0)			//カーソル移動時の回転速度倍率(1.0が通常)
 
 //プレイヤー.
 #define PLAYER_SIZE						(18)			//プレイヤーサイズ(半径)

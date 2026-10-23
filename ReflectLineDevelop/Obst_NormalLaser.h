@@ -4,7 +4,7 @@
    障害物「追尾レーザー」
 */
 #pragma once
-#include "Global.h"
+#include "Configs/Config_Main.h"
 
 //移動方向(+1すれば右回転)
 enum class MoveDir

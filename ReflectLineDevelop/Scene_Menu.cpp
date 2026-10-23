@@ -4,6 +4,7 @@
 #include "Scene_Menu.h"
 
 //依存関係.
+#include "Configs/Config_Menu.h"
 #include "BGManager.h"
 #include "GameData.h"
 #include "GameManager.h"
@@ -16,11 +17,7 @@ static SoundMng*    soundMng;
 static InputMng*    inputMng;
 static SceneMng*    sceneMng;
 
-// サムネ関係(CalcRectとDrawThumbnailで共有).
-static constexpr double THUMB_EXTEND = 0.7; // 画像描画倍率.
-static constexpr int    THUMB_MARGIN = 10;  // 枠を画像よりどれだけ大きくするか.
-
-// ▼*---=[ MenuAnim ]=---*▼ //
+// ▼*---=[ MenuCursor ]=---*▼ //
 
 //set.
 void MenuCursor::SetCursorRotSpeed(double speed) {
@@ -37,9 +34,9 @@ void MenuCursor::Reset() {
 void MenuCursor::Update(double counter) {
 
 	//回転角度を速度に応じて進める.
-	cursorRotAngle += cursorRotSpeed * MENU_CURSOR_BASE_SPEED * M_PI;
+	cursorRotAngle += cursorRotSpeed * MenuMotion::cursorRotBase * M_PI;
 	//回転速度を標準速度(1.0)へ滑らかに戻す.
-	cursorRotSpeed += (1.0 - cursorRotSpeed) * MENU_CURSOR_RETURN_SPEED;
+	cursorRotSpeed += (1.0 - cursorRotSpeed) * MenuMotion::cursorRotReturn;
 	//カーソル裏表値.
 	cursorWave = sin(cursorRotAngle);
 	//装飾線の明滅.
@@ -220,12 +217,11 @@ void MenuScene::Draw() {
 
 //[描画] メニュー全体の背景.
 void MenuScene::DrawBG() {
-
 	//裏を暗くする.
 	DrawMode::Exe(
-		DrawModeID::None, DrawBlendModeID::Alpha, 128,
+		DrawModeID::None, DrawBlendModeID::Alpha, MenuLayout::bgAlpha,
 		[&]() {
-			Box box = { {0, 0}, {WINDOW_WID, WINDOW_HEI}, 0x000000, 1.0f };
+			Box box = { {0, 0}, {WINDOW_WID, WINDOW_HEI}, MenuColor::bgShade, 1.0f };
 			box.Draw(Anchor::LU, true);
 		}
 	);
@@ -233,22 +229,26 @@ void MenuScene::DrawBG() {
 
 //[描画] トップテキスト.
 void MenuScene::DrawTopText() {
-
-	//基準位置.
-	const DBL_XY basePos = { WINDOW_WID / 2, 80 };
+	using namespace MenuLayout;
 
 	//三角形演出.
 	for (const auto& a : mCursor.arrow) {
+		//広がり分を足した距離.
+		const double inner = titleArrowInner + titleArrowMove * a.move;
+		const double tip   = titleArrowTip   + titleArrowMove * a.move;
+		const double h     = titleArrowHalfH;
+		const UINT   col   = MenuColor::accent;
+
 		DrawMode::Exe(
-			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * a.alpha), 
+			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * a.alpha),
 			[&]() {
 				Line lines[4] = {
 					//「<」.
-					{ basePos + DBL_XY(-55 - 100 * a.move, 30), basePos + DBL_XY(-85 - 100 * a.move,   0), 0x00FFFF, 2.0f },
-					{ basePos + DBL_XY(-85 - 100 * a.move,  0), basePos + DBL_XY(-55 - 100 * a.move, -30), 0x00FFFF, 2.0f },
+					{ titlePos + DBL_XY(-inner,  h), titlePos + DBL_XY(-tip,  0),   col, titleArrowThick },
+					{ titlePos + DBL_XY(-tip,    0), titlePos + DBL_XY(-inner, -h), col, titleArrowThick },
 					//「>」.
-					{ basePos + DBL_XY(+55 + 100 * a.move, 30), basePos + DBL_XY(+85 + 100 * a.move,   0), 0x00FFFF, 2.0f },
-					{ basePos + DBL_XY(+85 + 100 * a.move,  0), basePos + DBL_XY(+55 + 100 * a.move, -30), 0x00FFFF, 2.0f }
+					{ titlePos + DBL_XY(+inner,  h), titlePos + DBL_XY(+tip,  0),   col, titleArrowThick },
+					{ titlePos + DBL_XY(+tip,    0), titlePos + DBL_XY(+inner, -h), col, titleArrowThick }
 				};
 				//線描画.
 				for (auto& i : lines) {
@@ -258,21 +258,20 @@ void MenuScene::DrawTopText() {
 		);
 	}
 
-	const INT_XY offset = { 0, -1 };
-
 	//テキスト描画.
-	DrawStr str(_T("モード選択"), basePos.ToInt() + offset, 0x00FFFF);
+	DrawStr str(_T("モード選択"), titlePos.ToInt() + textOffset, MenuColor::accent);
 	str.Draw(Anchor::Mid, gameData->fonts.at("jp-size4").GetFont());
 }
 
 //[描画] 選択肢.
 void MenuScene::DrawOptions() {
+	using namespace MenuLayout;
 
 	const INT_XY offset = { 0, -1 };
 
 	//テキスト & 枠線用.
-	Box     box = { mLayout.menuPos, mLayout.menuSize, mColor.select1, 1.0f };
-	DrawStr str = { _T(""), mLayout.menuPos.ToInt() + offset, {} };
+	Box     box = { menuPos, menuSize, MenuColor::highlight, 1.0f };
+	DrawStr str = { _T(""), menuPos.ToInt() + textOffset, {} };
 	//選択肢テキスト.
 	MY_STRING texts[] = {
 		_T("ゲーム開始"),
@@ -281,9 +280,9 @@ void MenuScene::DrawOptions() {
 	};
 	//テキスト色.
 	unsigned int colors[] = {
-		(mCursor.cursorIdx == 0) ? mColor.select1 : mColor.normal,
-		(mCursor.cursorIdx == 1) ? mColor.select1 : mColor.normal,
-		(mCursor.cursorIdx == 2) ? mColor.select1 : mColor.normal
+		(mCursor.cursorIdx == 0) ? MenuColor::highlight : MenuColor::textDim,
+		(mCursor.cursorIdx == 1) ? MenuColor::highlight : MenuColor::textDim,
+		(mCursor.cursorIdx == 2) ? MenuColor::highlight : MenuColor::textDim
 	};
 
 	INT_XY savePos; //保存用.
@@ -298,11 +297,14 @@ void MenuScene::DrawOptions() {
 		box.Draw(Anchor::Mid, false);
 
 		int alpha = 255; //透明度.
+
 		//ブレる処理.
 		if (isBlink && mCursor.cursorIdx == i) {
-			const int add = Calc::RandNum(-5, 5); //ずらす量.
-			str.pos += add;						  //位置をずらす.
-			alpha = 128;
+			//位置をずらす.
+			const int add = Calc::RandNum(-blinkShake, blinkShake);
+			str.pos += add;
+			//少し薄くする.
+			alpha = blinkAlpha;
 		}
 		//テキスト.
 		DrawMode::Exe(
@@ -315,93 +317,85 @@ void MenuScene::DrawOptions() {
 		//リセット.
 		str.pos = savePos;
 		//スペースを空ける.
-		box.pos.y += mLayout.menuSpace;
-		str.pos.y += mLayout.menuSpace;
+		box.pos.y += menuSpace;
+		str.pos.y += menuSpace;
 	}
 }
 
 //[描画] カーソル.
 void MenuScene::DrawCursor() {
+	using namespace MenuLayout;
 
-	//基準座標.
-	const DBL_XY base = mLayout.menuPos + DBL_XY(
-		-mLayout.menuSize.x / 2 - 20,	//横にずらす.
-		+mLayout.menuSpace * mCursor.cursorIdx	//縦にずらす.
-	);
-
-	const double wave = 10.0 * mCursor.cursorWave;
+	//基準座標(選択中の枠の左).
+	const DBL_XY base = menuPos + DBL_XY(-menuSize.x / 2 - cursorGap, menuSpace * mCursor.cursorIdx);
+	//縦の開き(負になると裏返る).
+	const double wave = cursorHalfH * mCursor.cursorWave;
 
 	//カーソル.
 	Triangle tri = {
 		base,
-		base + DBL_XY(-20.0, +wave),
-		base + DBL_XY(-20.0, -wave),
+		base + DBL_XY(-cursorLen, +wave),
+		base + DBL_XY(-cursorLen, -wave),
 		{}, {}
 	};
-	tri.color = (mCursor.cursorWave >= 0) ? mColor.select1 : mColor.select2; //表か裏かで色を変える.
+	//表か裏かで色を変える.
+	tri.color = (mCursor.cursorWave >= 0) ? MenuColor::highlight : MenuColor::cursorBack;
 	tri.Draw();
 }
 
 //[描画] サムネイル.
 void MenuScene::DrawThumbnail() {
+	using namespace MenuLayout;
 
 	if (auto i = GetPlayMovie()) {
 		//画像描画.
 		DrawMode::Exe(
 			DrawModeID::Bilinear, DrawBlendModeID::None, 255,
-			[&]() { 
-				i->DrawExtend(mLayout.imgPos, { THUMB_EXTEND, THUMB_EXTEND }); 
+			[&]() {
+				i->DrawExtend(imgPos, { thumbScale, thumbScale });
 			}
 		);
 		//枠線描画(画像にぴったり合うように).
-		Box box = { mLayout.imgPos, mRect.imgSize, mColor.frame, 1.0f };
+		Box box = { imgPos, mRect.imgSize, MenuColor::accent, 1.0f };
 		box.Draw(Anchor::Mid, false);
 	}
 }
 
 //[描画] 装飾線.
 void MenuScene::DrawGuideLines() {
-	
-	//画像の下端座標.
-	const int imgBottomY = (int)(mLayout.imgPos.y + mRect.imgSize.y / 2);
-	//線の透明度(155～255)
-	const int alpha = _int_r(155 + 100 * (mCursor.linePulse + 1.0) / 2.0);
+	using namespace MenuLayout;
 
-	//描画.
+	//画像の下端座標.
+	const int imgBottomY = (int)(imgPos.y + mRect.imgSize.y / 2);
+	//線の透明度.
+	const int alpha = _int_r(lineAlphaMin + lineAlphaRange * (mCursor.linePulse + 1.0) / 2.0);
+
 	DrawMode::Exe(
 		DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 		[&]() {
-
-			//1.メニュー項目から画像への線（メニュー項目右端から画像左端まで）
+			//1.メニュー項目から画像への線.
 			{
-				//線データ.
 				Line line = {
-					mLayout.menuPos + DBL_XY(mLayout.menuSize.x / 2, 0),				//始点.
-					DBL_XY(mLayout.imgPos.x - mRect.imgSize.x / 2, mLayout.menuPos.y),	//終点.
-					mColor.line,														//色.
-					3.0f
+					menuPos + DBL_XY(menuSize.x / 2, 0),                   //始点.
+					DBL_XY(imgPos.x - mRect.imgSize.x / 2, menuPos.y),     //終点.
+					MenuColor::accent, lineThick
 				};
 				//選択してる所にずらす.
-				line.stPos.y += mLayout.menuSpace * mCursor.cursorIdx;
-				line.edPos.y += mLayout.menuSpace * mCursor.cursorIdx;
-				//線描画.
+				line.stPos.y += menuSpace * mCursor.cursorIdx;
+				line.edPos.y += menuSpace * mCursor.cursorIdx;
 				line.Draw(false);
 			}
-
-			//2.画像から説明文エリアへの線（画像下端から説明文上端まで）
+			//2.画像から説明文エリアへの2本線.
 			{
 				Line line = {
-					DBL_XY(mLayout.imgPos.x - 30, imgBottomY),		//始点.
-					DBL_XY(mLayout.imgPos.x - 30, mRect.descPos.y),	//終点.
-					mColor.line,									//色.
-					3.0f
+					DBL_XY(imgPos.x - lineSide, imgBottomY),               //始点.
+					DBL_XY(imgPos.x - lineSide, mRect.descPos.y),          //終点.
+					MenuColor::accent, lineThick
 				};
-				//線1.
-				line.Draw(false);
-				//線2.
-				line.stPos.x += 60;
-				line.edPos.x += 60;
-				line.Draw(false);
+				line.Draw(false);         //左の線.
+				line.stPos.x += lineSide * 2;
+				line.edPos.x += lineSide * 2;
+				line.Draw(false);         //右の線.
 			}
 		}
 	);
@@ -411,11 +405,11 @@ void MenuScene::DrawGuideLines() {
 void MenuScene::DrawPanelDescOperate() {
 
 	//枠線.
-	Box box = { mRect.infoPos.ToDbl(), mRect.infoSize.ToDbl(), mColor.frame, 1.0f};
+	Box box = { mRect.infoPos.ToDbl(), mRect.infoSize.ToDbl(), MenuColor::accent, 1.0f};
 	box.Draw(Anchor::LU, false);
 
 	//見出し.
-	DrawStr str2(_T("操作"), mRect.descPos + INT_XY(10, -10), 0x00FFFF);
+	DrawStr str2(_T("操作"), mRect.infoPos + MenuLayout::headingOffset, MenuColor::accent);
 	str2.Draw(Anchor::LD, gameData->fonts.at("jp-size2").GetFont());
 
 	//テキスト.
@@ -444,13 +438,13 @@ void MenuScene::DrawPanelDescOperate() {
 	}
 #endif
 
-	DrawStr str = { _T(""), mRect.infoPos + mLayout.loreInner, mColor.normal };
+	DrawStr str = { _T(""), mRect.infoPos + MenuLayout::loreInner, MenuColor::textDim };
 
 	//1行ずつ表示.
 	for (auto& i : texts) {
 		str.text = i;
 		str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
-		str.pos.y += mLayout.loreLineSpace; //次の行へ.
+		str.pos.y += MenuLayout::loreLineSpace; //次の行へ.
 	}
 }
 
@@ -458,15 +452,15 @@ void MenuScene::DrawPanelDescOperate() {
 void MenuScene::DrawPanelDescMode() {
 
 	//枠線.
-	Box box = { mRect.descPos.ToDbl(), mRect.descSize.ToDbl(), mColor.frame, 1.0f};
+	Box box = { mRect.descPos.ToDbl(), mRect.descSize.ToDbl(), MenuColor::accent, 1.0f};
 	box.Draw(Anchor::LU, false);
 
 	//見出し.
-	DrawStr str2(_T("モード説明"), mRect.descPos + INT_XY(10, -10), 0x00FFFF);
+	DrawStr str2(_T("モード説明"), mRect.descPos + MenuLayout::headingOffset, MenuColor::accent);
 	str2.Draw(Anchor::LD, gameData->fonts.at("jp-size2").GetFont());
 
 	//テキスト.
-	DrawStr str(_T(""), mRect.descPos + mLayout.loreInner, mColor.normal);
+	DrawStr str(_T(""), mRect.descPos + MenuLayout::loreInner, MenuColor::textDim);
 
 	switch (mCursor.cursorIdx)
 	{
@@ -485,7 +479,7 @@ void MenuScene::DrawPanelDescMode() {
 			for (auto& i : texts) {
 				str.text = i;
 				str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
-				str.pos.y += mLayout.loreLineSpace; //次の行へ.
+				str.pos.y += MenuLayout::loreLineSpace; //次の行へ.
 			}
 		}
 		break;
@@ -505,7 +499,7 @@ void MenuScene::DrawPanelDescMode() {
 			for (auto& i : texts) {
 				str.text = i;
 				str.Draw(Anchor::LU, gameData->fonts.at("jp-size2").GetFont());
-				str.pos.y += mLayout.loreLineSpace; //次の行へ.
+				str.pos.y += MenuLayout::loreLineSpace; //次の行へ.
 			}
 		}
 		break;
@@ -521,23 +515,22 @@ void MenuScene::DrawPanelDescMode() {
 
 //共有するレイアウト値を計算.
 void MenuScene::CalcMenuRect() {
+	using namespace MenuLayout;
 
 	//サムネ枠のサイズ(動画がなければ0).
 	mRect.imgSize = DBL_XY(0, 0);
 	if (auto i = GetPlayMovie()) {
-		mRect.imgSize = i->GetSize().ToDbl() * THUMB_EXTEND + THUMB_MARGIN;
+		mRect.imgSize = i->GetSize().ToDbl() * thumbScale + thumbMargin;
 	}
 
 	//[説明文パネル] サムネの幅に合わせる.
 	const int descWid = _int_r(mRect.imgSize.x);
-	const int descHei = 260;
-	mRect.descSize = INT_XY(descWid, descHei);
-	mRect.descPos  = INT_XY(_int_r(mLayout.imgPos.x - descWid / 2), WINDOW_HEI - 300);
+	mRect.descSize = INT_XY(descWid, panelHeight);
+	mRect.descPos = INT_XY(_int_r(imgPos.x - descWid / 2), WINDOW_HEI - panelMarginBottom - panelHeight);
 
 	//[操作パネル] 説明文パネルと同じ高さ・同じ縦位置.
-	const int infoWid = 500;
-	mRect.infoSize = INT_XY(infoWid, descHei);
-	mRect.infoPos  = INT_XY(_int_r(mLayout.menuPos.x - _dbl(infoWid) / 2), mRect.descPos.y);
+	mRect.infoSize = INT_XY(infoWidth, panelHeight);
+	mRect.infoPos = INT_XY(_int_r(menuPos.x - _dbl(infoWidth) / 2), mRect.descPos.y);
 }
 
 //カーソル移動時の処理.
@@ -546,7 +539,7 @@ void MenuScene::OnCursorMove() {
 	isBlink = true;  //点滅させる.
 	tmBlink.Start(); //点滅時間計測.
 
-	mCursor.SetCursorRotSpeed(MENU_CURSOR_MOVE_ROT_SPEED);
+	mCursor.SetCursorRotSpeed(MenuMotion::cursorRotMove);
 
 	//レイアウトの計算.
 	CalcMenuRect();

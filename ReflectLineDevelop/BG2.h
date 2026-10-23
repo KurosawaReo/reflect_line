@@ -11,23 +11,22 @@ class BG2 : public BGBase
 //▼ ===== 変数 ===== ▼.
 private:
 	//疑似3Dオブジェクト.
+	struct WarpPos //線・星の共通部分(出現位置)
+	{
+		double x;
+		double y;
+		double z;
+	};
 	struct WarpHex
 	{
 		double z;
 	};
-	struct WarpPoint
+	struct WarpPoint : WarpPos
 	{
-		double x;
-		double y;
-		double z;
-
-		double oldZ;
+		double oldZ; //前フレームのz座標.
 	};
-	struct WarpStar
+	struct WarpStar : WarpPos
 	{
-		double x;
-		double y;
-		double z;
 	};
 
 	static constexpr int HEX_NUM = 20;
@@ -65,4 +64,7 @@ public:
 	//ポーズ用.
 	void Pause()    override;
 	void PauseEnd() override;
+
+	//再出現.
+	void Respawn(WarpPos& obj, double rMin, double z);
 };

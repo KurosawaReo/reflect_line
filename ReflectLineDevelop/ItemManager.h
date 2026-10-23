@@ -3,7 +3,7 @@
    アイテム管理.
 */
 #pragma once
-#include "Global.h"
+#include "Configs/Config_Main.h"
 
 //アイテムタイプ.
 enum class ItemType

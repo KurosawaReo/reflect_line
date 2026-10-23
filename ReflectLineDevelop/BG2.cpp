@@ -4,7 +4,7 @@
 #include "BG2.h"
 
 //依存関係.
-#include "Global.h"
+#include "Configs/Config_Main.h"
 #include "GameData.h"
 #include <cmath>
 //参照.
@@ -37,14 +37,6 @@ static void RandSpawnXY(double& x, double& y, double rMin) {
 	const double r = sqrt(Calc::RandNum(rMin * rMin, SPAWN_R_MAX * SPAWN_R_MAX));
 	x = cos(ang) * r;
 	y = sin(ang) * r;
-}
-
-//線・星の共通処理.
-//x,y,zを決め直す(型が違っても使えるようにtemplateにしている).
-template<class T>
-static void Respawn(T& obj, double rMin, double z) {
-	RandSpawnXY(obj.x, obj.y, rMin);
-	obj.z = z;
 }
 
 /* ============================================================================== */
@@ -128,18 +120,18 @@ void BG2::Update()
 void BG2::DrawNor(double modeAlpha)
 {
 	DrawAtmosphere(modeAlpha, false);
-	DrawHexagons(modeAlpha, COLOR_MODE_NOR);
-	DrawPoints(modeAlpha, COLOR_MODE_NOR);
-	DrawStars(modeAlpha, false);
+	DrawHexagons  (modeAlpha, COLOR_MODE_NOR);
+	DrawPoints    (modeAlpha, COLOR_MODE_NOR);
+	DrawStars     (modeAlpha, false);
 }
 
 //描画(反射モード)
 void BG2::DrawRef(double modeAlpha)
 {
 	DrawAtmosphere(modeAlpha, true);
-	DrawHexagons(modeAlpha, COLOR_MODE_REF);
-	DrawPoints(modeAlpha, COLOR_MODE_REF);
-	DrawStars(modeAlpha, true);
+	DrawHexagons  (modeAlpha, COLOR_MODE_REF);
+	DrawPoints    (modeAlpha, COLOR_MODE_REF);
+	DrawStars     (modeAlpha, true);
 }
 
 //描画(光のグラデーション)
@@ -278,7 +270,7 @@ void BG2::DrawHexagons(double modeAlpha, MY_COLOR color)
 			poly.points.push_back({
 				center.x + d.x * radius,
 				center.y + d.y * radius
-				});
+			});
 		}
 
 		//奥ほど透明にする.
@@ -345,4 +337,10 @@ void BG2::Pause() {
 
 //ポーズ解除.
 void BG2::PauseEnd() {
+}
+
+//出現位置の再抽選(線・星の共通処理).
+void BG2::Respawn(WarpPos& obj, double rMin, double z) {
+	RandSpawnXY(obj.x, obj.y, rMin);
+	obj.z = z;
 }

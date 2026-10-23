@@ -2,7 +2,7 @@
    - GameData.h -
 */
 #pragma once
-#include "Global.h"
+#include "Configs/Config_Main.h"
 
 //ステージの種類.
 enum class StageType
