@@ -1,9 +1,13 @@
-【すぐ直せる問題】
+【ゲーム性】
+プレイヤーが一回当たるとゲームオーバーなのが難しすぎる。
+→もっと体力面を強化する手段を(スプラのピンチモードなど)
+
+【プログラム - すぐ直せる問題】
 ・rand() と Calc::RandNum が混在（NormalLaser / StraightLaser / Ripples / Fireworks）。RandNum に統一すれば srand も要らなくなる。
 ・文字コードが混在している。47ファイルが Shift-JIS で、4ファイル（GameManager.cpp、Scene_End/Menu/Title.cpp）が UTF-8 BOM。GitHub や他PCで文字化けする。UTF-8 に統一して、文字セット設定を確認したうえでビルドし、日本語表示をチェックする。
 ・_stprintf と TCHAR[256]（UIManager、Scene_Title）を、自作の Format::StrFormat に統一する。
 
-【時間のかかる問題】
+【プログラム - 時間のかかる問題】
 
 ★ 隕石ターゲットの生ポインタ（use-after-free の可能性）
 LaserData::target は list<Meteor> 要素への生ポインタ。隕石は画面外や破壊で erase されるが、レーザーには通知されない。
