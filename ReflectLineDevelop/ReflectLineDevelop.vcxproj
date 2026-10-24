@@ -213,6 +213,7 @@
     <ClInclude Include="Programs\BG2.h" />
     <ClInclude Include="Programs\BGBase.h" />
     <ClInclude Include="Programs\BGManager.h" />
+    <ClInclude Include="Programs\Configs\Config_Title.h" />
     <ClInclude Include="Programs\EffectManager.h" />
     <ClInclude Include="Programs\GameData.h" />
     <ClInclude Include="Programs\GameManager.h" />

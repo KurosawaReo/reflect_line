@@ -4,7 +4,7 @@
 #include "Scene_Menu.h"
 
 //ˆË‘¶ŠÖŒW.
-#include "Config_Menu.h"
+#include "Configs/Config_Menu.h"
 #include "BGManager.h"
 #include "GameData.h"
 #include "GameManager.h"

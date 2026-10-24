@@ -1,229 +1,232 @@
-ï»¿/*
+/*
    - Scene_Title.cpp -
 */
 #include "Scene_Title.h"
 
-//ä¾å­˜é–¢ä¿‚.
+//ˆË‘¶ŠÖŒW.
+#include "Configs/Config_Title.h"
 #include "GameManager.h"
 #include "GameData.h"
 #include "BGManager.h"
 #include "Obst_MeteorManager.h"
-//å‚ç…§.
+//QÆ.
 static GameManager*   gameMng;
 static GameData*      gameData;
 static BGManager*     bgMng;
 static MeteorManager* meteorMng;
-//å‚ç…§(KRãƒ©ã‚¤ãƒ–ãƒ©ãƒª)
+//QÆ(KRƒ‰ƒCƒuƒ‰ƒŠ)
 static InputMng*      inputMng;
 static SceneMng*      sceneMng;
 
-//åˆæœŸåŒ–.
+//start‚©‚ç’·‚³dur‚ÌŠÔ‚É0¨1‚Öi‚Ş’l(”ÍˆÍŠO‚Í0‚©1‚Éû‚Ü‚é).
+static double Ease(double now, double start, double dur) {
+	return Calc::AnimEase(EaseType::InOutQuad, (now - start) / dur);
+}
+
+//˜g•t‚«ƒ‰ƒxƒ‹‚ğ•`‰æ.
+//(Ÿ‚Ìƒ‰ƒxƒ‹‚ÌˆÊ’uŒvZ—p‚É•¶šƒTƒCƒY‚ğ•Ô‚·)
+static DBL_XY DrawFrameLabel(const MY_STRING& text, INT_XY pos, int font) {
+	using namespace Config::TitleLayout;
+
+	//•¶š.
+	DrawStr str(text, pos, Config::TitleColor::LABEL_TEXT);
+	str.Draw(Anchor::LD, font);
+	const DBL_XY size = GetTextSize(text, font).ToDbl();
+
+	//˜güƒOƒ‰ƒf[ƒVƒ‡ƒ“(¶‰ºŠî€‚Ì4’¸“_).
+	const DBL_XY p = pos.ToDbl() + LABEL_FRAME_OFFSET;
+	const double m = LABEL_MARGIN;
+
+	GradLine line;
+	line.AddPoint(p + DBL_XY(-m,         +m),          Config::TitleColor::LABEL_GRAD_B);
+	line.AddPoint(p + DBL_XY(size.x + m, +m),          Config::TitleColor::LABEL_GRAD_B);
+	line.AddPoint(p + DBL_XY(size.x + m, -size.y - m), Config::TitleColor::LABEL_GRAD_A);
+	line.AddPoint(p + DBL_XY(-m,         -size.y - m), Config::TitleColor::LABEL_GRAD_A);
+	line.Draw(true);
+
+	return size;
+}
+
+//‘€ì”Å‚Ì•\¦ƒeƒLƒXƒg(ƒ‰ƒxƒ‹—p).
+static MY_STRING GetInputModeLabel() {
+#if defined INPUT_CHANGE_ARCADE
+	return _T("ƒA[ƒP[ƒh‘€ì”Å");
+#else
+	return _T("PC‘€ì”Å");
+#endif
+}
+
+//PushƒeƒLƒXƒg(‘€ì’[––‚²‚Æ‚É•Ï‚¦‚é).
+static MY_STRING GetPushText() {
+#if defined INPUT_CHANGE_ARCADE
+	return _T("Push Upper Left Button");
+#else
+	//ÅŒã‚Ì‘€ì’[––‚ğæ“¾.
+	switch (gameMng->GetLastInputDevice())
+	{
+		case InputDevice::Key:     return _T("Push [SPACE]");
+		case InputDevice::PadXbox: return _T("Push [A Button]");
+
+		//‚Ü‚¾‘€ì‚µ‚Ä‚¢‚È‚¢ê‡‚â‘z’èŠO‚Ì’[––‚ÍA—¼•û‚ÌˆÄ“à‚ğo‚·.
+		default:                   return _T("Push [A Button] or [SPACE]");
+	}
+#endif
+}
+
+//‰Šú‰».
 void TitleScene::Init() {
 
-	//å‚ç…§å–å¾—.
+	//QÆæ“¾.
 	gameMng   = ManagerInsts::Get<GameManager>();
 	gameData  = ManagerInsts::Get<GameData>();
 	bgMng     = ManagerInsts::Get<BGManager>();
 	meteorMng = ManagerInsts::Get<MeteorManager>();
 	inputMng  = ManagerInsts::Get<InputMng>();
 	sceneMng  = ManagerInsts::Get<SceneMng>();
-	//ç”»åƒå–å¾—.
+	//‰æ‘œæ“¾.
 	grLogo            = GraphMng::Get("logo");
 	grLogoAll         = GraphMng::Get("logo_all");
 	grUiBackBestScore = GraphMng::Get("ui_back_best_score");
+	//ƒtƒHƒ“ƒgæ“¾.
+	fontSmall = gameData->fonts.at("jp-size1").GetFont();
+	fontScore = gameData->fonts.at("en-size3").GetFont();
+	fontPush  = gameData->fonts.at("en-size2").GetFont();
 
 	timer = Timer(TimerMode::CountUp, 0);
 }
 
-//ãƒªã‚»ãƒƒãƒˆ.
+//ƒŠƒZƒbƒg.
 void TitleScene::Reset() {
-	isTitleAnim = false;
+	isBreakDone = false;
 }
 
-//å…¥ã£ãŸç¬é–“.
+//“ü‚Á‚½uŠÔ.
 void TitleScene::Enter() {
-	timer.Start();					//ã‚¿ã‚¤ãƒãƒ¼é–‹å§‹.
-	bgMng->SetBgType(BGType::Tile);	//èƒŒæ™¯ã‚’è¨­å®š.
+	timer.Start();					//ƒ^ƒCƒ}[ŠJn.
+	bgMng->SetBgType(BGType::Tile);	//”wŒi‚ğİ’è.
 }
 
-//æŠœã‘ãŸç¬é–“.
+//”²‚¯‚½uŠÔ.
 void TitleScene::Exit() {
-	timer.Reset(); //ã‚¿ã‚¤ãƒãƒ¼ãƒªã‚»ãƒƒãƒˆ.
+	timer.Reset(); //ƒ^ƒCƒ}[ƒŠƒZƒbƒg.
 }
 
-//æ›´æ–°.
+//XV.
 void TitleScene::Update() {
 
-	InputData inputData; //ä½•ã§æ“ä½œã—ãŸã‹å–å¾—ã™ã‚‹ç”¨.
+	InputData inputData; //‰½‚Å‘€ì‚µ‚½‚©æ“¾‚·‚é—p.
 
-	//ç‰¹å®šã®æ“ä½œã§ã‚²ãƒ¼ãƒ é–‹å§‹.
+	//“Á’è‚Ì‘€ì‚ÅƒQ[ƒ€ŠJn.
 	if (inputMng->IsPushActionTime(_T("GameNext"), &inputData) == 1) {
-		//æ“ä½œç«¯æœ«ã‚’è¨˜éŒ².
+		//‘€ì’[––‚ğ‹L˜^.
 		gameMng->SetLastInputDevice(inputData.device);
-		//ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚·ãƒ¼ãƒ³ã¸.
+		//ƒƒjƒ…[ƒV[ƒ“‚Ö.
 		sceneMng->SetScene(_T("Menu"));
+	}
+
+	//”j•Ğ‰‰o(ˆê“x‚¾‚¯).
+	if (!isBreakDone && timer.GetPassTime() >= Config::TitleTime::BREAK_START) {
+		meteorMng->BreakMeteor(Config::TitleLayout::BREAK_POS, false, Config::TitleLayout::BREAK_SCALE);
+		isBreakDone = true;
 	}
 }
 
-//æç”».
+//•`‰æ.
 void TitleScene::Draw() {
+	DrawLabels();     //¶‰º‚Ìƒ‰ƒxƒ‹.
+	DrawLogo();       //ƒƒS.
+	DrawBestScore();  //ƒxƒXƒgƒXƒRƒA.
+	DrawPushText();   //PushƒeƒLƒXƒg.
+}
 
-	//ç”»é¢å·¦ä¸‹ã®æ“ä½œæ–¹æ³•è¡¨è¨˜.
-	DrawStr howPlay(_T(""), { 30, Config::WINDOW_HEI - 30 }, 0x00FFFF);
-	{
-		const int font = gameData->fonts.at("jp-size1").GetFont();
+//[•`‰æ] ¶‰º‚Ìƒ‰ƒxƒ‹2‚Â.
+void TitleScene::DrawLabels() {
+	using namespace Config::TitleLayout;
 
-		//ãƒ†ã‚­ã‚¹ãƒˆåˆ‡ã‚Šæ›¿ãˆ.
-#if defined INPUT_CHANGE_ARCADE
-		howPlay.text = _T("ã‚¢ãƒ¼ã‚±ãƒ¼ãƒ‰æ“ä½œç‰ˆ");
-#else
-		howPlay.text = _T("PCæ“ä½œç‰ˆ");
-#endif
-		howPlay.Draw(Anchor::LD, font);
+	//ƒo[ƒWƒ‡ƒ“.
+	const DBL_XY verSize = DrawFrameLabel(Config::GAME_VERSION, LABEL_POS, fontSmall);
+	//‘€ì”Å(ƒo[ƒWƒ‡ƒ“‚Ì‰E—×).
+	DrawFrameLabel(GetInputModeLabel(), { _int(verSize.x + LABEL_NEXT_OFFSET), LABEL_POS.y }, fontSmall);
+}
 
-		//æ ç·šã‚°ãƒ©ãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³.
-		const DBL_XY howPlayPos  = howPlay.pos.ToDbl();
-		const DBL_XY howPlaySize = GetTextSize(howPlay.text, font).ToDbl();
-		const DBL_XY offset      = {0, 1};
-		const int    margin      = 6;
+//[•`‰æ] ƒ^ƒCƒgƒ‹ƒƒS.
+void TitleScene::DrawLogo() {
+	using namespace Config::TitleTime;
+	using namespace Config::TitleLayout;
 
-		GradLine line;
-		line.AddPoint(howPlayPos + offset + DBL_XY(-margin, margin),                                 { 0, 255, 255 });
-		line.AddPoint(howPlayPos + offset + DBL_XY(howPlaySize.x + margin, margin),                  { 0, 100, 255 });
-		line.AddPoint(howPlayPos + offset + DBL_XY(howPlaySize.x + margin, -howPlaySize.y - margin), { 0, 255, 255 });
-		line.AddPoint(howPlayPos + offset + DBL_XY(-margin, -howPlaySize.y - margin),                { 0, 100, 255 });
-		line.Draw(true);
-	}
+	const double t = timer.GetPassTime();
 
-	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³åˆ‡ã‚Šæ›¿ã‚ã‚Šãƒã‚¤ãƒ³ãƒˆ.
-	const float delay1 = 1;
-	const float delay2 = 1.4f;
-	const float delay3 = 1.6f;
-	const float delay4 = 3;
-	const float delay5 = 3;
+	//is—¦(‚»‚ê‚¼‚ê0¨1).
+	const double fadeIn  = Ease(t, 0,                                    LOGO_FADEIN_TIME); //1–‡–Ú‚ªo‚é.
+	const double rise    = Ease(t, LOGO_SWAP_START,                      LOGO_SWAP_TIME);   //ã‚Ö“®‚­.
+	const double fadeOut = Ease(t, LOGO_SWAP_START + LOGO_FADEOUT_DELAY, LOGO_SWAP_TIME);   //1–‡–Ú‚ªÁ‚¦‚é.
 
-	//ç”»åƒã®è¡¨ç¤º.
-	{
-		const int    logoY = Config::WINDOW_HEI / 2 - 80;
-		const DBL_XY imgSize = { 0.7, 0.7 };
+	//2–‡‚ÌƒƒS‚Å‹¤’Ê‚ÌˆÊ’u.
+	const DBL_XY pos = { CENTER_X, LOGO_Y - rise * LOGO_RISE };
 
-		//åˆ‡ã‚Šæ›¿ãˆå‰.
-		if (timer.GetPassTime() < delay1) {
-			//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å€¤.
-			double anim = Calc::AnimEase(EaseType::InOutQuad, timer.GetPassTime() / delay1);
-			//ãƒ­ã‚´1æšç›®.
-			DrawMode::Exe(
-				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim),
-				[&]() {
-					grLogo->DrawExtend(
-						DBL_XY{ Config::WINDOW_WID / 2, _dbl(logoY) }, imgSize, Anchor::Mid, true, true
-					);
-				}
-			);
+	//1–‡–Ú.
+	DrawMode::Exe(
+		DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * fadeIn * (1 - fadeOut)),
+		[&]() { grLogo->DrawExtend(pos, LOGO_SCALE, Anchor::Mid, true, true); }
+	);
+	//2–‡–Ú.
+	DrawMode::Exe(
+		DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * rise),
+		[&]() { grLogoAll->DrawExtend(pos, LOGO_SCALE, Anchor::Mid, true, true); }
+	);
+}
+
+//[•`‰æ] ƒxƒXƒgƒXƒRƒA.
+void TitleScene::DrawBestScore() {
+	using namespace Config::TitleTime;
+	using namespace Config::TitleLayout;
+
+	const double t = timer.GetPassTime();
+
+	//˜g‚ªo‚é‘O‚Í‰½‚à•`‚©‚È‚¢.
+	if (t < SCORE_FRAME_START) { return; }
+
+	//is—¦(‚»‚ê‚¼‚ê0¨1).
+	const double frameAnim = Ease(t, SCORE_FRAME_START, SCORE_ANIM_TIME); //˜g.
+	const double textAnim  = Ease(t, SCORE_TEXT_START,  SCORE_ANIM_TIME); //•¶š.
+
+	//ƒeƒLƒXƒg.
+	const MY_STRING text = Format::StrFormat(_T("BEST SCORE: %d"), gameData->bestScore);
+	DrawStr str(text, { CENTER_X, SCORE_Y + SCORE_TEXT_OFFSET_Y }, Config::COLOR_BEST_SCORE);
+
+	//•`‰æ(ƒXƒRƒA)
+	DrawMode::Exe(
+		DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * textAnim),
+		[&]() { str.Draw(Anchor::Mid, fontScore); }
+	);
+	//•`‰æ(ü)
+	const double gap = SCORE_FRAME_GAP + SCORE_FRAME_OPEN * frameAnim; //•¶š‚©‚ç‚Ì‹——£.
+	DrawMode::Exe(
+		DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * frameAnim),
+		[&]() {
+			grUiBackBestScore->DrawExtend({ CENTER_X, SCORE_Y + gap }, SCORE_FRAME_SCALE, Anchor::Mid, true, true);
+			grUiBackBestScore->DrawExtend({ CENTER_X, SCORE_Y - gap }, SCORE_FRAME_SCALE, Anchor::Mid, true, true);
 		}
-		//åˆ‡ã‚Šæ›¿ãˆå¾Œ.
-		else {
-			//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å€¤.
-			//1æšç›®ã¨2æšç›®ã®åˆ‡ã‚Šæ›¿ãˆãŒè‡ªç„¶ã«ãªã‚‹ã‚ˆã†ã€anim2ã¯é…å»¶ã‚ã‚Šã«ã™ã‚‹.
-			double anim1 = Calc::AnimEase(EaseType::InOutQuad, (timer.GetPassTime() - delay1)       / 1.8);
-			double anim2 = Calc::AnimEase(EaseType::InOutQuad, (timer.GetPassTime() - delay1 - 0.4) / 1.8);
-			//ãƒ­ã‚´1æšç›®.
-			DrawMode::Exe(
-				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * (1 - anim2)),
-				[&]() {
-					grLogo->DrawExtend({ Config::WINDOW_WID / 2, logoY - anim1 * 80 }, imgSize, Anchor::Mid, true, true);
-				}
-			);
-			//ãƒ­ã‚´2æšç›®.
-			DrawMode::Exe(
-				DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim1),
-				[&]() {
-					grLogoAll->DrawExtend({ Config::WINDOW_WID / 2, logoY - anim1 * 80 }, imgSize, Anchor::Mid, true, true);
-				}
-			);
-		}
-	}
+	);
+}
 
-	//best score.
-	if (timer.GetPassTime() >= delay2) {
+//[•`‰æ] PushƒeƒLƒXƒg.
+void TitleScene::DrawPushText() {
+	using namespace Config::TitleTime;
+	using namespace Config::TitleLayout;
 
-		const int drawY = Config::WINDOW_HEI / 2 + 130;
+	const double t = timer.GetPassTime();
 
-		//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å€¤.
-		double anim1 = Calc::AnimEase(EaseType::InOutQuad, (timer.GetPassTime() - delay3) / 1.5);
-		double anim2 = Calc::AnimEase(EaseType::InOutQuad, (timer.GetPassTime() - delay2) / 1.5);
-		//ãƒ†ã‚­ã‚¹ãƒˆ.
-		TCHAR text[256];
-		_stprintf(text, _T("BEST SCORE: %d"), gameData->bestScore); //ãƒ™ã‚¹ãƒˆã‚¹ã‚³ã‚¢.
-		DrawStr str(text, { Config::WINDOW_WID / 2, drawY-2 }, Config::COLOR_BEST_SCORE);
+	//•\¦‘O‚Íˆ—’†’f.
+	if (t < PUSH_START) { return; }
 
-		//æç”»(ã‚¹ã‚³ã‚¢)
-		DrawMode::Exe(
-			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim1),
-			[&]() {
-				str.Draw(Anchor::Mid, gameData->fonts.at("en-size3").GetFont()); //ã‚¹ã‚³ã‚¢å€¤.
-			}
-		);
-		//æç”»(ç”»åƒ)
-		DrawMode::Exe(
-			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim2),
-			[&]() {
-				grUiBackBestScore->
-					DrawExtend({ Config::WINDOW_WID / 2, drawY + (10 + 18 * anim2) }, { 0.45, 0.4 }, Anchor::Mid, true, true);
-				grUiBackBestScore->
-					DrawExtend({ Config::WINDOW_WID / 2, drawY - (10 + 18 * anim2) }, { 0.45, 0.4 }, Anchor::Mid, true, true);
-			}
-		);
-	}
-	//PUSH SPACE.
-	if (timer.GetPassTime() >= delay4) {
+	//“_–Å(0¨1‚Ì”g).
+	const double blink = Calc::AnimWave(WaveType::CosLoop, t - PUSH_START);
 
-		const int drawY = Config::WINDOW_HEI / 2 + 310;
-
-		//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å€¤.
-		double anim = Calc::AnimWave(WaveType::CosLoop, timer.GetPassTime() - delay4);
-		//ãƒ†ã‚­ã‚¹ãƒˆ.
-		DrawStr str(_T(""), { Config::WINDOW_WID / 2, drawY }, 0xFFFFFF);
-
-		//[æ“ä½œè¡¨ç¤º] æ“ä½œã«ã‚ˆã£ã¦è¡¨ç¤ºã™ã‚‹ãƒ†ã‚­ã‚¹ãƒˆã‚’å¤‰ãˆã‚‹.
-#if defined INPUT_CHANGE_ARCADE
-		str.text = _T("Push Upper Left Button");
-#else
-		//æœ€å¾Œã®æ“ä½œç«¯æœ«ã‚’å–å¾—.
-		switch (gameMng->GetLastInputDevice())
-		{
-			case InputDevice::None:
-				str.text = _T("Push [A Button] or [SPACE]");
-				break;
-
-			case InputDevice::Key:
-				str.text = _T("Push [SPACE]");
-				break;
-
-			case InputDevice::PadXbox:
-				str.text = _T("Push [A Button]");
-				break;
-
-			//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã¨ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ä»¥å¤–ã®æ“ä½œã«ãªã‚‹ã®ã¯ãŠã‹ã—ã„.
-			default: assert(false); break;
-		}
-#endif
-
-		//æç”».
-		DrawMode::Exe(
-			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * anim),
-			[&]() {
-				str.Draw(Anchor::Mid, gameData->fonts.at("en-size2").GetFont()); //ãƒ†ã‚­ã‚¹ãƒˆ.
-			}
-		);
-	}
-	//ç ´ç‰‡ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³.
-	if (!isTitleAnim) {
-		if (timer.GetPassTime() >= delay5) {
-			//æ¼”å‡ºå¬å–š.
-			meteorMng->BreakMeteor({ 960, 850 }, false, 1.4);
-			//ä¸€åº¦ãã‚Š.
-			isTitleAnim = true;
-		}
-	}
+	//ƒeƒLƒXƒg•`‰æ.
+	DrawStr str(GetPushText(), { CENTER_X, PUSH_Y }, Config::TitleColor::PUSH_TEXT);
+	DrawMode::Exe(
+		DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * blink),
+		[&]() { str.Draw(Anchor::Mid, fontPush); }
+	);
 }

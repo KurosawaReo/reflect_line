@@ -156,12 +156,6 @@ void GameManager::Init() {
 #endif
 	}
 
-	//[KrLib] シーン.
-	sceneMng->AddScene(&titleScene, _T("Title"));
-	sceneMng->AddScene(&menuScene,  _T("Menu"));
-	sceneMng->AddScene(&gameScene,  _T("Game"));
-	sceneMng->AddScene(&endScene,   _T("End"));
-
 	//フォント作成.
 	{
 		AddFontFile(_T("Resources/Fonts/Oxanium-VariableFont_wght.ttf"));
@@ -177,6 +171,12 @@ void GameManager::Init() {
 		gameData->fonts["en-size4"].Create(_T("Oxanium ExtraLight"), 32, 1, FontTypeID::Anti);
 		gameData->fonts["en-size5"].Create(_T("Oxanium ExtraLight"), 40, 1, FontTypeID::Anti);
 	}
+
+	//[KrLib] シーン.
+	sceneMng->AddScene(&titleScene, _T("Title"));
+	sceneMng->AddScene(&menuScene,  _T("Menu"));
+	sceneMng->AddScene(&gameScene,  _T("Game"));
+	sceneMng->AddScene(&endScene,   _T("End"));
 
 	//[score.data]
 	File file;

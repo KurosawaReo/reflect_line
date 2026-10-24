@@ -34,6 +34,8 @@
 //[設定]
 namespace Config {
 
+    static constexpr auto GAME_VERSION = _T("ver.2026/10/25");              //「REFLECT LINE」のバージョン.
+
     //[ファイル]
     static constexpr auto FILE_DATA_SCORE   = _T("Datas/highscore.data");   //ハイスコア記録.
     static constexpr auto FILE_DATA_PLAYLOG = _T("Datas/playlog.data");     //プレイ歴記録.

@@ -21,11 +21,15 @@ namespace KR
 		ManagerBase::BackAutoExeMode();
 	}
 
-	//シーン追加.
+	/*
+	   シーン追加.
+	   この時点でInitが実行されるため、画像やフォントの初期化は先に行うこと.
+	*/
 	void SceneMng::AddScene(IScene* sceneClass, MY_STRING saveName) {
 		sceneClass->Init();				//初期化.
 		scenes[saveName] = sceneClass;	//クラスを登録.
 	}
+
 	//シーン変更.
 	void SceneMng::SetScene(MY_STRING saveName) {
 		//登録されてなければ.
