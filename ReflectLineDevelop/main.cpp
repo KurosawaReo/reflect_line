@@ -2,21 +2,21 @@
    - main.cpp -
    プログラムの開始地点.
 */
-#include "GameData.h"
-#include "GameManager.h"
-#include "BGManager.h"
-#include "EffectManager.h"
-#include "ItemManager.h"
-#include "LaserManager.h"
-#include "Obst_Fireworks.h"
-#include "Obst_MeteorManager.h"
-#include "Obst_NormalLaser.h"
-#include "Obst_Ripples.h"
-#include "Obst_StraightLaser.h"
-#include "Player.h"
-#include "Stage_Endless.h"
-#include "Stage_Tutorial.h"
-#include "UIManager.h"
+#include "Programs/GameData.h"
+#include "Programs/GameManager.h"
+#include "Programs/BGManager.h"
+#include "Programs/EffectManager.h"
+#include "Programs/ItemManager.h"
+#include "Programs/LaserManager.h"
+#include "Programs/Obst_Fireworks.h"
+#include "Programs/Obst_MeteorManager.h"
+#include "Programs/Obst_NormalLaser.h"
+#include "Programs/Obst_Ripples.h"
+#include "Programs/Obst_StraightLaser.h"
+#include "Programs/Player.h"
+#include "Programs/Stage_Endless.h"
+#include "Programs/Stage_Tutorial.h"
+#include "Programs/UIManager.h"
 
 #if false
 int main() {

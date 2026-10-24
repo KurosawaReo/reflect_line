@@ -2,7 +2,7 @@
    - Config_Menu.h -
 */
 #pragma once
-#include "Config_Main.h"
+#include "Configs/Config_Main.h"
 
 //[ê›íË]
 namespace Config {

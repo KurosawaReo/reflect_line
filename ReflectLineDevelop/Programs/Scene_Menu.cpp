@@ -221,7 +221,7 @@ void MenuScene::DrawBG() {
 	DrawMode::Exe(
 		DrawModeID::None, DrawBlendModeID::Alpha, Config::MenuLayout::BG_ALPHA,
 		[&]() {
-			Box box = { {0, 0}, App::GetWindowRect().GetMid().ToDbl(), Config::MenuColor::BG_SHADE, 1.0f};
+			Box box = { {0, 0}, App::GetWindowSize().ToDbl(), Config::MenuColor::BG_SHADE, 1.0f};
 			box.Draw(Anchor::LU, true);
 		}
 	);

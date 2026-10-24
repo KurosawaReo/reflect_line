@@ -1,12 +1,7 @@
 【すぐ直せる問題】
-
-26. rand() と Calc::RandNum が混在（NormalLaser / StraightLaser / Ripples / Fireworks）。RandNum に統一すれば srand も要らなくなる。
-
-27. 文字コードが混在している。47ファイルが Shift-JIS で、4ファイル（GameManager.cpp、Scene_End/Menu/Title.cpp）が UTF-8 BOM。GitHub や他PCで文字化けする。UTF-8 に統一して、文字セット設定を確認したうえでビルドし、日本語表示をチェックする。
-
-28. _stprintf と TCHAR[256]（UIManager、Scene_Title）を、自作の Format::StrFormat に統一する。
-
-29. 警告レベルを /W4 にして警告を0にする。変数名の隠蔽（auto i が for の i を隠している、Fireworks:125 と Ripples:188）、符号比較、%d と size_t が出るはず。
+・rand() と Calc::RandNum が混在（NormalLaser / StraightLaser / Ripples / Fireworks）。RandNum に統一すれば srand も要らなくなる。
+・文字コードが混在している。47ファイルが Shift-JIS で、4ファイル（GameManager.cpp、Scene_End/Menu/Title.cpp）が UTF-8 BOM。GitHub や他PCで文字化けする。UTF-8 に統一して、文字セット設定を確認したうえでビルドし、日本語表示をチェックする。
+・_stprintf と TCHAR[256]（UIManager、Scene_Title）を、自作の Format::StrFormat に統一する。
 
 【時間のかかる問題】
 
@@ -51,7 +46,7 @@ floorf(gameTime*10)/10 が3箇所（GameData / Scene_End / UIManager）にある
 スコア説明の「+500」などは SCORE_* と二重管理。Format で差し込む。
 GameManager の Stop/DrawOnly/RestartObjects は同じ11個の vector を3回作っている。共通関数にする。
 
-#define が113個（Global.h） を constexpr / enum class にする。RIPPLES_STATE_* は enum class が向いている。MenuColor は DxLib_Init 前に GetColor を呼ぶ形なので、念のため 0xRRGGBB の定数にしておくと安全。
+RIPPLES_STATE_* は enum class が向いている。
 
 エラー時の見え方と Reset の呼び方
 リソース読み込みに失敗すると、ログを出して黒画面のまま WaitKey で待つ。提出先PCで相対パス（Resources/）が合わないと原因が分からない。MessageBox でファイル名を出したい。

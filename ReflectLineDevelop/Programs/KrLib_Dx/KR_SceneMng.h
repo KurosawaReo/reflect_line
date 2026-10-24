@@ -1,6 +1,6 @@
 /*
    - KR_SceneMng.h - (DxLib)
-   ver.2026/06/11
+   ver.2026/10/25
 
    シーン管理機能。
 */
@@ -11,7 +11,7 @@
 #endif
 //[include] ".h"ファイルで使うもの.
 #include "KR_ManagerBase.h"
-#include "KR_Statemachine.h"
+#include "KR_StateMachine.h"
 
 //KrLib名前空間.
 namespace KR

@@ -4,7 +4,7 @@
 */
 #pragma once
 #include "EffectManager.h"
-#include "Config_Main.h"
+#include "Configs/Config_Main.h"
 
 //エフェクトデータ.
 struct AfterEffect

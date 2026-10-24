@@ -8,7 +8,7 @@
    ・End
 */
 #pragma once
-#include "Config_Main.h"
+#include "Configs/Config_Main.h"
 
 //メニューカーソル.
 struct MenuCursor

@@ -4,7 +4,7 @@
 #include "BG1.h"
 
 //ˆË‘¶ŠÖŒW.
-#include "Config_Main.h"
+#include "Configs/Config_Main.h"
 #include "GameData.h"
 //QÆ.
 static GameData* gameData;

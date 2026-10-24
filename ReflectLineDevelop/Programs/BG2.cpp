@@ -4,8 +4,8 @@
 #include "BG2.h"
 
 //ˆË‘¶ŠÖŒW.
-#include "Config_BG2.h"
-#include "Config_Main.h"
+#include "Configs/Config_Main.h"
+#include "Configs/Config_BG2.h"
 #include "GameData.h"
 #include <cmath>
 //QÆ.

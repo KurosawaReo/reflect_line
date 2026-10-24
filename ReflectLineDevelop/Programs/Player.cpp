@@ -119,7 +119,7 @@ void Player::Draw()
 #if defined _DEBUG //Releaseでは入れない.
 	//無敵モード表示.
 	if (isDebug) {
-		DrawStr str(_T("[Debug] 無敵モード"), {WINDOW_WID/2, WINDOW_HEI/2+300}, COLOR_PLY_DEBUG);
+		DrawStr str(_T("[Debug] 無敵モード"), {Config::WINDOW_WID/2, Config::WINDOW_HEI/2+300}, Config::COLOR_PLY_DEBUG);
 		str.Draw(Anchor::Mid, gameData->fonts.at("jp-size3").GetFont());
 	}
 #endif
