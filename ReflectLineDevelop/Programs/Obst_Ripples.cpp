@@ -1,0 +1,279 @@
+/*
+   - Obst_Ripples.cpp -
+*/
+#include "Obst_Ripples.h"
+
+//依存関係.
+#include "Player.h"
+#include "GameData.h"
+#include "GameManager.h"
+//参照.
+static GameData* gameData;
+static Player*   player;
+//参照(KRライブラリ)
+static SoundMng* soundMng;
+
+// ▼*---=[ Ripples ]=---*▼ //
+
+//初期化(一回のみ行う)
+void Ripples::Init()
+{
+	gameData = ManagerInsts::Get<GameData>();
+	player   = ManagerInsts::Get<Player>();
+	soundMng = ManagerInsts::Get<SoundMng>();
+}
+
+//リセット(何回でも行う)
+void Ripples::Reset()
+{
+	flashTimer = 80; //最初は少しだけ待機.
+	ripples.clear(); //波紋を全て消去.
+}
+
+void Ripples::GenerateRandomPosition(double& x, double& y)
+{
+	//画面サイズ
+	int screenWidth  = Config::WINDOW_WID;
+	int screenHeight = Config::WINDOW_HEI;
+	int margin = 100;//画面端からのマージン大き目.
+	x = margin + (rand() % (screenWidth  - margin * 2));
+	y = margin + (rand() % (screenHeight - margin * 2));
+}
+bool Ripples::CheckDistance(double x, double y)
+{
+	for (const auto& i : ripples)
+	{
+		double dx = x - i.x;
+		double dy = y - i.y;
+		double distance = dx*dx + dy*dy;
+		if (distance < pow(Config::RIPPLES_MIN_DISTANCE, 2))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+//波紋生成.
+void Ripples::SpawnRipples(double x, double y)
+{
+	RipplesData tmp{}; //波紋生成.
+
+	tmp.x = x;
+	tmp.y = y;
+	tmp.duration = Config::RIPPLES_WARNING_DURATION + Config::RIPPLES_ACTIVE_DURATION;
+	tmp.counter  = tmp.duration;	// 持続時間から開始（カウントダウン）
+	tmp.baseSize = 20;				// 適切な基本サイズに調整
+	tmp.alreadyHit = false;         // 最初はまだ当たっていない.
+
+	ripples.push_back(tmp); //listに追加.
+}
+void Ripples::SpawnObstacleGroup()
+{
+	//同時出現をランダムに決定.
+	const int spawnCount = (rand() % Config::RIPPLES_MAX_SIMULTANEOUS) + 1;
+	for (int i = 0; i < spawnCount; i++)
+	{
+		double x{}, y{};
+		bool validPosition = false;
+		int attempts = 0;
+
+		while (!validPosition && attempts < 10)
+		{
+			GenerateRandomPosition(x, y);
+			validPosition = CheckDistance(x, y);
+			attempts++;
+		}
+		if (validPosition)
+		{
+			SpawnRipples(x, y);
+		}
+	}
+}
+int Ripples::GetEffectState(vector<RipplesData>::iterator it)
+{
+	// 残り時間がアクティブ時間より大きければ警告状態
+	if (it->counter > Config::RIPPLES_ACTIVE_DURATION) {
+		return Config::RIPPLES_STATE_WARNING;
+	}
+	else{
+		return Config::RIPPLES_STATE_ACTIVE;
+	}
+}
+
+//定期的にエフェクトを生成する.
+void Ripples::UpdateFlashGeneration()
+{
+	//タイマー減少.
+	flashTimer -= gameData->speedRate;
+
+	//0以下になったら実行.
+	if (flashTimer <= 0) {
+		//フラッシュエフェクト生成.
+		SpawnObstacleGroup();
+		//GameDataのspawnRateを使用してインターバルを調整.
+		flashTimer = Config::RIPPLES_SPAWN_SPAN * gameData->spawnRate;
+	}
+
+	//全波紋.
+	for (auto i = ripples.begin(); i != ripples.end(); )
+	{
+		//経過カウンター減少.
+		i->counter -= gameData->speedRate;
+		//エフェクト時間が終了したら無効化.
+		if (i->counter <= 0) {
+			i = ripples.erase(i);
+		}
+		else {
+			i++;
+		}
+	}
+}
+//更新.
+void Ripples::Update()
+{
+	UpdateFlashGeneration();
+	HitJudgment();
+}
+//描画.
+void Ripples::Draw()
+{
+	DrawObstFlash();
+}
+
+//当たり判定.
+void Ripples::HitJudgment()
+{
+	bool isPlaySound = false; //一度のみサウンドを流す用.
+	
+	//全波紋.
+	for (auto i = ripples.begin(); i != ripples.end(); i++) {
+
+		if (i->counter <= 0) {
+			continue;
+		}
+
+		int effectState = GetEffectState(i);
+		if (effectState == Config::RIPPLES_STATE_WARNING) {
+			continue;
+		}
+
+		//波紋が広がった瞬間のみダメージ判定.
+		if (effectState == Config::RIPPLES_STATE_ACTIVE && !i->alreadyHit) {
+
+			//エフェクトの当たり判定(半径)
+			int effectSize = _int_r(i->baseSize * Config::RIPPLES_FLASH_SIZE_INIT);
+			//距離.
+			DBL_XY dist = player->GetPos() - DBL_XY{i->x, i->y};
+
+			//プレイヤーに当たっていれば.
+			if (dist.Dist() <= effectSize + Config::PLAYER_SIZE) {
+				player->Death(); //死亡.
+			}
+
+			//サウンド.
+			if (!isPlaySound) {
+				if (auto j = soundMng->Get(_T("Ripples"))) {
+					j->Play(false, 73); //再生.
+				}
+				isPlaySound = true; //もう再生しない.
+			}
+
+			//波紋のダメージ判定終了.
+			i->alreadyHit = true;
+		}
+	}
+}
+
+void Ripples::DrawObstFlash()
+{
+	//全波紋.
+	for (auto i = ripples.begin(); i != ripples.end(); i++)
+	{
+		int effetState = GetEffectState(i);
+		if (effetState == Config::RIPPLES_STATE_WARNING)
+		{
+			// 予告状態の描画（赤い点滅エフェクト）
+			DrawWarningEffect(i);
+		}
+		else
+		{
+			// アクティブ状態の描画（元のフラッシュエフェクト）
+			DrawActiveEffect(i);
+		}
+	}
+}
+
+void Ripples::DrawWarningEffect(vector<RipplesData>::iterator it)
+{
+	//残り時間から経過時間を計算.
+	float elapsedTime = it->duration - it->counter;
+
+	//1: 透明度の計算(点滅)
+	int alphaValue;
+	//攻撃前になるまで点滅.
+	if (elapsedTime < 90) {
+		double blinkPhase = fmod(elapsedTime, Config::RIPPLES_FLASH_BLINK_TM);
+		double blinkAlpha = sin(blinkPhase * M_PI / Config::RIPPLES_FLASH_BLINK_TM); //0.0～1.0を往復するっぽい.
+		alphaValue = _int(255 - 200*blinkAlpha);
+	}
+	else {
+		alphaValue = 255; //最大値.
+	}
+
+	//2: サイズの計算.
+	int warningSize;
+	//攻撃前になったら脈動開始.
+	if (elapsedTime >= 90) {
+		const float pulseRate = 4.0f;
+		double pulseFactor = 1.0f + 0.4f * sin(elapsedTime * pulseRate * M_PI/60.0f);
+		warningSize = _int(it->baseSize * pulseFactor);
+	}
+	else {
+		warningSize = it->baseSize; //固定サイズ.
+	}
+
+	//予告エフェクト.
+	DrawMode::Exe(
+		DrawModeID::None, DrawBlendModeID::Alpha, alphaValue,
+		[&]() {
+			Circle cir;
+			cir = { {it->x, it->y}, _flt(warningSize),   GetColor(150, 150, 150), 1.0f };
+			cir.Draw(Anchor::Mid, false, true);
+			cir = { {it->x, it->y}, _flt(warningSize/2), GetColor(200, 200, 200), 1.0f };
+			cir.Draw(Anchor::Mid, false, true);
+			cir = { {it->x, it->y}, _flt(warningSize+5), GetColor(120, 120, 120), 1.0f };
+			cir.Draw(Anchor::Mid, false, true);
+		}
+	);
+}
+
+void Ripples::DrawActiveEffect(vector<RipplesData>::iterator it)
+{
+	// 残り時間から経過時間を計算
+	float elapsedTime = it->duration - it->counter;
+	float activeElapsedTime = elapsedTime - Config::RIPPLES_WARNING_DURATION;
+
+	// アクティブ状態での進行度
+	float activeProgress = activeElapsedTime / Config::RIPPLES_ACTIVE_DURATION;
+
+	// 透明度を時間に応じて計算
+	float alpha = 1.0f - (activeProgress * Config::RIPPLES_FLASH_ALPHA_TM);
+	int alphaValue = _int(255 * max(alpha, 0.0f));
+
+	// エフェクトのサイズを時間に応じて拡大
+	float sizeMultiplier = Config::RIPPLES_FLASH_SIZE_INIT + (activeProgress * Config::RIPPLES_FLASH_SIZE_SPREAD);
+	int effectSize = _int(it->baseSize * sizeMultiplier);
+	int innerSize = effectSize / 2;
+
+	//アクティブエフェクト.
+	DrawMode::Exe(
+		DrawModeID::None, DrawBlendModeID::Alpha, alphaValue,
+		[&]() {
+			Circle cir;
+			cir = {{it->x, it->y}, _flt(effectSize), GetColor(0, 255, 255), 1.0f};
+			cir.Draw(Anchor::Mid, false, true);
+			cir = {{it->x, it->y}, _flt(innerSize),  GetColor(0, 255, 200), 1.0f};
+			cir.Draw(Anchor::Mid, false, true);
+		}
+	);
+}

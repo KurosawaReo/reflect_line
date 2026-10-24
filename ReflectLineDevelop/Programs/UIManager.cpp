@@ -1,0 +1,225 @@
+/*
+   - UIManager.cpp -
+   UI管理.
+*/
+#include "UIManager.h"
+
+//依存関係.
+#include "Stage_Tutorial.h"
+#include "GameData.h"
+#include "GameManager.h"
+//参照.
+static GameManager*   gameMng;
+static GameData*      gameData;
+static TutorialStage* tutorialStg;
+
+// ▼*--=<[ UIManager ]>=--*▼ //
+
+//初期化.
+void UIManager::Init() {
+
+	//参照取得.
+	gameMng     = ManagerInsts::Get<GameManager>();
+	gameData    = ManagerInsts::Get<GameData>();
+	tutorialStg = ManagerInsts::Get<TutorialStage>();
+	//画像取得.
+	grUiBackLevel     = GraphMng::Get(_T("ui_back_level"));
+	grUiBackBestScore = GraphMng::Get(_T("ui_back_best_score"));
+	grUiBackScore     = GraphMng::Get(_T("ui_back_score"));
+	grUiBackTime      = GraphMng::Get(_T("ui_back_time"));
+}
+
+//リセット.
+void UIManager::Reset() {
+
+	//自動実行設定.
+	SetAutoExeMode(MngAutoExe::Stop);
+
+	isShowScore = false;
+}
+
+//更新.
+void UIManager::Update() {
+
+}
+
+//描画.
+void UIManager::Draw() {
+
+	//ゲームシーン経過時間.
+	const float time = gameMng->GetGameScene()->GetSceneTime();
+	//白ラベルのテキストの位置修正.
+	const int offset = -1;
+
+	//ステージ別.
+	switch (gameData->stage) 
+	{
+		case StageType::Tutorial: DrawTutorial(time, offset); break;
+		case StageType::Endless:  DrawEndless (time, offset); break;
+			
+		default: assert(false); break;
+	}
+}
+
+//描画(チュートリアル)
+void UIManager::DrawTutorial(float time, int offset) {
+
+	//アニメーション値.
+	double alpha   = Calc::AnimEase(EaseType::InOutQuad, (time - 1.0) * 2);
+	double alpha2  = Calc::AnimEase(EaseType::InOutQuad,  time - 0.2);
+	double animSin = sin(M_PI * (time - 0.2));
+	//テキスト設定.
+	DrawStr str1({}, { Config::WINDOW_WID / 2,  70 + offset }, 0xFFFFFF);
+	DrawStr str2({}, { Config::WINDOW_WID / 2, 150 }, Config::COLOR_SCORE);
+
+	TCHAR text[256];
+	_stprintf(text, _T("STEP %d"), tutorialStg->GetStepNo());
+	str1.text = text;
+	_stprintf(text, _T("SCORE:%05d"), gameData->GetScoreNoTime());
+	str2.text = text;
+
+	// ===== STEP =====
+	//背景画像.
+	grUiBackLevel->DrawExtend({ Config::WINDOW_WID / 2, 70 }, { 0.4, 0.35 });
+	//描画.
+	DrawMode::Exe(
+		DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha),
+		[&]() {
+			str1.Draw(Anchor::Mid, gameData->fonts.at("en-size5").GetFont());
+		}
+	);
+
+	// ===== SCORE =====
+	if (isShowScore) {
+
+		DrawMode::Exe(
+			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha2),
+			[&]() {
+				str2.Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
+				grUiBackScore->DrawExtend({ (double)str2.pos.x, (double)str2.pos.y + 28 }, { 0.35, 0.4 });
+			}
+		);
+		//テキスト(光沢用)
+		DrawMode::Exe(
+			DrawModeID::None, DrawBlendModeID::Alpha, _int(100 * animSin),
+			[&]() {
+				str2.color = 0xFFFFFF;
+				str2.Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
+			}
+		);
+	}
+}
+
+//描画(エンドレス)
+void UIManager::DrawEndless(float time, int offset) {
+
+	//アニメーション値.
+	const double alpha1 = Calc::AnimEase(EaseType::InOutQuad, (time - 0.1));
+	const double alpha2 = Calc::AnimEase(EaseType::InOutQuad, (time - 0.2));
+	const double alpha3 = Calc::AnimEase(EaseType::InOutQuad, (time - 0.3));
+	const double alpha4 = Calc::AnimEase(EaseType::InOutQuad, (time - 1.0) * 2);
+	const double animSin1 = sin(M_PI * (time - 0.1));
+	const double animSin2 = sin(M_PI * (time - 0.2));
+	const double animSin3 = sin(M_PI * (time - 0.3));
+
+	//テキスト設定.
+	DrawStr str[4] = {
+		DrawStr({}, { Config::WINDOW_WID / 2,        70 + offset }, 0xFFFFFF),
+		DrawStr({}, { Config::WINDOW_WID / 2 - 350, 150          }, Config::COLOR_BEST_SCORE),
+		DrawStr({}, { Config::WINDOW_WID / 2,       150          }, Config::COLOR_SCORE),
+		DrawStr({}, { Config::WINDOW_WID / 2 + 350, 150          }, Config::COLOR_TIME),
+	};
+
+	//ゲーム時間.
+	float fixTime;
+	{
+		//小数第二位以下は切り捨てる(勝手に四捨五入されてしまうため)
+		const float gameTime = gameMng->GetGameScene()->GetGameTime();
+		fixTime = floorf(gameTime * 10.0f) / 10.0f;
+	}
+
+	TCHAR text[256];
+	_stprintf(text, _T("LEVEL %d"), gameData->level);
+	str[0].text = text;
+	_stprintf(text, _T("BEST SCORE:%05d"), dispBestScore);
+	str[1].text = text;
+	_stprintf(text, _T("SCORE:%05d"), gameData->GetScore());
+	str[2].text = text;
+	_stprintf(text, _T("TIME:%.1f"), fixTime);
+	str[3].text = text;
+
+	//[level]
+	{
+		DrawMode::Exe(
+			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha4),
+			[&]() {
+				//画像.
+				grUiBackLevel->DrawExtend({ Config::WINDOW_WID / 2, 70 }, { 0.4, 0.35 });
+				//テキスト.
+				str[0].Draw(Anchor::Mid, gameData->fonts.at("en-size5").GetFont());
+			}
+		);
+	}
+	//[best score]
+	{
+		DrawMode::Exe(
+			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha1),
+			[&]() {
+				//画像.
+				grUiBackBestScore->DrawExtend(str[1].pos.ToDbl() + DBL_XY(0, 28), { 0.35, 0.4 });
+				//テキスト.
+				str[1].Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
+			}
+		);
+	}
+	//[score]
+	{
+		DrawMode::Exe(
+			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha2),
+			[&]() {
+				//画像.
+				grUiBackScore->DrawExtend(str[2].pos.ToDbl() + DBL_XY(0, 28), { 0.35, 0.4 });
+				//テキスト.
+				str[2].Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
+			}
+		);
+	}
+	//[time]
+	{
+		DrawMode::Exe(
+			DrawModeID::None, DrawBlendModeID::Alpha, _int(255 * alpha3),
+			[&]() {
+				//画像.
+				grUiBackTime->DrawExtend(str[3].pos.ToDbl() + DBL_XY(0, 28), { 0.35, 0.4 });
+				//テキスト.
+				str[3].Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
+			}
+		);
+	}
+
+	//テキスト(光沢用)
+	str[1].color = 0xFFFFFF;
+	str[2].color = 0xFFFFFF;
+	str[3].color = 0xFFFFFF;
+	//タイミング1.
+	DrawMode::Exe(
+		DrawModeID::None, DrawBlendModeID::Alpha, _int(100 * animSin1),
+		[&]() {
+			str[1].Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
+		}
+	);
+	//タイミング2.
+	DrawMode::Exe(
+		DrawModeID::None, DrawBlendModeID::Alpha, _int(100 * animSin2),
+		[&]() {
+			str[2].Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
+		}
+	);
+	//タイミング3.
+	DrawMode::Exe(
+		DrawModeID::None, DrawBlendModeID::Alpha, _int(100 * animSin3),
+		[&]() {
+			str[3].Draw(Anchor::Mid, gameData->fonts.at("en-size4").GetFont());
+		}
+	);
+}
