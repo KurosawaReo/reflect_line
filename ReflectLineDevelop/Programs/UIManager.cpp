@@ -5,13 +5,13 @@
 #include "UIManager.h"
 
 //ˆË‘¶ŠÖŒW.
-#include "Stage_Tutorial.h"
 #include "GameData.h"
 #include "GameManager.h"
+#include "Modes/Mode_Tutorial.h"
 //QÆ.
 static GameManager*   gameMng;
 static GameData*      gameData;
-static TutorialStage* tutorialStg;
+static TutorialMode* tutorialMode;
 
 // ¥*--=<[ UIManager ]>=--*¥ //
 
@@ -21,7 +21,7 @@ void UIManager::Init() {
 	//QÆæ“¾.
 	gameMng     = ManagerInsts::Get<GameManager>();
 	gameData    = ManagerInsts::Get<GameData>();
-	tutorialStg = ManagerInsts::Get<TutorialStage>();
+	tutorialMode = ManagerInsts::Get<TutorialMode>();
 	//‰æ‘œæ“¾.
 	grUiBackLevel     = GraphMng::Get(_T("ui_back_level"));
 	grUiBackBestScore = GraphMng::Get(_T("ui_back_best_score"));
@@ -73,7 +73,7 @@ void UIManager::DrawTutorial(float time, int offset) {
 	DrawStr str2({}, { Config::WINDOW_WID / 2, 150 }, Config::COLOR_SCORE);
 
 	TCHAR text[256];
-	_stprintf(text, _T("STEP %d"), tutorialStg->GetStepNo());
+	_stprintf(text, _T("STEP %d"), tutorialMode->GetStepNo());
 	str1.text = text;
 	_stprintf(text, _T("SCORE:%05d"), gameData->GetScoreNoTime());
 	str2.text = text;

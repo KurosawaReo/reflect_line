@@ -4,7 +4,7 @@
    áŠQ•¨uè¦Îv
 */
 #pragma once
-#include "Player.h"
+#include "../Player.h"
 
 //è¦Î‚Ìó‘Ô.
 enum class MeteorState

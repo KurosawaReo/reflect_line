@@ -2,8 +2,8 @@
    - BGManager.h -
 */
 #pragma once
-#include "BG1.h"
-#include "BG2.h"
+#include "Backgrounds/BG1.h"
+#include "Backgrounds/BG2.h"
 //#include "BG3.h"
 
 //”wŒi‚ÌŽí—Þ.

@@ -5,19 +5,16 @@
 #include "Player.h"
 
 //依存関係.
-#include "LaserManager.h"
-#include "Obst_NormalLaser.h"
-#include "Stage_Tutorial.h"
-#include "GameManager.h"
 #include "GameData.h"
-
-#include "KrLib_Dx/KR_ManagerInsts.h"
-#include "KrLib_Dx/KR_TimerMng.h"
+#include "GameManager.h"
+#include "LaserManager.h"
+#include "Obstacles/Obst_NormalLaser.h"
+#include "Modes/Mode_Tutorial.h"
 //参照.
 static GameData*      gameData;
 static GameManager*   gameMng;
 static EffectManager* effectMng;
-static TutorialStage* tutorialStg;
+static TutorialMode* tutorialMode;
 //参照(KRライブラリ)
 static SoundMng*      soundMng;
 static InputMng*      inputMng;
@@ -46,7 +43,7 @@ void Player::Init()
 	gameData    = ManagerInsts::Get<GameData>();
 	gameMng     = ManagerInsts::Get<GameManager>();
 	effectMng   = ManagerInsts::Get<EffectManager>();
-	tutorialStg = ManagerInsts::Get<TutorialStage>();
+	tutorialMode = ManagerInsts::Get<TutorialMode>();
 	soundMng    = ManagerInsts::Get<SoundMng>();
 	inputMng    = ManagerInsts::Get<InputMng>();
 	//画像取得.
@@ -186,7 +183,7 @@ void Player::UpdateDash()
 
 				//チュートリアルなら.
 				if (gameData->stage == StageType::Tutorial) {
-					tutorialStg->SetPlayerDash(true);
+					tutorialMode->SetPlayerDash(true);
 				}
 			}
 		}

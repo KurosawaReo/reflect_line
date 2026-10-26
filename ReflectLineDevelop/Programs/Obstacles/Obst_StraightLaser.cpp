@@ -4,9 +4,9 @@
 #include "Obst_StraightLaser.h"
 
 //ˆË‘¶ŠÖŒW.
-#include "GameData.h"
-#include "GameManager.h"
-#include "LaserManager.h"
+#include "../GameData.h"
+#include "../GameManager.h"
+#include "../LaserManager.h"
 //QÆ.
 static GameData*     gameData;
 static LaserManager* laserMng;

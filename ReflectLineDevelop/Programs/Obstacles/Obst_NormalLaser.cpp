@@ -4,11 +4,11 @@
 #include "Obst_NormalLaser.h" //自身のヘッダ.
 
 //依存関係.
-#include "Player.h"
-#include "LaserManager.h"
-#include "Obst_MeteorManager.h"
-#include "GameData.h"
-#include "GameManager.h"
+#include "../GameData.h"
+#include "../GameManager.h"
+#include "../LaserManager.h"
+#include "../Obstacles/Obst_MeteorManager.h"
+#include "../Player.h"
 //参照.
 static GameData*      gameData;
 static Player*        player;

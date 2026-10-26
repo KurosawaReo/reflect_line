@@ -3,7 +3,7 @@
    レーザー管理クラス.
 */
 #pragma once
-#include "Obst_Meteor.h"
+#include "Obstacles/Obst_Meteor.h"
 
 //レーザータイプ.
 enum class LaserType

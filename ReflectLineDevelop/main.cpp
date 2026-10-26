@@ -8,14 +8,14 @@
 #include "Programs/EffectManager.h"
 #include "Programs/ItemManager.h"
 #include "Programs/LaserManager.h"
-#include "Programs/Obst_Fireworks.h"
-#include "Programs/Obst_MeteorManager.h"
-#include "Programs/Obst_NormalLaser.h"
-#include "Programs/Obst_Ripples.h"
-#include "Programs/Obst_StraightLaser.h"
+#include "Programs/Obstacles/Obst_Fireworks.h"
+#include "Programs/Obstacles/Obst_MeteorManager.h"
+#include "Programs/Obstacles/Obst_NormalLaser.h"
+#include "Programs/Obstacles/Obst_Ripples.h"
+#include "Programs/Obstacles/Obst_StraightLaser.h"
 #include "Programs/Player.h"
-#include "Programs/Stage_Endless.h"
-#include "Programs/Stage_Tutorial.h"
+#include "Programs/Modes/Mode_Endless.h"
+#include "Programs/Modes/Mode_Tutorial.h"
 #include "Programs/UIManager.h"
 
 #if false
@@ -49,8 +49,8 @@ int WINAPI WinMain(
 	ManagerInsts::NewManager<Ripples>();
 	ManagerInsts::NewManager<StraightLaser>();
 	ManagerInsts::NewManager<Player>();
-	ManagerInsts::NewManager<EndlessStage>();
-	ManagerInsts::NewManager<TutorialStage>();
+	ManagerInsts::NewManager<EndlessMode>();
+	ManagerInsts::NewManager<TutorialMode>();
 	ManagerInsts::NewManager<SceneMng>();		//シーンクラス.
 	ManagerInsts::NewManager<UIManager>();
 

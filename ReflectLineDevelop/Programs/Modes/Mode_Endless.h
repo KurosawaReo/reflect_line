@@ -1,10 +1,10 @@
 /*
-   - Stage_Endless.h -
+   - Mode_Endless.h -
 */
 #pragma once
 
-//エンドレスステージ.
-class EndlessStage final : public ManagerBase 
+//エンドレスモード.
+class EndlessMode final : public ManagerBase 
 {
 //▼ ===== 変数 ===== ▼.
 private:
@@ -20,7 +20,7 @@ private:
 
 public:
 	//コンストラクタ.
-	EndlessStage(){}
+	EndlessMode(){}
 
 	void Init()   override;
 	void Reset()  override;
@@ -28,6 +28,6 @@ public:
 	void Draw()   override;
 
 	//使用禁止.
-	EndlessStage(const EndlessStage&) = delete;
-	EndlessStage& operator=(const EndlessStage&) = delete;
+	EndlessMode(const EndlessMode&) = delete;
+	EndlessMode& operator=(const EndlessMode&) = delete;
 };

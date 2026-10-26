@@ -1,21 +1,21 @@
 /*
-   - Stage_Tutorial.cpp -   
+   -Mode_Tutorial.cpp -   
 */
-#include "Stage_Tutorial.h"
+#include "Mode_Tutorial.h"
 
 //依存関係.
-#include "LaserManager.h"
-#include "Obst_NormalLaser.h"
-#include "Obst_StraightLaser.h"
-#include "Obst_MeteorManager.h"
-#include "Obst_Ripples.h"
-#include "Obst_Fireworks.h"
-#include "ItemManager.h"
-#include "Player.h"
-#include "EffectManager.h"
-#include "UIManager.h"
-#include "GameData.h"
-#include "GameManager.h"
+#include "../GameManager.h"
+#include "../GameData.h"
+#include "../LaserManager.h"
+#include "../Obstacles/Obst_NormalLaser.h"
+#include "../Obstacles/Obst_StraightLaser.h"
+#include "../Obstacles/Obst_MeteorManager.h"
+#include "../Obstacles/Obst_Ripples.h"
+#include "../Obstacles/Obst_Fireworks.h"
+#include "../ItemManager.h"
+#include "../Player.h"
+#include "../EffectManager.h"
+#include "../UIManager.h"
 //参照.
 static GameData*		gameData;
 static GameManager*		gameMng;
@@ -34,10 +34,10 @@ static TimerMng*		timerMng;
 
 constexpr int MOVIE_BACK_ALPHA = 160; //動画再生中の暗転の透明度.
 
-// ▼*--=<[ TutorialStage ]>=--*▼ //
+// ▼*--=<[ TutorialMode ]>=--*▼ //
 
 //初期化.
-void TutorialStage::Init() {
+void TutorialMode::Init() {
 
 	//参照取得.
 	gameData	 = ManagerInsts::Get<GameData>();
@@ -63,7 +63,7 @@ void TutorialStage::Init() {
 }
 
 //リセット.
-void TutorialStage::Reset() {
+void TutorialMode::Reset() {
 
 	startTimer.Reset();
 	endTimer.Reset();
@@ -77,7 +77,7 @@ void TutorialStage::Reset() {
 }
 
 //更新.
-void TutorialStage::Update() {
+void TutorialMode::Update() {
 
 	//透明度計算.
 	{
@@ -123,7 +123,7 @@ void TutorialStage::Update() {
 }
 
 //描画.
-void TutorialStage::Draw() {
+void TutorialMode::Draw() {
 
 	//ステップ別.
 	switch (stepNo)
@@ -139,7 +139,7 @@ void TutorialStage::Draw() {
 }
 
 //更新:step0
-void TutorialStage::UpdateStep0() {
+void TutorialMode::UpdateStep0() {
 
 	//サウンド.
 	if (auto i = soundMng->Get(_T("LevelUp"))) {
@@ -160,7 +160,7 @@ void TutorialStage::UpdateStep0() {
 }
 
 //更新:step1
-void TutorialStage::UpdateStep1() {
+void TutorialMode::UpdateStep1() {
 
 	//ステップ内項目.
 	switch (stepInnerNo)
@@ -241,7 +241,7 @@ void TutorialStage::UpdateStep1() {
 }
 
 //更新:step2
-void TutorialStage::UpdateStep2() {
+void TutorialMode::UpdateStep2() {
 
 	//ステップ内項目.
 	switch (stepInnerNo) 
@@ -299,7 +299,7 @@ void TutorialStage::UpdateStep2() {
 }
 
 //更新:step3
-void TutorialStage::UpdateStep3() {
+void TutorialMode::UpdateStep3() {
 
 	//ステップ内項目.
 	switch (stepInnerNo) 
@@ -433,7 +433,7 @@ void TutorialStage::UpdateStep3() {
 }
 
 //更新:step4
-void TutorialStage::UpdateStep4() {
+void TutorialMode::UpdateStep4() {
 
 	//ステップ内項目.
 	switch (stepInnerNo) 
@@ -475,7 +475,7 @@ void TutorialStage::UpdateStep4() {
 }
 
 //描画:step1
-void TutorialStage::DrawStep1() {
+void TutorialMode::DrawStep1() {
 
     //ステップ内項目.
     switch (stepInnerNo)
@@ -550,7 +550,7 @@ void TutorialStage::DrawStep1() {
 }
 
 //描画:step2
-void TutorialStage::DrawStep2() {
+void TutorialMode::DrawStep2() {
 
     //ステップ内項目.
     switch (stepInnerNo)
@@ -574,7 +574,7 @@ void TutorialStage::DrawStep2() {
 }
 
 //描画:step3
-void TutorialStage::DrawStep3() {
+void TutorialMode::DrawStep3() {
 
     //ステップ内項目.
     switch (stepInnerNo) 
@@ -679,7 +679,7 @@ void TutorialStage::DrawStep3() {
 }
 
 //描画:step4
-void TutorialStage::DrawStep4() {
+void TutorialMode::DrawStep4() {
 
     //ステップ内項目.
     switch (stepInnerNo) 
@@ -707,7 +707,7 @@ void TutorialStage::DrawStep4() {
    alpha: 0.0～1.0
    line : 行数
 */
-void TutorialStage::DrawTopText(int line, double alpha, MY_STRING text) {
+void TutorialMode::DrawTopText(int line, double alpha, MY_STRING text) {
 
 	//テキスト設定.
 	DrawStr str(text, { Config::WINDOW_WID / 2, 0}, {});
@@ -777,7 +777,7 @@ void TutorialStage::DrawTopText(int line, double alpha, MY_STRING text) {
 }
 
 //このステップを終了するか判定.
-bool TutorialStage::IsEnd() {
+bool TutorialMode::IsEnd() {
 
 	bool ret = false; //終了条件を満たしたか.
 
@@ -892,7 +892,7 @@ bool TutorialStage::IsEnd() {
 }
 
 //サインフラグのリセット.
-void TutorialStage::ResetSignFlag() {
+void TutorialMode::ResetSignFlag() {
 
 	isPlayerDash    = false;
 	isTakeItem      = false;
@@ -902,7 +902,7 @@ void TutorialStage::ResetSignFlag() {
 }
 
 //項目が終わる度の処理.
-void TutorialStage::StepInnerEnd() {
+void TutorialMode::StepInnerEnd() {
 
 	//リセット.
 	startTimer.Reset();

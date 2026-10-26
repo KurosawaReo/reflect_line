@@ -3,13 +3,13 @@
    ゲーム全体管理.
 */
 #pragma once
-#include "Scene_Title.h"
-#include "Scene_Menu.h"
-#include "Scene_Game.h"
-#include "Scene_End.h"
-#include "Obst_NormalLaser.h"
-#include "Obst_NormalLaser.h"
-#include "Obst_StraightLaser.h"
+#include "Scenes/Scene_Title.h"
+#include "Scenes/Scene_Menu.h"
+#include "Scenes/Scene_Game.h"
+#include "Scenes/Scene_End.h"
+#include "Obstacles/Obst_NormalLaser.h"
+#include "Obstacles/Obst_NormalLaser.h"
+#include "Obstacles/Obst_StraightLaser.h"
 
 //ゲームマネージャー.
 class GameManager final : public ManagerBase

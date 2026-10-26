@@ -4,9 +4,9 @@
 #include "Obst_Ripples.h"
 
 //ˆË‘¶ŠÖŒW.
-#include "Player.h"
-#include "GameData.h"
-#include "GameManager.h"
+#include "../GameData.h"
+#include "../GameManager.h"
+#include "../Player.h"
 //QÆ.
 static GameData* gameData;
 static Player*   player;

@@ -1,10 +1,10 @@
 /*
-   - Stage_Tutorial.h -
+   - Mode_Tutorial.h -
 */
 #pragma once
 
-//チュートリアルステージ.
-class TutorialStage final : public ManagerBase
+//チュートリアルモード.
+class TutorialMode final : public ManagerBase
 {
 //▼ ===== 変数 ===== ▼.
 private:
@@ -49,7 +49,7 @@ private:
 
 public:
 	//コンストラクタ.
-	TutorialStage(){}
+	TutorialMode(){}
 
 	//set.
 	void SetPlayerDash   (bool _flag) { isPlayerDash    = _flag; }
@@ -67,6 +67,6 @@ public:
 	void Draw()   override;
 	
 	//使用禁止.
-	TutorialStage(const TutorialStage&) = delete;
-	TutorialStage& operator=(const TutorialStage&) = delete;
+	TutorialMode(const TutorialMode&) = delete;
+	TutorialMode& operator=(const TutorialMode&) = delete;
 };

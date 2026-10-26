@@ -4,9 +4,9 @@
 #include "Obst_Fireworks.h"
 
 //ˆË‘¶ŠÖŒW.
-#include "Player.h"
-#include "LaserManager.h"
-#include "GameData.h"
+#include "../GameData.h"
+#include "../Player.h"
+#include "../LaserManager.h"
 //QÆ.
 static GameData*     gameData;
 static LaserManager* laserMng;

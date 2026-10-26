@@ -4,10 +4,10 @@
 #include "Scene_Menu.h"
 
 //ˆË‘¶ŠÖŒW.
-#include "Configs/Config_Menu.h"
-#include "BGManager.h"
-#include "GameData.h"
-#include "GameManager.h"
+#include "../GameData.h"
+#include "../GameManager.h"
+#include "../Configs/Config_Menu.h"
+#include "../BGManager.h"
 //QÆ.
 static GameData*    gameData;
 static GameManager* gameMng;
