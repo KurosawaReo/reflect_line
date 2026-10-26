@@ -35,47 +35,35 @@ void EffectManager::Update() {
 	//全てのエフェクト.
 	for (auto i = effect.begin(); i != effect.end(); ) {
 
-		bool isErase = false; //消去するかどうか.
-
 		//タイプ別.
 		switch (i->type) 
 		{
 			case EffectType::Score100:
 			case EffectType::Score500:
 			{
+				//カウンター加算.
 				i->counter++;
-
-				//時間経過で消滅.
-				if (i->counter >= Config::SCORE_ANIM_TIME) {
-					isErase = true;
-				}
+				//消滅する時間.
+				i->eraseCount = Config::SCORE_ANIM_TIME;
 			}
 			break;
 
 			case EffectType::PlayerDeath:
 			{
+				//カウンター加算.
 				i->counter++;
-
-				//時間経過で消滅.
-				if (i->counter >= Config::PLAYER_DEATH_ANIM_TIME) {
-					isErase = true;
-				}
-			}
-			break;
-
-			case EffectType::Reflect:
-			{
-				i->counter++;
-
-				//時間経過で消滅.
-				if (i->counter >= Config::LASER_REF_ANIM_TIME) {
-					isErase = true;
-				}
+				//消滅する時間.
+				i->eraseCount = Config::PLAYER_DEATH_ANIM_TIME;
 			}
 			break;
 
 			case EffectType::PlayerDashReflect:
 			{
+				//カウンター加算.
+				i->counter += gameData->speedRate;
+				//消滅する時間.
+				i->eraseCount = Config::PLAYER_DASH_SPARK_ANIM_TIME;
+
 				//カウンター計算.
 				i->counter += gameData->speedRate;
 				//回転.
@@ -85,11 +73,24 @@ void EffectManager::Update() {
 				//移動.
 				i->pos.x += i->vec.x * newSpeed * gameData->speedRate;
 				i->pos.y += i->vec.y * newSpeed * gameData->speedRate;
+			}
+			break;
 
-				//時間経過で消滅.
-				if (i->counter >= Config::PLAYER_DASH_SPARK_ANIM_TIME) {
-					isErase = true;
-				}
+			case EffectType::PlayerReflectModeEnd:
+			{
+				//カウンター加算.
+				i->counter++;
+				//消滅する時間.
+				i->eraseCount = Config::PLAYER_ANIM_REFLECT_END;
+			}
+			break;
+
+			case EffectType::Reflect:
+			{
+				//カウンター加算.
+				i->counter++;
+				//消滅する時間.
+				i->eraseCount = Config::LASER_REF_ANIM_TIME;
 			}
 			break;
 
@@ -97,10 +98,8 @@ void EffectManager::Update() {
 			{
 				//カウンター加算.
 				i->counter += gameData->speedRate;
-				//時間経過で消滅.
-				if (i->counter >= Config::METEOR_BREAK_ANIM_TIME) {
-					isErase = true;
-				}
+				//消滅する時間.
+				i->eraseCount = Config::METEOR_BREAK_ANIM_TIME;
 			}
 			break;
 
@@ -108,6 +107,9 @@ void EffectManager::Update() {
 			{
 				//カウンター加算.
 				i->counter += gameData->speedRate;
+				//消滅する時間.
+				i->eraseCount = Config::METEOR_BREAK_ANIM_TIME;
+
 				//回転.
 				i->ang += 3 * gameData->speedRate;
 				//減速.
@@ -115,11 +117,6 @@ void EffectManager::Update() {
 				//移動.
 				i->pos.x += i->vec.x * newSpeed * gameData->speedRate;
 				i->pos.y += i->vec.y * newSpeed * gameData->speedRate;
-
-				//時間経過で消滅.
-				if (i->counter >= Config::METEOR_BREAK_ANIM_TIME) {
-					isErase = true;
-				}
 			}
 			break;
 
@@ -133,20 +130,18 @@ void EffectManager::Update() {
 			case EffectType::Tutorial_Step3:
 			case EffectType::Tutorial_Step4:
 			{
+				//カウンター加算.
 				i->counter++;
-
-				//時間経過で消滅.
-				if (i->counter >= Config::MIDDLE_ANIM_TIME) {
-					isErase = true;
-				}
+				//消滅する時間.
+				i->eraseCount = Config::MIDDLE_ANIM_TIME;
 			}
 			break;
 
 			default: assert(false); break;
 		}
 
-		//次の要素に進む.
-		if (isErase) {
+		//消滅時間になったら.
+		if (i->counter >= i->eraseCount) {
 			i = effect.erase(i); //消去して次へ.
 		}
 		else {
@@ -160,6 +155,9 @@ void EffectManager::Draw() {
 	//全てのエフェクト.
 	for (const auto& i : effect) {
 
+		//進行度(0→1).
+		const double effectTime = i.counter / i.eraseCount;
+
 		//タイプ別.　
 		switch (i.type)
 		{
@@ -167,9 +165,9 @@ void EffectManager::Draw() {
 			case EffectType::Score500:
 			{
 				//座標.
-				DBL_XY pos = {i.pos.x, i.pos.y - AnimEase(EaseType::OutQuad, i.counter/ Config::SCORE_ANIM_TIME)*30};
+				DBL_XY pos = {i.pos.x, i.pos.y - AnimEase(EaseType::OutQuad, effectTime)*30};
 				//透明度.
-				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/ Config::SCORE_ANIM_TIME));
+				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - effectTime));
 
 				const double size = 0.6;
 
@@ -192,9 +190,9 @@ void EffectManager::Draw() {
 			case EffectType::PlayerDeath:
 			{
 				//透明度.
-				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/ Config::PLAYER_DEATH_ANIM_TIME));
+				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - effectTime));
 
-				Circle cir = { i.pos, Config::PLAYER_SIZE+i.counter/2, 0xFFFFFF, 1.0f };
+				Circle cir = { i.pos, Config::PLAYER_SIZE + i.counter/2, 0xFFFFFF, 1.0f };
 				//描画.
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
@@ -207,12 +205,10 @@ void EffectManager::Draw() {
 
 			case EffectType::PlayerDashReflect:
 			{
-				//進行度(0→1).
-				const double time     = i.counter / Config::PLAYER_DASH_SPARK_ANIM_TIME;
 				//線の長さ(徐々に短くなる)
-				const float  sparkLen = _flt(8 * (1 - time));
+				const float sparkLen = _flt(8 * (1 - effectTime));
 				//透明度.
-				const int    alpha    = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - time));
+				const int   alpha    = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - effectTime));
 
 				//飛ばす線データ.
 				Line line{};
@@ -230,12 +226,35 @@ void EffectManager::Draw() {
 			}
 			break;
 
+			case EffectType::PlayerReflectModeEnd:
+			{
+				//線の長さ(徐々に短くなる)
+				const float sparkLen = _flt(8 * (1 - effectTime));
+				//透明度.
+				const int   alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - effectTime));
+
+				//飛ばす線データ.
+				Line line{};
+				line.stPos = ArcPos(i.pos, i.ang,       sparkLen);
+				line.edPos = ArcPos(i.pos, i.ang + 180, sparkLen);
+				line.color = 0x00FFFF;
+				line.thick = 2;
+
+				DrawMode::Exe(
+					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
+					[&]() {
+						line.Draw(true);
+					}
+				);
+			}
+			break;
+
 			case EffectType::Reflect:
 			{
-				const double size  = 0.2 + 0.4 * i.counter/ Config::LASER_REF_ANIM_TIME;
+				const double size  = 0.2 + 0.4 * effectTime;
 				const DBL_XY pos   = i.pos;
 				//透明度.
-				const int    alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/ Config::LASER_REF_ANIM_TIME));
+				const int    alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - effectTime));
 
 				//描画.
 				DrawMode::Exe(
@@ -250,7 +269,7 @@ void EffectManager::Draw() {
 			case EffectType::MeteorCrash:
 			{
 				//透明度.
-				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/ Config::METEOR_BREAK_ANIM_TIME));
+				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - effectTime));
 
 				Circle cir = { i.pos, i.counter, Config::ColorMeteor(i.pos), 1.0f };
 				//描画.
@@ -266,7 +285,7 @@ void EffectManager::Draw() {
 			case EffectType::MeteorFragment:
 			{
 				//透明度.
-				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - i.counter/ Config::METEOR_BREAK_ANIM_TIME));
+				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - effectTime));
 
 				//飛ばす線のデータ.
 				Line line{};
@@ -296,7 +315,7 @@ void EffectManager::Draw() {
 			case EffectType::Tutorial_Step4:
 			{
 				//透明度.
-				const int alpha = _int_r(255 * AnimWave(WaveType::CosLoop, 1 - i.counter / Config::MIDDLE_ANIM_TIME));
+				const int alpha = _int_r(255 * AnimWave(WaveType::CosLoop, 1 - effectTime));
 
 				//共通設定.
 				DrawStr str = { _T("Unknown"), {_int_r(i.pos.x), _int_r(i.pos.y-20)}, 0xFFFFFF};

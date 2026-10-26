@@ -15,10 +15,10 @@
 
 /* デバッグ用 */
 //#define DEBUG_SHOW_FPS            //FPS表示.
-//#define DEBUG_CONTR_INPUT         //コントローラ操作表示.
+//#define DEBUG_CONTR_INPUT         //コントローラー操作表示.
 
 /* ゲーム設定 */
-//#define INPUT_CHANGE_ARCADE       //定義するとアーケード操作にする, しないとコントローラ操作に.
+//#define INPUT_CHANGE_ARCADE       //定義するとアーケード操作にする, しないとコントローラー操作に.
 //#define BGM_NONE                  //定義するとBGMをoffに.
 
 /* 撮影用 */
@@ -94,6 +94,8 @@ namespace Config {
     inline constexpr int PLAYER_AFT_IMG_NUM        = 9;   //残像データの数.
     inline constexpr int PLAYER_DEATH_ANIM_TIME    = 10;  //プレイヤー死亡アニメ時間.
     inline constexpr double PLAYER_MOVE_LERP_SPEED = 0.2; //プレイヤーの慣性スピードの調整値.
+
+    inline constexpr int PLAYER_ANIM_REFLECT_END   = 0.5; //反射モード終了時のアニメーション時間.
 
     //[プレイヤー > ダッシュ]
     inline constexpr double PLAYER_DASH_SPEED = 1.8; //ダッシュ速度.

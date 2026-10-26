@@ -123,7 +123,6 @@ void Player::Draw()
 
 	//—LŒø‚È‚ç.
 	if (active) {
-
 		//Žc‘œ•`‰æ.
 		DrawAfter();
 		//–{‘Ì•`‰æ.

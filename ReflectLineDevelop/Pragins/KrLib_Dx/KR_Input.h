@@ -1,6 +1,6 @@
 /*
    - KR_Input.h - (DxLib)
-   ver.2026/10/24
+   ver.2026/10/26
 
    入力操作機能。
    (オブジェクト指向ver → KR_Object)
@@ -16,7 +16,16 @@
 //KrLib名前空間.
 namespace KR
 {
-	//キーボードID.
+	//入力状態.
+	enum class InputState
+	{
+		None,	//押されていない.
+		Keep,	//押し続けている.
+		Down,	//押した瞬間.
+		Up		//離した瞬間.
+	};
+
+	//キーID.
 	enum class KeyID
 	{
 		Down   = KEY_INPUT_DOWN,
@@ -59,22 +68,24 @@ namespace KR
 		X      = KEY_INPUT_X,
 		Y      = KEY_INPUT_Y,
 		Z      = KEY_INPUT_Z,
-		Esc    = KEY_INPUT_ESCAPE,   //ESCキー.
-		ShiftL = KEY_INPUT_LSHIFT,   //SHIFTキー(左)
-		ShiftR = KEY_INPUT_RSHIFT,   //SHIFTキー(右)
-		CtrlL  = KEY_INPUT_LCONTROL, //CTRLキー(左)
-		CtrlR  = KEY_INPUT_RCONTROL, //CTRLキー(右)
+		Esc    = KEY_INPUT_ESCAPE,		//ESCキー.
+		ShiftL = KEY_INPUT_LSHIFT,		//SHIFTキー(左)
+		ShiftR = KEY_INPUT_RSHIFT,		//SHIFTキー(右)
+		CtrlL  = KEY_INPUT_LCONTROL,	//CTRLキー(左)
+		CtrlR  = KEY_INPUT_RCONTROL,	//CTRLキー(右)
 		Space  = KEY_INPUT_SPACE,
-		Enter  = KEY_INPUT_RETURN,   //ENTERキー.
+		Enter  = KEY_INPUT_RETURN,		//ENTERキー.
 	};
-	//マウスID.
+
+	//マウスボタンID.
 	enum class MouseID
 	{
-		Left,   //0x0001
-		Right,  //0x0002
-		Middle, //0x0004
+		Left,	//マウス左ボタン.
+		Right,	//マウス右ボタン.
+		Middle,	//マウス中央ボタン.
 	};
-	//コントローラID(xbox基準)
+
+	//コントローラーボタンID(xbox基準)
 	enum class PadXboxID
 	{
 		Down,	//0x0001
@@ -92,7 +103,8 @@ namespace KR
 		StickL, //0x1000: 左スティック押し込み.
 		StickR, //0x2000: 右スティック押し込み.
 	};
-	//コントローラID(switch基準)
+
+	//コントローラーボタンID(switch基準)
 	enum class PadSwitchID
 	{
 		Down,	 //0x00001
@@ -114,7 +126,8 @@ namespace KR
 		Home,	 //0x10000: ホームボタン.
 		Capture, //0x20000: キャプチャーボタン.
 	};
-	//コントローラID(アーケード筐体)
+
+	//コントローラーボタンID(アーケード筐体)
 	enum class PadArcadeID
 	{
 		Down,
@@ -136,7 +149,7 @@ namespace KR
 	//何の操作か.
 	enum class InputDevice
 	{
-		None,		//操作なし.
+		None, //操作なし.
 		Key,
 		Mouse,
 		PadXbox,
@@ -144,38 +157,49 @@ namespace KR
 		PadArcade
 	};
 
-	//入力データ(単体)
-	struct InputData
+	//入力割り当て.
+	struct InputBinding
 	{
-		InputDevice device; //何の端末か.
-		int         id;		//操作ID.
+		InputDevice device; //入力デバイス.
+		int         id;     //入力ID(列挙値をintで保存)
 	};
-	//アクションデータ.
-	struct ActionData
-	{
-		vector<InputData> inputs;			//登録する入力データ.
-		InputData		  lastInputData;	//最後の入力操作.
-		int               time;				//入力時間.
-	};
-
-	//キーやボタンの種類の最大数(変更禁止)
-	static constexpr int KEY_MAX     = 256;
-	static constexpr int MOUSE_MAX   = 3;
-	static constexpr int PAD_BTN_MAX = 32;
 
 	//入力管理クラス.
 	class InputMng final : public ManagerBase
 	{
+	//▼ ===== 型 ===== ▼.
+	private:
+		//アクション単体データ.
+		struct ActionData
+		{
+			vector<InputBinding> inputs;	//登録する入力.
+			InputBinding	     lastInput;	//最後の入力操作.
+			int                  time;		//入力時間.
+		};
+		//入力状態データ.
+		struct InputStateData
+		{
+			int        time;  //押下継続時間.
+			InputState state; //入力状態.
+		};
+
+	//▼ ===== 定数 ===== ▼.
+	private:
+		//キーやボタンの種類の最大数.
+		static constexpr int KEY_MAX     = 256;
+		static constexpr int MOUSE_MAX   = 3;
+		static constexpr int PAD_BTN_MAX = 32;
+
 	//▼ ===== 変数 ===== ▼.
 	private:
-		int tmKey   [KEY_MAX]{};     //キーを押している時間.
-		int tmMouse [MOUSE_MAX]{};   //マウスを押下している時間.            (index: bitフラグ)
-		int tmPadBtn[PAD_BTN_MAX]{}; //コントローラボタンを押下している時間.(index: bitフラグ)
+		umap<MY_STRING, ActionData> actionDatas{}; //アクション記録用.
 
-		INT_XY mPos{};     //マウス座標.
-		INT_XY stickVec{}; //スティック入力.
+		InputStateData inputKey  [KEY_MAX]{};     //各キー　　　　　　　　の入力状態データ.
+		InputStateData inputMouse[MOUSE_MAX]{};   //各マウスボタン　　　　の入力状態データ.
+		InputStateData inputPad  [PAD_BTN_MAX]{}; //各コントローラーボタンの入力状態データ.
 
-		umap<MY_STRING, ActionData> actions{}; //アクション記録用.
+		INT_XY mousePos{};	//マウス座標.
+		INT_XY stickVec{};	//スティック入力方向.
 
 	//▼ ===== 関数 ===== ▼.
 	private:
@@ -192,16 +216,16 @@ namespace KR
 		//操作判定.
 		bool   IsPushKey       (KeyID id);
 		int    IsPushKeyTime   (KeyID id);
-		bool   IsPushMouse     (MouseID id);
-		int    IsPushMouseTime (MouseID id);
+		bool   IsPushMouse     (MouseID id, InputState* state = nullptr);
+		int    IsPushMouseTime (MouseID id, InputState* state = nullptr);
 		bool   IsPushPadBtn    (PadXboxID   id);
 		bool   IsPushPadBtn    (PadSwitchID id);
 		bool   IsPushPadBtn    (PadArcadeID id);
 		int    IsPushPadBtnTime(PadXboxID   id);
 		int    IsPushPadBtnTime(PadSwitchID id);
 		int    IsPushPadBtnTime(PadArcadeID id);
-		bool   IsPushAction    (MY_STRING name, InputData* inputData = nullptr);
-		int    IsPushActionTime(MY_STRING name, InputData* inputData = nullptr);
+		bool   IsPushAction    (MY_STRING name, InputBinding* input = nullptr);
+		int    IsPushActionTime(MY_STRING name, InputBinding* input = nullptr);
 
 		//アクション.
 		void   AddAction       (MY_STRING name, KeyID       id);

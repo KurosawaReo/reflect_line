@@ -501,7 +501,7 @@ void TutorialMode::DrawStep1() {
 					textLine2 = _T("コントローラー操作 : 左スティック");
 					break;
 
-				//キーボードとコントローラ以外の操作になるのはおかしい.
+				//キーボードとコントローラー以外の操作になるのはおかしい.
 				default: assert(false); break;
 			}
 #endif
@@ -530,7 +530,7 @@ void TutorialMode::DrawStep1() {
 					textLine2 = _T("コントローラー操作 : Bボタン");
 					break;
 
-					//キーボードとコントローラ以外の操作になるのはおかしい.
+					//キーボードとコントローラー以外の操作になるのはおかしい.
 				default: assert(false); break;
 			}
 #endif

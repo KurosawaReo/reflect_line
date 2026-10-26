@@ -145,7 +145,7 @@ void GameManager::Init() {
 		inputMng->AddAction(_T("MenuDown"),		PadArcadeID::Down);
 		inputMng->AddAction(_T("MenuNext"),		PadArcadeID::BtnUpper1);
 #else
-		//コントローラ操作.
+		//コントローラー操作.
 		inputMng->AddAction(_T("GameNext"),		PadXboxID::A);
 		inputMng->AddAction(_T("GamePause"),	PadXboxID::X);
 		inputMng->AddAction(_T("PlayerDash"),	PadXboxID::B);
@@ -263,7 +263,7 @@ void GameManager::Draw() {
 		DrawPause();
 	}
 	
-	//コントローラ操作表示.
+	//コントローラー操作表示.
 #if defined DEBUG_CONTR_INPUT
 	DrawFormatString(20, WINDOW_HEI-40, 0xFFFFFF, _T("Pad Input: %d"), GetJoypadInputState(DX_INPUT_PAD1));
 #endif

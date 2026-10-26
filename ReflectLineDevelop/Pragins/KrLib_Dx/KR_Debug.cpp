@@ -57,7 +57,7 @@ namespace KR
 			DrawCircle(mx, my, 5,  0x60FFFF);
 			DrawCircle(mx, my, 3,  0xC0FFFF);
 		}
-		//コントローラIDの表示.
+		//コントローラーIDの表示.
 		void LogPadID() {
 			DrawFormatString(100, 300, 0xFFFFFF, _T("pad:%d"), GetJoypadInputState(DX_INPUT_PAD1));
 		}

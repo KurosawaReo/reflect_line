@@ -114,7 +114,7 @@ void TitleScene::Exit() {
 //更新.
 void TitleScene::Update() {
 
-	InputData inputData; //何で操作したか取得する用.
+	InputBinding inputData; //何で操作したか取得する用.
 
 	//特定の操作でゲーム開始.
 	if (inputMng->IsPushActionTime(_T("GameNext"), &inputData) == 1) {
