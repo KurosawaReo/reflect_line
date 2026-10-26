@@ -84,8 +84,10 @@ namespace Config {
     inline constexpr int MENU_OPTION_COUNT = 3; //選択肢の数.
 
     //[プレイヤー]
-    inline constexpr int PLAYER_SIZE         = 18; //プレイヤーサイズ(半径).
-    inline constexpr int PLAYER_REF_ADD_SIZE = 12; //反射モード時に拡大する当たり判定.
+    inline constexpr int   PLAYER_SIZE             = 18;  //プレイヤーサイズ(半径).
+    inline constexpr int   PLAYER_REF_ADD_SIZE     = 12;  //反射モード時に拡大する当たり判定.
+    inline constexpr float PLAYER_REF_END_RANGE_R  = 200; //反射モード終了時の範囲反射の半径.
+    inline constexpr int   PLAYER_ANIM_REFLECT_END = 15;  //反射モード終了時のアニメーション時間.
 
     inline constexpr double PLAYER_DRAW_SIZE       = 0.7; //プレイヤー本体の描画サイズ.
     inline constexpr double PLAYER_LIGHT_DRAW_SIZE = 0.4; //プレイヤー発光の描画サイズ.
@@ -94,8 +96,6 @@ namespace Config {
     inline constexpr int PLAYER_AFT_IMG_NUM        = 9;   //残像データの数.
     inline constexpr int PLAYER_DEATH_ANIM_TIME    = 10;  //プレイヤー死亡アニメ時間.
     inline constexpr double PLAYER_MOVE_LERP_SPEED = 0.2; //プレイヤーの慣性スピードの調整値.
-
-    inline constexpr int PLAYER_ANIM_REFLECT_END   = 0.5; //反射モード終了時のアニメーション時間.
 
     //[プレイヤー > ダッシュ]
     inline constexpr double PLAYER_DASH_SPEED = 1.8; //ダッシュ速度.

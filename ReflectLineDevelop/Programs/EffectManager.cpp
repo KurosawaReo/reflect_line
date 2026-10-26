@@ -79,7 +79,7 @@ void EffectManager::Update() {
 			case EffectType::PlayerReflectModeEnd:
 			{
 				//カウンター加算.
-				i->counter++;
+				i->counter += gameData->speedRate;
 				//消滅する時間.
 				i->eraseCount = Config::PLAYER_ANIM_REFLECT_END;
 			}
@@ -155,8 +155,8 @@ void EffectManager::Draw() {
 	//全てのエフェクト.
 	for (const auto& i : effect) {
 
-		//進行度(0→1).
-		const double effectTime = i.counter / i.eraseCount;
+		//進行度(0→1)
+		const double effectTime = (i.eraseCount != 0) ? i.counter / i.eraseCount : 0;
 
 		//タイプ別.　
 		switch (i.type)
@@ -165,7 +165,7 @@ void EffectManager::Draw() {
 			case EffectType::Score500:
 			{
 				//座標.
-				DBL_XY pos = {i.pos.x, i.pos.y - AnimEase(EaseType::OutQuad, effectTime)*30};
+				DBL_XY pos = { i.pos.x, i.pos.y - AnimEase(EaseType::OutQuad, effectTime) * 30 };
 				//透明度.
 				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - effectTime));
 
@@ -193,6 +193,7 @@ void EffectManager::Draw() {
 				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - effectTime));
 
 				Circle cir = { i.pos, Config::PLAYER_SIZE + i.counter/2, 0xFFFFFF, 1.0f };
+
 				//描画.
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
@@ -228,28 +229,22 @@ void EffectManager::Draw() {
 
 			case EffectType::PlayerReflectModeEnd:
 			{
-				//線の長さ(徐々に短くなる)
-				const float sparkLen = _flt(8 * (1 - effectTime));
 				//透明度.
-				const int   alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - effectTime));
+				const int alpha = _int_r(255 * AnimEase(EaseType::OutQuad, 1 - effectTime));
+				
+				Circle cir = { i.pos, i.counter * 20, 0xFF00FF, 2.0f };
 
-				//飛ばす線データ.
-				Line line{};
-				line.stPos = ArcPos(i.pos, i.ang,       sparkLen);
-				line.edPos = ArcPos(i.pos, i.ang + 180, sparkLen);
-				line.color = 0x00FFFF;
-				line.thick = 2;
-
+				//描画.
 				DrawMode::Exe(
 					DrawModeID::None, DrawBlendModeID::Alpha, alpha,
 					[&]() {
-						line.Draw(true);
+						cir.Draw(Anchor::Mid, false, true);
 					}
 				);
 			}
 			break;
 
-			case EffectType::Reflect:
+			case EffectType::Reflect: 
 			{
 				const double size  = 0.2 + 0.4 * effectTime;
 				const DBL_XY pos   = i.pos;

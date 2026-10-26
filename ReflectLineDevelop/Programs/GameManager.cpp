@@ -361,11 +361,11 @@ void GameManager::GameOver() {
 
 }
 
-//アイテム発動.
-void GameManager::ItemUsed() {
+//反射モード発動.
+void GameManager::ReflectModeStart() {
 
-	gameData->isReflectMode = true; //反射モードにする.
-	gameScene.ItemUsed();           //アイテム発動.
+	gameData->isReflectMode = true;	//反射モードにする.
+	gameScene.ReflectModeStart();   //アイテム発動.
 	
 	//チュートリアルなら指示送信.
 	if (gameData->stage == StageType::Tutorial) {

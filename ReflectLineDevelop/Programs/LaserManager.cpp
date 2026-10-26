@@ -337,19 +337,19 @@ void LaserManager::HitLaser(vector<LaserData>::iterator& it) {
 		{
 			case PlayerMode::ItemReflect:
 			{
-				it->type = LaserType::Reflect; //反射モードへ.
-				it->counter = 0;          //リセット.
-				gameMng->SlowModeStart(); //スロー発動.
-				ReflectLaser(it);         //レーザーを反射.
+				it->type = LaserType::Reflect;	//反射モードへ.
+				it->counter = 0;				//カウンターリセット.
+				gameMng->SlowModeStart();		//スロー発動.
+				ReflectLaser(it);				//レーザーを反射.
 			}
 			break;
 
 			case PlayerMode::DashReflect:
 			{
-				it->type = LaserType::Reflect; //反射モードへ.
-				it->counter = 0;          //リセット.
-				gameMng->SlowModeStart(); //スロー発動.
-				ReflectLaser(it);         //レーザーを反射.
+				it->type = LaserType::Reflect;	//反射モードへ.
+				it->counter = 0;				//カウンターリセット.
+				gameMng->SlowModeStart();		//スロー発動.
+				ReflectLaser(it);				//レーザーを反射.
 
 				//ダッシュ反射演出.
 				player->SetIsDashRefEffect(true); //フラグON.
@@ -360,8 +360,8 @@ void LaserManager::HitLaser(vector<LaserData>::iterator& it) {
 			//反射あり(強化版)
 			case PlayerMode::ItemReflectSuper:
 			{
-				it->type = LaserType::SuperReflect; //反射モードへ.
-				it->counter = 0;               //リセット.
+				it->type = LaserType::SuperReflect;	//反射モードへ.
+				it->counter = 0;					//カウンターリセット.
 
 				gameMng->SlowModeStart(); //スロー発動.
 				ReflectLaser(it);         //レーザーを反射.		
@@ -405,6 +405,25 @@ void LaserManager::ReflectLaser(vector<LaserData>::iterator& it)
 	//チュートリアルなら指示送信.
 	if (gameData->stage == StageType::Tutorial) {
 		tutorialMode->SetReflectLaser(true);
+	}
+}
+
+//レーザー範囲反射.
+void LaserManager::ReflectLaserRange(Circle hit) {
+
+	//全レーザーループ.
+	for (auto i = laser.begin(); i != laser.end(); i++) {
+		//反射済レーザーは除外.
+		if (i->type == LaserType::Reflect || i->type == LaserType::SuperReflect) {
+			continue;
+		}
+		//円の範囲内なら反射.		
+		if (Calc::HitCir(hit, i->nowPos)) {
+			i->type = LaserType::Reflect; //反射モードへ.
+			i->counter = 0;				  //カウンターリセット.
+			gameMng->SlowModeStart();     //スロー発動.
+			ReflectLaser(i);
+		}
 	}
 }
 

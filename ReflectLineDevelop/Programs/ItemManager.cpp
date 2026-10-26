@@ -205,8 +205,8 @@ void ItemManager::ItemUse(vector<ItemData>::iterator& it, bool isSuper)
 
 	//アイテムリセット.
 	ItemReset();
-	//アイテム発動.
-	gameMng->ItemUsed();
+	//反射モード発動.
+	gameMng->ReflectModeStart();
 }
 
 //プレイヤーとの当たり判定.

@@ -16,15 +16,15 @@ enum class EffectType
 	MeteorCrash,			//隕石破壊.
 	MeteorFragment,			//隕石破片.
 
-	Endless_Level1,		//耐久モード: Level1演出.
-	Endless_Level2,		//耐久モード: Level2演出.
-	Endless_Level3,		//耐久モード: Level3演出.
-	Endless_Level4,		//耐久モード: Level4演出.
-	Endless_Level5,		//耐久モード: Level5演出.
-	Tutorial_Step1,		//チュートリアル: step1演出.
-	Tutorial_Step2,		//チュートリアル: step2演出.
-	Tutorial_Step3,		//チュートリアル: step3演出.
-	Tutorial_Step4,		//チュートリアル: step4演出.
+	Endless_Level1,			//耐久モード: Level1演出.
+	Endless_Level2,			//耐久モード: Level2演出.
+	Endless_Level3,			//耐久モード: Level3演出.
+	Endless_Level4,			//耐久モード: Level4演出.
+	Endless_Level5,			//耐久モード: Level5演出.
+	Tutorial_Step1,			//チュートリアル: step1演出.
+	Tutorial_Step2,			//チュートリアル: step2演出.
+	Tutorial_Step3,			//チュートリアル: step3演出.
+	Tutorial_Step4,			//チュートリアル: step4演出.
 };
 
 //エフェクトデータ.

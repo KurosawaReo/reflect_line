@@ -43,6 +43,6 @@ public:
 	void Pause();
 	void PauseEnd();
 
-	//アイテム発動.
-	void ItemUsed();
+	//反射モード発動.
+	void ReflectModeStart();
 };
