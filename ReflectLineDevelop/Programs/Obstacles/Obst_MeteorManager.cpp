@@ -4,9 +4,9 @@
 #include "Obst_MeteorManager.h"
 
 //ˆË‘¶ŠÖŒW.
-#include "GameData.h"
-#include "GameManager.h"
-#include "EffectManager.h"
+#include "../GameData.h"
+#include "../GameManager.h"
+#include "../EffectManager.h"
 //QÆ.
 static GameData*      gameData;
 static Player*        player;

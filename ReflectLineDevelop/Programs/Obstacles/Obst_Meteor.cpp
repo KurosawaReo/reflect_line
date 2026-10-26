@@ -4,7 +4,7 @@
 #include "Obst_Meteor.h"
 
 //ˆË‘¶ŠÖŒW.
-#include "GameData.h"
+#include "../GameData.h"
 //QÆ.
 static GameData* gameData;
 

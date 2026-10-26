@@ -4,10 +4,9 @@
 #include "BG2.h"
 
 //àÀë∂ä÷åW.
-#include "Configs/Config_Main.h"
-#include "Configs/Config_BG2.h"
-#include "GameData.h"
-#include <cmath>
+#include "../Configs/Config_Main.h"
+#include "../Configs/Config_BG2.h"
+#include "../GameData.h"
 //éQè∆.
 static GameData* gameData;
 

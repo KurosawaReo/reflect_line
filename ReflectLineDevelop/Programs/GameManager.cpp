@@ -8,21 +8,21 @@
 #include "GameData.h"
 #include "BGManager.h"
 #include "LaserManager.h"
-#include "Obst_NormalLaser.h"
-#include "Obst_StraightLaser.h"
-#include "Obst_MeteorManager.h"
-#include "Obst_Ripples.h"
-#include "Obst_Fireworks.h"
+#include "Obstacles/Obst_NormalLaser.h"
+#include "Obstacles/Obst_StraightLaser.h"
+#include "Obstacles/Obst_MeteorManager.h"
+#include "Obstacles/Obst_Ripples.h"
+#include "Obstacles/Obst_Fireworks.h"
 #include "ItemManager.h"
 #include "UIManager.h"
 #include "EffectManager.h"
-#include "Stage_Tutorial.h"
-#include "Stage_Endless.h"
+#include "Modes/Mode_Tutorial.h"
+#include "Modes/Mode_Endless.h"
 //参照.
 static GameData*	  gameData;
 static BGManager*	  bg;
 static UIManager*	  uiMng;
-static TutorialStage* tutorialStg;
+static TutorialMode* tutorialMode;
 //参照(KRライブラリ)
 static SoundMng*      soundMng;
 static InputMng*      inputMng;
@@ -39,7 +39,7 @@ void GameManager::Init() {
 	gameData	= ManagerInsts::Get<GameData>();
 	bg			= ManagerInsts::Get<BGManager>();
 	uiMng		= ManagerInsts::Get<UIManager>();
-	tutorialStg	= ManagerInsts::Get<TutorialStage>();
+	tutorialMode	= ManagerInsts::Get<TutorialMode>();
 	soundMng	= ManagerInsts::Get<SoundMng>();
 	inputMng	= ManagerInsts::Get<InputMng>();
 	sceneMng	= ManagerInsts::Get<SceneMng>();
@@ -369,8 +369,8 @@ void GameManager::ItemUsed() {
 	
 	//チュートリアルなら指示送信.
 	if (gameData->stage == StageType::Tutorial) {
-		tutorialStg->SetTakeItem(true);       //指示を送る.
-		tutorialStg->SetReflectFinish(false); //falseにする(指示取り消し)
+		tutorialMode->SetTakeItem(true);       //指示を送る.
+		tutorialMode->SetReflectFinish(false); //falseにする(指示取り消し)
 	}
 }
 
@@ -396,8 +396,8 @@ void GameManager::StopObjects() {
 		ManagerInsts::Get<StraightLaser>(),
 		ManagerInsts::Get<Ripples>(),
 		ManagerInsts::Get<Fireworks>(),
-		ManagerInsts::Get<EndlessStage>(),
-		ManagerInsts::Get<TutorialStage>(),
+		ManagerInsts::Get<EndlessMode>(),
+		ManagerInsts::Get<TutorialMode>(),
 		ManagerInsts::Get<BGManager>(),
 	};
 	//全ループ.
@@ -419,8 +419,8 @@ void GameManager::DrawOnlyObjects() {
 		ManagerInsts::Get<StraightLaser>(),
 		ManagerInsts::Get<Ripples>(),
 		ManagerInsts::Get<Fireworks>(),
-		ManagerInsts::Get<EndlessStage>(),
-		ManagerInsts::Get<TutorialStage>(),
+		ManagerInsts::Get<EndlessMode>(),
+		ManagerInsts::Get<TutorialMode>(),
 		ManagerInsts::Get<BGManager>(),
 	};
 	//全ループ.
@@ -445,8 +445,8 @@ void GameManager::RestartObjects() {
 		ManagerInsts::Get<StraightLaser>(),
 		ManagerInsts::Get<Ripples>(),
 		ManagerInsts::Get<Fireworks>(),
-		ManagerInsts::Get<EndlessStage>(),
-		ManagerInsts::Get<TutorialStage>(),
+		ManagerInsts::Get<EndlessMode>(),
+		ManagerInsts::Get<TutorialMode>(),
 		ManagerInsts::Get<BGManager>(),
 	};
 	//全ループ.

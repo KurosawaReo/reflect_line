@@ -4,11 +4,11 @@
 #include "Scene_End.h"
 
 //依存関係.
-#include "GameManager.h"
-#include "GameData.h"
-#include "Player.h"
-#include "UIManager.h"
-#include "BGManager.h"
+#include "../GameData.h"
+#include "../GameManager.h"
+#include "../Player.h"
+#include "../UIManager.h"
+#include "../BGManager.h"
 //参照.
 static GameManager* gameMng;
 static GameData*    gameData;

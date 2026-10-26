@@ -4,11 +4,11 @@
 #include "Scene_Title.h"
 
 //ˆË‘¶ŠÖŒW.
-#include "Configs/Config_Title.h"
-#include "GameManager.h"
-#include "GameData.h"
-#include "BGManager.h"
-#include "Obst_MeteorManager.h"
+#include "../GameManager.h"
+#include "../GameData.h"
+#include "../Configs/Config_Title.h"
+#include "../Obstacles/Obst_MeteorManager.h"
+#include "../BGManager.h"
 //QÆ.
 static GameManager*   gameMng;
 static GameData*      gameData;

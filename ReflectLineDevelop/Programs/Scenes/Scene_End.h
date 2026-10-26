@@ -1,11 +1,5 @@
 /*
    - Scene_End.h -
-   
-   [Scene]
-   ・Title 
-   ・Menu
-   ・Game
-   ・End <-
 */
 #pragma once
 

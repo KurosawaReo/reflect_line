@@ -1,14 +1,8 @@
 /*
    - Scene_Menu.h -
-
-   [Scene]
-   ・Title
-   ・Menu <-
-   ・Game
-   ・End
 */
 #pragma once
-#include "Configs/Config_Main.h"
+#include "../Configs/Config_Main.h"
 
 //メニューカーソル.
 struct MenuCursor

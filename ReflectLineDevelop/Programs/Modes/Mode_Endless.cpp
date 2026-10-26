@@ -1,19 +1,19 @@
 /*
-   - Stage_Endless.cpp -
+   - Mode_Endless.cpp -
 */
-#include "Stage_Endless.h"
+#include "Mode_Endless.h"
 
 //依存関係.
-#include "LaserManager.h"
-#include "Obst_NormalLaser.h"
-#include "Obst_StraightLaser.h"
-#include "Obst_MeteorManager.h"
-#include "Obst_Ripples.h"
-#include "Obst_Fireworks.h"
-#include "ItemManager.h"
-#include "EffectManager.h"
-#include "GameData.h"
-#include "GameManager.h"
+#include "../GameManager.h"
+#include "../GameData.h"
+#include "../LaserManager.h"
+#include "../Obstacles/Obst_NormalLaser.h"
+#include "../Obstacles/Obst_StraightLaser.h"
+#include "../Obstacles/Obst_MeteorManager.h"
+#include "../Obstacles/Obst_Ripples.h"
+#include "../Obstacles/Obst_Fireworks.h"
+#include "../ItemManager.h"
+#include "../EffectManager.h"
 //参照.
 static GameData*      gameData;
 static EffectManager* effectMng;
@@ -21,10 +21,10 @@ static EffectManager* effectMng;
 static SoundMng*      soundMng;
 static InputMng*      inputMng;
 
-// ▼*--=<[ EndlessStage ]>=--*▼ //
+// ▼*--=<[ EndlessMode ]>=--*▼ //
 
 //初期化.
-void EndlessStage::Init() {
+void EndlessMode::Init() {
 	//参照取得.
 	gameData  = ManagerInsts::Get<GameData>();
 	effectMng = ManagerInsts::Get<EffectManager>();
@@ -33,11 +33,11 @@ void EndlessStage::Init() {
 }
 
 //リセット.
-void EndlessStage::Reset() {
+void EndlessMode::Reset() {
 }
 
 //更新.
-void EndlessStage::Update() {
+void EndlessMode::Update() {
 
 	//カウンター増加.
 	gameData->counter += gameData->speedRate;
@@ -90,11 +90,11 @@ void EndlessStage::Update() {
 }
 
 //描画.
-void EndlessStage::Draw() {
+void EndlessMode::Draw() {
 }
 
 //レベルアップ処理(Level1)
-void EndlessStage::UpLevel1() {
+void EndlessMode::UpLevel1() {
 
 	//サウンド.
 	if (auto i = soundMng->Get(_T("LevelUp"))) {
@@ -128,7 +128,7 @@ void EndlessStage::UpLevel1() {
 }
 
 //レベルアップ処理(Level2)
-void EndlessStage::UpLevel2() {
+void EndlessMode::UpLevel2() {
 
 	//サウンド.
 	if (auto i = soundMng->Get(_T("LevelUp"))) {
@@ -150,7 +150,7 @@ void EndlessStage::UpLevel2() {
 }
 
 //レベルアップ処理(Level3)
-void EndlessStage::UpLevel3() {
+void EndlessMode::UpLevel3() {
 
 	//サウンド.
 	if (auto i = soundMng->Get(_T("LevelUp"))) {
@@ -172,7 +172,7 @@ void EndlessStage::UpLevel3() {
 }
 
 //レベルアップ処理(Level4)
-void EndlessStage::UpLevel4() {
+void EndlessMode::UpLevel4() {
 
 	//サウンド.
 	if (auto i = soundMng->Get(_T("LevelUp"))) {
@@ -194,7 +194,7 @@ void EndlessStage::UpLevel4() {
 }
 
 //レベルアップ処理(Level5)
-void EndlessStage::UpLevel5() {
+void EndlessMode::UpLevel5() {
 
 	//サウンド.
 	if (auto i = soundMng->Get(_T("LevelUp"))) {

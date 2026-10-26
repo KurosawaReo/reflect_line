@@ -8,15 +8,15 @@
 #include "GameData.h"
 #include "GameManager.h"
 #include "Player.h"
-#include "Obst_MeteorManager.h"
-#include "Stage_Tutorial.h"
+#include "Obstacles/Obst_MeteorManager.h"
+#include "Modes/Mode_Tutorial.h"
 //参照.
 static GameData*      gameData;
 static GameManager*   gameMng;
 static Player*        player;
 static MeteorManager* meteorMng;
 static EffectManager* effectMng;
-static TutorialStage* tutorialStg;
+static TutorialMode*  tutorialMode;
 //参照(KRライブラリ)
 static SoundMng*      soundMng;
 
@@ -32,7 +32,7 @@ void LaserManager::Init() {
 	player      = ManagerInsts::Get<Player>();
 	meteorMng   = ManagerInsts::Get<MeteorManager>();
 	effectMng   = ManagerInsts::Get<EffectManager>();
-	tutorialStg = ManagerInsts::Get<TutorialStage>();
+	tutorialMode = ManagerInsts::Get<TutorialMode>();
 	soundMng    = ManagerInsts::Get<SoundMng>();
 }
 
@@ -227,7 +227,7 @@ void LaserManager::UpdateLaser() {
 					}
 					//チュートリアルなら指示送信.
 					if (gameData->stage == StageType::Tutorial) {
-						tutorialStg->SetBreakMeteor(true);
+						tutorialMode->SetBreakMeteor(true);
 					}
 				}
 				else {
@@ -404,7 +404,7 @@ void LaserManager::ReflectLaser(vector<LaserData>::iterator& it)
 
 	//チュートリアルなら指示送信.
 	if (gameData->stage == StageType::Tutorial) {
-		tutorialStg->SetReflectLaser(true);
+		tutorialMode->SetReflectLaser(true);
 	}
 }
 

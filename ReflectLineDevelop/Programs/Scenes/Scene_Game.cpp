@@ -4,20 +4,20 @@
 #include "Scene_Game.h"
 
 //依存関係.
-#include "GameData.h"
-#include "GameManager.h"
-#include "Player.h"
-#include "BGManager.h"
-#include "UIManager.h"
-#include "Stage_Tutorial.h"
-#include "Stage_Endless.h"
+#include "../GameData.h"
+#include "../GameManager.h"
+#include "../Player.h"
+#include "../BGManager.h"
+#include "../UIManager.h"
+#include "../Modes/Mode_Endless.h"
+#include "../Modes/Mode_Tutorial.h"
 //参照.
 static GameData*	  gameData;
 static GameManager*	  gameMng;
 static Player*		  player;
 static BGManager*	  bgMng;
 static UIManager*	  uiMng;
-static TutorialStage* tutorialStg;
+static TutorialMode* tutorialMode;
 //参照(KRライブラリ)
 static SoundMng*      soundMng;
 
@@ -30,7 +30,7 @@ void GameScene::Init() {
 	player      = ManagerInsts::Get<Player>();
 	bgMng       = ManagerInsts::Get<BGManager>();
 	uiMng       = ManagerInsts::Get<UIManager>();
-	tutorialStg = ManagerInsts::Get<TutorialStage>();
+	tutorialMode = ManagerInsts::Get<TutorialMode>();
 	soundMng    = ManagerInsts::Get<SoundMng>();
 	//画像取得.
 	grReflectText = GraphMng::Get(_T("reflect_text"));
@@ -95,10 +95,10 @@ void GameScene::Update() {
 			switch (gameData->stage)
 			{
 				case StageType::Tutorial:
-					ManagerInsts::Get<TutorialStage>()->SetAutoExeMode(MngAutoExe::Active);
+					ManagerInsts::Get<TutorialMode>()->SetAutoExeMode(MngAutoExe::Active);
 					break;
 				case StageType::Endless:
-					ManagerInsts::Get<EndlessStage>()-> SetAutoExeMode(MngAutoExe::Active);
+					ManagerInsts::Get<EndlessMode>()-> SetAutoExeMode(MngAutoExe::Active);
 					break;
 
 				default: assert(false); break;
@@ -247,7 +247,7 @@ void GameScene::ReflectModeEnd() {
 	}
 	//チュートリアルなら指示送信.
 	if (gameData->stage == StageType::Tutorial) {
-		tutorialStg->SetReflectFinish(true); //指示を送る.
+		tutorialMode->SetReflectFinish(true); //指示を送る.
 	}
 }
 
