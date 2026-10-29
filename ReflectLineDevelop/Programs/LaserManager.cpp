@@ -380,17 +380,19 @@ void LaserManager::HitLaser(vector<LaserData>::iterator& it) {
 //レーザー反射.
 void LaserManager::ReflectLaser(vector<LaserData>::iterator& it)
 {
+	// ターゲットが残っていれば.
+	if (it->target) {
+		it->target->SetIsTargeting(false);
+		it->target = nullptr;
+	}
+	it->isGoTarget = false;
+
 	//反射時の元の角度.
 	double ang = _deg(atan2(it->vec.y, it->vec.x));
 	//角度を逆方向へ(少しだけランダムでずれる)
 	ang += 180 + (float)RandNum(-200, 200)/10;
 	//角度反映.
-	it->vec = { cos(_rad(ang)), sin(_rad(ang)) };
-
-	//ターゲットが残っていれば.
-	if (it->target) {
-		it->target->SetIsTargeting(false); //ターゲットを解除.
-	}
+	it->vec = { cos(_rad(ang)), sin(_rad(ang)) };	
 
 	//エフェクト.
 	effectMng->SpawnEffect({
