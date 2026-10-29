@@ -98,6 +98,11 @@ void BGManager::Draw() {
 
 		double alpha3count = 1.0;
 
+		//Žc‚è3•b‚É‚È‚Á‚½‚ç.
+		if (refTime <= 3.0) {
+			alpha3count = 0.5 + 0.5 * Calc::AnimWave(WaveType::CosLoop, refTime * 4);
+		}
+
 		//”wŒi•Ê.
 		switch (bgType)
 		{
@@ -109,11 +114,6 @@ void BGManager::Draw() {
 				break;
 
 			default: assert(false); break;
-		}
-
-		//Žc‚è3•b‚É‚È‚Á‚½‚ç.
-		if (refTime <= 3.0) {
-			alpha3count = 0.5 + 0.5 * Calc::AnimWave(WaveType::CosLoop, refTime*4);
 		}
 
 		DrawMode::Exe(

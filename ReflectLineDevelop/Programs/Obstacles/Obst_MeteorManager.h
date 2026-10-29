@@ -11,7 +11,12 @@ class MeteorManager final : public ManagerBase
 {
 //▼ ===== 変数 ===== ▼.
 private:
-	vector<Meteor> meteors; //隕石配列.
+	/*
+	   この配列はlistでないといけない.
+	   vectorにすると、隕石が追加・消滅した時に要素が移動され
+	   外部(レーザー)が保持している Meteor* が無効になるため.
+	*/
+	list<Meteor> meteors; //隕石配列.
 	
 	float timer{}; //隕石生成用.
 

@@ -433,7 +433,7 @@ void MenuScene::DrawPanelDescOperate() {
 			texts[1] = _T("決定: Aボタン");
 			break;
 
-		//キーボードとコントローラ以外の操作になるのはおかしい.
+		//キーボードとコントローラー以外の操作になるのはおかしい.
 		default: assert(false); break;
 	}
 #endif

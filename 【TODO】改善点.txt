@@ -2,6 +2,10 @@
 プレイヤーが一回当たるとゲームオーバーなのが難しすぎる。
 →もっと体力面を強化する手段を(スプラのピンチモードなど)
 
+【入力操作】
+xboxコントローラーにしか対応してない点。
+KR_Inputを改良して全コントローラー対応できないか。
+
 【プログラム - すぐ直せる問題】
 ・rand() と Calc::RandNum が混在（NormalLaser / StraightLaser / Ripples / Fireworks）。RandNum に統一すれば srand も要らなくなる。
 ・文字コードが混在している。47ファイルが Shift-JIS で、4ファイル（GameManager.cpp、Scene_End/Menu/Title.cpp）が UTF-8 BOM。GitHub や他PCで文字化けする。UTF-8 に統一して、文字セット設定を確認したうえでビルドし、日本語表示をチェックする。

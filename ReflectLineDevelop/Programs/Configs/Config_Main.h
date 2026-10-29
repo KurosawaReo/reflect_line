@@ -15,10 +15,10 @@
 
 /* デバッグ用 */
 //#define DEBUG_SHOW_FPS            //FPS表示.
-//#define DEBUG_CONTR_INPUT         //コントローラ操作表示.
+//#define DEBUG_CONTR_INPUT         //コントローラー操作表示.
 
 /* ゲーム設定 */
-//#define INPUT_CHANGE_ARCADE       //定義するとアーケード操作にする, しないとコントローラ操作に.
+//#define INPUT_CHANGE_ARCADE       //定義するとアーケード操作にする, しないとコントローラー操作に.
 //#define BGM_NONE                  //定義するとBGMをoffに.
 
 /* 撮影用 */
@@ -84,8 +84,10 @@ namespace Config {
     inline constexpr int MENU_OPTION_COUNT = 3; //選択肢の数.
 
     //[プレイヤー]
-    inline constexpr int PLAYER_SIZE         = 18; //プレイヤーサイズ(半径).
-    inline constexpr int PLAYER_REF_ADD_SIZE = 12; //反射モード時に拡大する当たり判定.
+    inline constexpr int   PLAYER_SIZE             = 18;  //プレイヤーサイズ(半径).
+    inline constexpr int   PLAYER_REF_ADD_SIZE     = 12;  //反射モード時に拡大する当たり判定.
+    inline constexpr float PLAYER_REF_END_RANGE_R  = 200; //反射モード終了時の範囲反射の半径.
+    inline constexpr int   PLAYER_ANIM_REFLECT_END = 15;  //反射モード終了時のアニメーション時間.
 
     inline constexpr double PLAYER_DRAW_SIZE       = 0.7; //プレイヤー本体の描画サイズ.
     inline constexpr double PLAYER_LIGHT_DRAW_SIZE = 0.4; //プレイヤー発光の描画サイズ.

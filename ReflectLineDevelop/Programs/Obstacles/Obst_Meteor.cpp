@@ -94,14 +94,14 @@ void Meteor::Draw() {
 					str.Draw(Anchor::Mid, gameData->fonts.at("jp-size1").GetFont());
 				}
 			}
+	
+			//ターゲットマーク.
+			if (isTargeting) {
+				const double size = 0.34;
+				grTarget->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
+			}
 		}
 	);
-
-	//ターゲットマーク.
-	if (isTargeting) {
-		const double size = 0.34;
-		grTarget->DrawExtend(pos, { size, size }, Anchor::Mid, true, true);
-	}
 }
 
 //隕石出現処理.

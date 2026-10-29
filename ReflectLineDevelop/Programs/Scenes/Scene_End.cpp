@@ -249,7 +249,7 @@ void EndScene::Draw() {
 					str.text = _T("Push [A Button]");
 					break;
 
-				//キーボードとコントローラ以外の操作になるのはおかしい.
+				//キーボードとコントローラー以外の操作になるのはおかしい.
 				default: assert(false); break;
 			}
 #endif

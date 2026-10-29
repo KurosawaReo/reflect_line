@@ -72,7 +72,8 @@ public:
 	void Update() override;
 	void Draw()   override;
 
-	void SpawnLaser(DBL_XY pos, DBL_XY vel, LaserType type); //レーザー召喚.
+	void SpawnLaser       (DBL_XY pos, DBL_XY vel, LaserType type); //レーザー召喚.
+	void ReflectLaserRange(Circle hit);								//レーザー範囲反射.
 
 	//使用禁止.
 	LaserManager(const LaserManager&) = delete;

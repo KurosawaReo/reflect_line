@@ -9,6 +9,8 @@
 #include "../Player.h"
 #include "../BGManager.h"
 #include "../UIManager.h"
+#include "../EffectManager.h"
+#include "../LaserManager.h"
 #include "../Modes/Mode_Endless.h"
 #include "../Modes/Mode_Tutorial.h"
 //参照.
@@ -17,7 +19,9 @@ static GameManager*	  gameMng;
 static Player*		  player;
 static BGManager*	  bgMng;
 static UIManager*	  uiMng;
-static TutorialMode* tutorialMode;
+static EffectManager* effectMng;
+static LaserManager*  laserMng;
+static TutorialMode*  tutorialMode;
 //参照(KRライブラリ)
 static SoundMng*      soundMng;
 
@@ -25,13 +29,15 @@ static SoundMng*      soundMng;
 void GameScene::Init() {
 
 	//参照取得.
-	gameData    = ManagerInsts::Get<GameData>();
-	gameMng     = ManagerInsts::Get<GameManager>();
-	player      = ManagerInsts::Get<Player>();
-	bgMng       = ManagerInsts::Get<BGManager>();
-	uiMng       = ManagerInsts::Get<UIManager>();
-	tutorialMode = ManagerInsts::Get<TutorialMode>();
-	soundMng    = ManagerInsts::Get<SoundMng>();
+	gameData      = ManagerInsts::Get<GameData>();
+	gameMng       = ManagerInsts::Get<GameManager>();
+	player        = ManagerInsts::Get<Player>();
+	bgMng         = ManagerInsts::Get<BGManager>();
+	uiMng         = ManagerInsts::Get<UIManager>();
+	effectMng     = ManagerInsts::Get<EffectManager>();
+	laserMng      = ManagerInsts::Get<LaserManager>();
+	tutorialMode  = ManagerInsts::Get<TutorialMode>();
+	soundMng      = ManagerInsts::Get<SoundMng>();
 	//画像取得.
 	grReflectText = GraphMng::Get(_T("reflect_text"));
 
@@ -228,6 +234,12 @@ void GameScene::DrawReflectMode() {
 	}
 }
 
+//反射モード発動.
+void GameScene::ReflectModeStart() {
+	tmReflectMode.Start(); //反射タイマー開始.
+	itemSoundCnt = 0;
+}
+
 //反射モード終了.
 void GameScene::ReflectModeEnd() {
 
@@ -238,21 +250,24 @@ void GameScene::ReflectModeEnd() {
 	gameData->isReflectMode = false;		//反射モード解除.
 	gameData->speedRate = 1.0;				//速度倍率を100%に戻す.
 	gameData->slowBufCntr = 0;				//カウンターを0に.
-	
 	itemSoundCnt = 0;
 
-	//効果終了音.
+	//レーザー範囲反射.
+	Circle hit = { player->GetPos(), Config::PLAYER_REF_END_RANGE_R, {}, {} };
+	laserMng->ReflectLaserRange(hit);
+
+	//エフェクト.
+	effectMng->SpawnEffect({
+		.type = EffectType::PlayerReflectModeEnd,
+		.pos  = player->GetPos()					//プレイヤーの位置.
+	});
+	//効果音.
 	if (auto i = soundMng->Get(_T("PowerDown"))) {
 		i->Play(false, 78); //再生.
 	}
+
 	//チュートリアルなら指示送信.
 	if (gameData->stage == StageType::Tutorial) {
 		tutorialMode->SetReflectFinish(true); //指示を送る.
 	}
-}
-
-//アイテム発動.
-void GameScene::ItemUsed() {
-	tmReflectMode.Start(); //反射タイマー開始.
-	itemSoundCnt = 0;
 }

@@ -57,7 +57,7 @@ public:
 
 	//‚»‚Ì‘¼.
 	void GameOver();
-	void ItemUsed();
+	void ReflectModeStart();
 	void SlowModeStart();
 
 	void StopObjects();
