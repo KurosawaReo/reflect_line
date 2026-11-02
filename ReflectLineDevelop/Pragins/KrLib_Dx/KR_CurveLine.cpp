@@ -14,15 +14,14 @@
 //KrLib名前空間.
 namespace KR
 {
-	//参照(KRライブラリ)
-	static InputMng* inputMng = ManagerInsts::Get<InputMng>();
-
 	// ▼*--=<[ DragPoint ]>=--*▼ //
 	
 	void DragPoint::Update() {
 		//ドラッグされてる時.
 		if (isDrag) {
-			SetPos(inputMng->GetMousePos());
+			//マウスカーソルに移動.
+			SetPos(ManagerInsts::Get<InputMng>()->GetMousePos());
+			//色を変更.
 			cir.color = 0x00ffff;
 			//画面外には行かないように.
 			if (IsOutInArea(App::GetWindowRect().ToDbl(), false)) {
@@ -58,6 +57,8 @@ namespace KR
 	
 	//制御点更新.
 	void ContrBase::UpdatePoint() {
+
+		const auto& inputMng = ManagerInsts::Get<InputMng>();
 
 		//制御点が非表示なら操作不能に.
 		if (!isDispPoints) { return; }

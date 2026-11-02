@@ -129,8 +129,10 @@ namespace KR
 		for (const auto& i : ManagerInsts::GetAll()) {
 			i->Reset();
 		}
-		//—\–ñÀs‚ğ‘S‚Ä’†’f.
-		ManagerInsts::Get<TimerMng>()->ReservCancelAll();
+		//TimerMng‚ª“o˜^‚³‚ê‚Ä‚¢‚é‚¾‚¯A—\–ñÀs‚ğ‘S‚Ä’†’f.
+		if (TimerMng* timerMng = ManagerInsts::Get<TimerMng>()) {
+			timerMng->ReservCancelAll();
+		}
 	}
 	//ƒQ[ƒ€‚ğI—¹‚·‚é.
 	void App::Quit() {

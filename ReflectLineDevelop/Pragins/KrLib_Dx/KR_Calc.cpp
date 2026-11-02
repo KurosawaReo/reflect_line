@@ -25,10 +25,14 @@ namespace KR
 		//当たり判定(四角形と点)
 		bool HitBox(const Box& box, DBL_XY pos) {
 
-			//四角形の範囲内なら.
+			//中心から端までの距離(サイズの半分)
+			const double halfW = box.size.x / 2;
+			const double halfH = box.size.y / 2;
+
+			//四角形の範囲内ならhit.
 			return
-				pos.x <= box.pos.x + box.size.x && pos.x >= box.pos.x - box.size.x &&
-				pos.y <= box.pos.y + box.size.y && pos.y >= box.pos.y - box.size.y;
+				pos.x >= box.pos.x - halfW && pos.x <= box.pos.x + halfW &&
+				pos.y >= box.pos.y - halfH && pos.y <= box.pos.y + halfH;
 		}
 
 		//当たり判定(扇形と点)

@@ -28,8 +28,6 @@
 //KrLib名前空間.
 namespace KR
 {
-	constexpr int NONE_HANDLE = -1; //ハンドルなし.
-
 	//アンカー座標.
 	static const DBL_XY ANCHOR_POS[9] = {
 		{0.0, 0.0}, {0.5, 0.0}, {1.0, 0.0},

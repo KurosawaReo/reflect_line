@@ -1,6 +1,6 @@
 /*
    - KR_DrawGraph.h - (DxLib)
-   ver.2026/08/04
+   ver.2026/11/02
 
    âÊëúï`âÊÇ…ä÷Ç∑ÇÈã@î\ÅB
 */
@@ -84,7 +84,7 @@ namespace KR
 		static void   SetPath   (MY_STRING path);
 		//get.
 		static Graph* Get       (MY_STRING saveName);
-		static bool   TryGet    (MY_STRING saveName, Graph* ptr);
+		static bool   TryGet    (MY_STRING saveName, Graph** ptr);
 		
 		//ì«Ç›çûÇ›.
 		static void   LoadImg   (MY_STRING fileName, MY_STRING saveName);

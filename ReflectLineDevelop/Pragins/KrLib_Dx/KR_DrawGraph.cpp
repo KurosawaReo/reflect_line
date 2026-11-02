@@ -11,8 +11,6 @@
 //KrLib名前空間.
 namespace KR
 {
-	constexpr int NONE_HANDLE = -1; //ハンドルなし.
-
 	//アンカー座標.
 	static const DBL_XY ANCHOR_POS[9] = {
 		{0.0, 0.0}, {0.5, 0.0}, {1.0, 0.0},
@@ -349,15 +347,16 @@ namespace KR
 		return &it->second;
 	}
 	//画像取得(bool型返り値版)
-	bool GraphMng::TryGet(MY_STRING saveName, Graph* ptr) {
+	bool GraphMng::TryGet(MY_STRING saveName, Graph** ptr) {
 
 		const auto it = inst.graphs.find(saveName);
 		//存在しなければ.
 		if (it == inst.graphs.end()) {
-			return false;  //取得失敗.
+			_param_ret_ptr(ptr, nullptr); //受け取り側はnullptrに.
+			return false;                 //取得失敗.
 		}
-		ptr = &it->second; //返す.
-		return true;       //取得成功.
+		_param_ret_ptr(ptr, &it->second); //呼び出し側に返す.
+		return true;                      //取得成功.
 	}
 
 	/*
