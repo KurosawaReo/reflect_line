@@ -14,9 +14,9 @@
 //KrLib名前空間.
 namespace KR
 {
-	// ▼*--=<[ DragPoint ]>=--*▼ //
+// ▼*--=<[ DragPoint ]>=--*▼ //
 	
-	void DragPoint::Update() {
+	void ContrBase::DragPoint::Update() {
 		//ドラッグされてる時.
 		if (isDrag) {
 			//マウスカーソルに移動.
@@ -35,11 +35,11 @@ namespace KR
 	}
 
 	//描画(円だけ)
-	void DragPoint::DrawNormal() {
+	void ContrBase::DragPoint::DrawNormal() {
 		DrawShape();
 	}
 	//描画(数字つき)
-	void DragPoint::DrawWithNum(int num) {
+	void ContrBase::DragPoint::DrawWithNum(int num) {
 		//円.
 		DrawShape();
 		//数字.
@@ -157,9 +157,9 @@ namespace KR
 					i.Draw(isAnti, isCameraDisp);
 				}
 			}
-			//制御点の円.
+			//制御点.
 			for (auto& i : points) {
-				i.Draw();
+				i.DrawNormal();
 			}
 		}
 	}
@@ -216,7 +216,7 @@ namespace KR
 		//制御点.
 		if (isDispPoints) {
 			for (auto& i : points) {
-				i.Draw();
+				i.DrawNormal();
 			}
 		}
 	}

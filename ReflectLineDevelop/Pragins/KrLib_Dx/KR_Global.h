@@ -185,7 +185,7 @@ namespace KR
 		Spline();
 		Spline(const vector<DBL_XY>& _points, MY_COLOR _color, float _thick);
 		//•`‰æ.
-		void Draw(bool isDot, bool isAnti = false, bool isCameraDisp = true) const;
+		void Draw(int degree, bool isDot, bool isAnti = false, bool isCameraDisp = true) const;
 	};
 
 	//ƒ|ƒŠƒSƒ“.

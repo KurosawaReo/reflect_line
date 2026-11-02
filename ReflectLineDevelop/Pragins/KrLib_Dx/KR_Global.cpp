@@ -179,8 +179,8 @@ namespace KR
 		points(_points), color(_color), thick(_thick)
 	{}
 	//Х`Йц.
-	void Spline::Draw(bool isDot, bool isAnti, bool isCameraDisp) const {
-		DrawSplineKR(*this, isDot, isAnti, isCameraDisp);
+	void Spline::Draw(int degree, bool isDot, bool isAnti, bool isCameraDisp) const {
+		DrawSplineKR(*this, degree, isDot, isAnti, isCameraDisp);
 	}
 
 // Бе*--=<[ Р}М` : Polygon ]>=--*Бе //
