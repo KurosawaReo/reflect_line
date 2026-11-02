@@ -1,6 +1,6 @@
 /*
    - KR_TimerMng.h - (DxLib)
-   ver.2026/10/09
+   ver.2026/11/02
 
    時間管理機能。
 */
@@ -15,16 +15,16 @@
 //KrLib名前空間.
 namespace KR
 {
-	//予約実行関数.
-	struct ReservFunc
-	{
-		function<void()> func{}; //関数ポインタ.
-		float            time{}; //何秒後に実行するか.
-	};
-
 	class TimerMng final : public ManagerBase
 	{
 	private:
+		//予約実行関数.
+		struct ReservFunc
+		{
+			function<void()> func{}; //関数ポインタ.
+			float            time{}; //何秒後に実行するか.
+		};
+
 		vector<ReservFunc> functions{}; //予約リスト.
 		Timer              gameTimer{}; //計測タイマー.
 

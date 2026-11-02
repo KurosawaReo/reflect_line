@@ -211,7 +211,7 @@ namespace KR
 				return spline.points.back();  //I“_‚ÌÀ•W.
 			}
 
-			DBL_XY p{ -1, -1 };
+			DBL_XY p{ 0, 0 };
 
 			for (int j = 0; j < count; j++) {
 				double b = BSplineBasis(j, degree, time, knots);
@@ -223,7 +223,6 @@ namespace KR
 		//Knots¶¬.
 		vector<double> CreateOpenUniformKnots(int controlCount, int degree)
 		{
-			//TODO: ®—‚·‚é.
 			const int knotCount = controlCount + degree + 1;
 			vector<double> knots(knotCount);
 

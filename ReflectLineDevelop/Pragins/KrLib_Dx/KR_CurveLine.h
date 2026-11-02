@@ -15,37 +15,39 @@
 //KrLib名前空間.
 namespace KR
 {
-	//制御点.
-	class DragPoint : public ObjectCir
-	{
-	//▼ ===== 変数 ===== ▼.
-	private:
-		bool isDrag{}; //ドラッグされてるか.
-
-	//▼ ===== 関数 ===== ▼.
-	public:
-		//set.
-		void SetIsDrag(bool flag) { isDrag = flag; }
-		//get.
-		bool GetIsDrag() const { return isDrag; }
-
-		//基本処理.
-		void Init() override {
-			cir.r = 10;
-			cir.color = ColorID::White;
-		}
-		void Update ()       override;
-		void Draw   ()       override {};               //未使用.
-		bool IsErase() const override { return false; } //未使用.
-
-		//描画.
-		void DrawNormal();
-		void DrawWithNum(int num);
-	};
-
 	//制御点管理 [継承想定]
 	class ContrBase
 	{
+	//▼ ===== 型 ===== ▼.
+	protected:
+		//制御点.
+		class DragPoint : public ObjectCir
+		{
+		//▼ ===== 変数 ===== ▼.
+		private:
+			bool isDrag{}; //ドラッグされてるか.
+
+		//▼ ===== 関数 ===== ▼.
+		public:
+			//set.
+			void SetIsDrag(bool flag) { isDrag = flag; }
+			//get.
+			bool GetIsDrag() const { return isDrag; }
+
+			//基本処理.
+			void Init() override {
+				cir.r = 10;
+				cir.color = ColorID::White;
+			}
+			void Update()       override;
+			void Draw()       override {};               //未使用.
+			bool IsErase() const override { return false; } //未使用.
+
+			//描画.
+			void DrawNormal();
+			void DrawWithNum(int num);
+		};
+
 	//▼ ===== 変数 ===== ▼.
 	protected:
 		vector<DragPoint> points; //制御点.
@@ -96,7 +98,7 @@ namespace KR
 	/*
 	   制御点を操作できるスプライン曲線.
 
-	   degree = 次元(3にしたら3次元)
+	   degree = 次元(3にしたら3次)
 	*/
 	class SplineContr : public ContrBase
 	{
