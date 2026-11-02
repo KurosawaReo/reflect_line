@@ -10,7 +10,7 @@ namespace KR
 
 	//コンストラクタ.
 	Sound::Sound() 
-		: handle(-1), nowVol(-1), aftVol(-1) 
+		: handle(NONE_HANDLE), nowVol(-1), aftVol(-1) 
 	{
 		timer = TimerMicro(TimerMode::CountUp, 0);
 	};
@@ -36,7 +36,7 @@ namespace KR
 		//データが登録されていれば.
 		if (handle >= 0) {
 			DeleteSoundMem(handle); //解放.
-			handle = 0;
+			handle = NONE_HANDLE;   //未登録に戻す.
 		}
 	}
 	//サウンド更新.
@@ -163,15 +163,16 @@ namespace KR
 		return &it->second;
 	}
 	//サウンド取得(bool型返り値版)
-	bool SoundMng::TryGet(MY_STRING saveName, Sound* ptr) {
+	bool SoundMng::TryGet(MY_STRING saveName, Sound** ptr) {
 
 		const auto it = sounds.find(saveName);
 		//存在しなければ.
 		if (it == sounds.end()) {
-			return false;  //取得失敗.
+			_param_ret_ptr(ptr, nullptr); //受け取り側はnullptrに.
+			return false;                 //取得失敗.
 		}
-		ptr = &it->second; //返す.
-		return true;       //取得成功.
+		_param_ret_ptr(ptr, &it->second); //呼び出し側に返す.
+		return true;                      //取得成功.
 	}
 
 	//サウンド読み込み.

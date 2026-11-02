@@ -1,6 +1,6 @@
 /*
    - KR_Global.h - (DxLib)
-   ver.2026/09/03
+   ver.2026/11/02
 
    KrLib全体で使う汎用プログラム。
 */
@@ -19,6 +19,8 @@
 //KrLib名前空間.
 namespace KR
 {
+	constexpr int NONE_HANDLE = -1; //ハンドルなし.
+
 	//アンカー(基準点)
 	enum class Anchor
 	{

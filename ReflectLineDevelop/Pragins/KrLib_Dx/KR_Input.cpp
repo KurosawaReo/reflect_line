@@ -51,7 +51,7 @@ namespace KR
 
 	//ƒAƒNƒVƒ‡ƒ“”»’è.
 	bool InputMng::IsPushAction(MY_STRING name, InputBinding* input) {
-		return IsPushAction(name, input) > 0; //‰Ÿ‚µ‚Ä‚éŠÔ‚ª‚ ‚ê‚Îtrue.
+		return IsPushActionTime(name, input) > 0; //‰Ÿ‚µ‚Ä‚éŠÔ‚ª‚ ‚ê‚Îtrue.
 	}
 	int  InputMng::IsPushActionTime(MY_STRING name, InputBinding* input) {
 		//‰½‚ğ‘€ì‚µ‚½‚©•Ô‚·.

@@ -1,6 +1,6 @@
 /*
    - KR_Sound.h - (DxLib)
-   ver.2026/10/09
+   ver.2026/11/02
 
    サウンド再生機能。
 */
@@ -73,7 +73,7 @@ namespace KR
 		void   SetPath (MY_STRING path);
 		//get.
 		Sound* Get     (MY_STRING saveName);
-		bool   TryGet  (MY_STRING saveName, Sound* ptr);
+		bool   TryGet  (MY_STRING saveName, Sound** ptr);
 
 		void   LoadFile(MY_STRING fileName, MY_STRING saveName); //読み込み.
 		void   StopAll ();										 //全サウンド停止.
