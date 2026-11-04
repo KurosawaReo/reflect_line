@@ -226,15 +226,26 @@ namespace KR
 
 		//timeを周期内で循環させ、アニメーションの進行率(0.0～1.0)に変換.
 		double AnimLoopRate(double now, double loopMax) {
+			//周期が0以下なら0を返す.(0割対策)
+			if (loopMax <= 0.0) { 
+				return 0.0; 
+			}
 			return fmod(fmod(now, loopMax) + loopMax, loopMax) / loopMax;
 		}
 
 		//値の抽選(重複なし複数)
 		vector<int> RandNums(int st, int ed, int count) {
 
-			int unUsedCnt = (ed-st)+1;      //未使用数字はいくつあるか.
-			vector<bool> isUsed((ed-st)+1); //各数字が使用済かどうか.
-			vector<int>  ret   (count);     //抽選結果を入れる用.
+			int rangeCnt = (ed - st) + 1; //範囲の数.
+
+			//指定がおかしければエラー.
+			if (rangeCnt <= 0)    { throw ErrorMsg(_T("Calc::RandNums"), _T("範囲が不正(start値がend値よりも大きい)")); }
+			if (count < 0)        { throw ErrorMsg(_T("Calc::RandNums"), _T("範囲が不正(countが0未満)")); }
+			if (count > rangeCnt) { throw ErrorMsg(_T("Calc::RandNums"), _T("範囲が不正(start～endの値数よりもcountの方が大きい)")); }
+
+			int unUsedCnt = rangeCnt;      //未使用数字はいくつあるか.
+			vector<bool> isUsed(rangeCnt); //各数字が使用済かどうか.
+			vector<int>  ret(count);       //抽選結果を入れる用.
 	
 			//抽選する回数分ループ.
 			for (int i = 0; i < count; i++) {
